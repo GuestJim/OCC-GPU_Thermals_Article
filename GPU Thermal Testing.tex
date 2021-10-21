@@ -1,0 +1,110 @@
+\documentclass[11pt, letterpaper]{article}
+
+\title{Thermal Testing: GPU}
+\author{Jim Pitchford}
+
+\input{"Preamble.tex"}
+
+\usepackage{multicol}
+
+\begin{document}
+\graphicspath{{Media - GPU/}}
+
+\thispagestyle{empty}
+
+\pagenumbering{Roman}
+\setcounter{page}{1}
+\loadgeometry{normal}
+
+% \fancyhf{}	%clears the header
+% \fancyhf[HC]{\runtitle}	%puts the book title above chapter numbers
+
+\pdfbookmark{\contentsname}{toc}	%adds a bookmark of the TOC to the file but not the list itself
+\tableofcontents
+
+\cleardoublepage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\Part{Introduction}
+\input{"Sections - GPU/01 - Introduction.ltx"}
+\cleardoublepage
+
+\Part{Scripting}
+
+\input{"Sections - GPU/02 - Scripting - GPU Thermal - 3dmdef.py.ltx"}
+\listingfile{Python}{Scripts - GPU}{GPU Thermal - 3dmdef.py}
+\cleardoublepage
+
+\input{"Sections - GPU/03 - Scripting - GPU Thermal - Input.r.ltx"}
+\listingfile{R}{Scripts - GPU}{GPU Thermal - Input.r}
+\cleardoublepage
+
+\input{"Sections - GPU/04 - Scripting - GPU Thermal - Data.r.ltx"}
+\listingfile{R}{Scripts - GPU}{GPU Thermal - Data.r}
+\cleardoublepage
+
+\input{"Sections - GPU/05 - Scripting - GPU Thermal - Output.r Functions.ltx"}
+\listingfrag{R}{Scripts - GPU}{GPU Thermal - Output.r}{1}{165}
+\cleardoublepage
+
+\input{"Sections - GPU/06 - Scripting - GPU Thermal - Output.r Text.ltx"}
+\listingfrag{R}{Scripts - GPU}{GPU Thermal - Output.r}{167}{239}
+\cleardoublepage
+
+\input{"Sections - GPU/07 - Scripting - GPU Thermal - Output.r Graphs.ltx"}
+\listingfrag{R}{Scripts - GPU}{GPU Thermal - Output.r}{242}{739}
+\listingfile{R}{Scripts - GPU}{GPU Thermal - Output.r}
+\cleardoublepage
+
+\input{"Sections - GPU/08 - Scripting - Graph Renaming - GPU Thermal.py.ltx"}
+\listingfile{Python}{Scripts - GPU}{Graph Renaming - GPU Thermal.py}
+\cleardoublepage
+
+\Part{Results}
+
+\input{"Sections - GPU/09 - Time Series Rough Explanation.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/10 - Results - RX Vega 64 - Default.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/11 - Results - RX Vega 64 - Auto UV.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/12 - Results - GTX 770.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/13 - Results - GTX 980.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/14 - Results - GTX 1070.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/15 - Results - GTX 1080.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/16 - Results - RTX 2060.ltx"}
+\cleardoublepage
+
+\input{"Sections - GPU/17 - Results - RTX 2080.ltx"}
+\cleardoublepage
+
+\Part{Conclusion}
+
+\input{"Sections - GPU/18 - Conclusion.ltx"}
+\cleardoublepage
+
+\iffalse
+\vspace{\fill}
+	\begin{center}
+	\vfill
+		{\changeurlcolor{black}\qrcode[height=2cm, level=Quality]{https://github.com/GuestJim/Serious-Statistics-The-Aliasing-Adventure/releases}}
+		
+		\vspace{0.25cm}
+		\href{https://github.com/GuestJim/Serious-Statistics-The-Aliasing-Adventure/releases}{Presentation and Article}
+	\end{center}
+\fi
+
+\end{document}

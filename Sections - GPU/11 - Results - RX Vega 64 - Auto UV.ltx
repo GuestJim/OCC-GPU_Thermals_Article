@@ -1,0 +1,342 @@
+\section{Gigabyte Gaming OC 8G RX Vega 64 (Auto Undervolt)}
+
+Something I have enjoyed doing with my AMD graphics cards for is undervolting them as it is a way to not only reduce power consumption but also heat production. With the WattMan tool built into the drivers, this kind of tweaking, as well as overclocking is quite easy. Some actually combine undervolting with overclocking as the former increases the thermal headroom for the latter. Like overclocking, finding the best configuration can take some time and trial-and-error, but in one of AMD's more significant driver updates the company added support for automatically overclocking and undervolting certain GPUs (separately, not at the same time), including the RX Vega 64. Now it is true manual tweaking can provide greater returns than an automatic tool, but I have observed some unusual and undesirable behavior relating to P-states when using my manual undervolt, which is why I have been using the Auto UV option as my default. It provides the desired benefits, albeit to a lesser degree, but without the issues I encountered.
+
+With this being a means of running to reduce the power consumption and temperature, and my preferred configuration for running the card, naturally I have collected data with it as well. First up is "Fire Strike Extreme" being seamlessly looped for the test period.
+
+\graphicspath{{Media - GPU/11 - RX Vega 64 - Auto UV/FS Extreme Loop/}}
+\subsection{Fire Strike Extreme - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	34	&	37	&	36.29	&	38	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26	&	26	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	167	&	167	&	169.88	&	224	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	4	&	5	&	4.93	&	7	\\	\hline\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	35	&	78	&	76.84	&	81	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	1461	&	1472.43	&	1654	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	0	&	944	&	941.81	&	944	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	5	&	246	&	245.22	&	249	\\	\hline\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	33	&	36	&	39.47	&	73	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26.15	&	572	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	36	&	167	&	168.18	&	187	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	3	&	5	&	4.76	&	9	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+For the most part there is nothing to comment on with the idle periods because it aligns with what we saw for the Auto Default configuration. The exception is the power consumption as before it was closer to 8 W or 9 W, while here we see it around 5 W, at least for the averages. While that might not be the ultimate goal for undervolting, improving idle consumption, it is still a good thing as a GPU is probably going to be at idle most of the time.
+
+Looking at the test period we see the GPU frequency has improved some as the mean frequency is greater by 35 MHz, which is not much, but something. The power usage is right where it was before at about 245 W, so the undervolt is not dropping power draw it seems, but then we look at the temperature.
+
+The median temperature for the GPU is 78 °C and the mean is 76.84 °C and the maximum is 81 °C. For the stock configuration the median was 80 °C, mean was 78.23 °C, and the maximum was 83 °C. It appears the benefit of the undervolt here was in thermal behavior, but that also impacts the GPU frequency, which we see is a little higher. Looking ahead I can also see the frame times were all better, if not by much, and still farther ahead the frequency histogram is certainly better as well.
+
+\image{Course}
+
+Looking at this graph, it is fairly similar to what we had before, but there is one clear difference with the GPU frequency. Here we can see the blue points are mostly concentrated around the 1450 MHz line, which was the case before as well, but the secondary concentration is different. There is a second line of data points positioned above the main concentration in this graph, but if you go back you will see the second line was below the main line. The histogram later will show this better.
+
+For temperature statistics, the lower quartile of the test period was at 77 °C and it crossed that point after 626 seconds, with a fair amount of instability. That is not too surprising when you consider the median is 78 °C. That means a full quarter of the measurements is between 77 °C and 78 °C. For the Cooldown period, the 55 °C zero RPM threshold was crossed after 143 seconds, and was reasonably stable at this point. The upper quartile was 41 °C and it first crossed this threshold at second 4390, or 790 seconds into the Cooldown period.
+
+\image{FPS}
+
+We already know what "Fire Strike" looks like on a frame rate graph like this, so we can just get to the statistics. The mean and median frame time was 16.81 ms and 16.49 ms, respectively, for the length of the test period. For the 1\% to 11\% section the mean was 16.49 and median was 16.19 ms while the final tenth had a mean of 16.84 ms and median of 16.52 ms. Clearly the performance was very consistent across the length of the test period and looking at the slopes, they are also quite small and close together. The magnitude for the overall slope and final tenth is -5 while the early section had a magnitude of -4.
+
+\image{Hist - Temperature}
+
+With the previous configuration I remember commenting how it was possible to identify the test just by looking at the temperature distribution, but that does not seem to be quite as true here. I do still think this is more like "Fire Strike Extreme" than the "Time Spy" distributions we have already seen, but the fact the tallest column is not at a higher temperature is different. In any case, we can see the tallest column is on the median of 78 °C while the second tallest is at 80 °C. If you compare this to the Auto Default graph, you can very clearly see this thermal behavior is better as it is cooler, which is pretty good considering the difference is a simple software setting.
+
+\image{Hist - Power}
+
+There really is nothing much to say here, though it does confirm the GPU was still pulling 245 W, despite the undervolt. For those thinking this is incorrect behavior, it actually is not, and the upcoming Frequency histogram will help explain.
+
+\image{Hist - Frequency}
+
+This graph, certainly when compared to that of the stock settings, is probably the best demonstration of why undervolting makes sense. While the bulk of the data is still between 1400 MHz and 1500 MHz like before, before the second domain was lower while here it is higher, even crossing the 1600 MHz line, if only with a tail. This indicates the GPU was able to remain stable at these higher frequencies better, and remember this is from an hour data, during which "Fire Strike Extreme" was continuously run. Looking at the percentiles, 0.64\% of the data was below 1276 MHz while 89.09\% was below 1560 MHz, leaving 10.91\% above it. That is a change of about 10\% above the stated 1560 MHz boost clock, which, as I said earlier, is pretty good considering this has been achieved with a simple software setting.
+
+Combining what we see here with the GPU Power histogram above, this tells us how the undervolt is likely being applied here. Chances are the GPU is shifting itself lower on the frequency-voltage curve, so the same frequency is being achieved with less energy. This is combined with the GPU knowing it can pull 245 W, so it does and that power is being used to keep the frequency higher, as opposed to reducing the power consumption. I will grant though that it does seem odd to see lower temperatures while power consumption is consistent and frequency is greater, as both should be directly related to temperature, but that is what the data tells us.
+
+\image{Hist - Frame}
+
+There is nothing too special to this graph on its own, but when comparing it to the stock configuration of the previous section, I do see something at least a little interesting. Before the tail extended far enough to cross the 23 ms line, but here it terminates at about 22.5 ms. Now 0.5 ms is not really a big difference, but it is still an indication the performance had a tighter range, which is desirable.
+
+\image{TS - Frame}
+
+As a quick reminder, the specific values in this and other time series trend graphs are not necessarily accurate to the measured values. Most of the trend appears near flat, and such consistency is good. The difference between the minimum and maximum being 0.43 ms is also pretty tight, which is good even if we cannot trust the trend values to correspond to the data directly.
+
+\image{TS - Frequency}
+
+While the undulating is not exactly desirable, after the initial fall the data seems to follow a relatively flat line. Like one of the graphs before, I do think the drop at the end would have been balanced out by a rise, but the test period ended before that occurred.
+
+\image{TS - Power}
+
+Not really anything to see here as the power went to its maximum once the load started, and stayed there, exactly as we saw before.
+
+\image{TS - Temperature}
+
+This graph actually is more interesting to examine than you might have guessed at first glance, mostly because of its difference from the Auto Default version. Here we can see that at about second 1200, the temperature stabilized and remained stable for the rest of the test. If you look back at the other graphs, there was often a turn nearer the end to higher temperatures, but it is absent here. We will have to see if it returns with the following tests.
+
+\graphicspath{{Media - GPU/11 - RX Vega 64 - Auto UV/TS Loop/}}
+\subsection{Time Spy - Loop}
+
+Time to check out the "Time Spy" results which will be somewhat interesting to see because, based on what we saw before, the RX Vega 64 likes this test better, at least as far as the clock speed is concerned.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	41	&	45	&	45	&	48	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	28.74	&	850	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	167	&	167	&	170.16	&	230	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	4	&	5	&	4.67	&	6	\\	\hline\hline
+	3DMark - Time Spy - Loop	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	42	&	81	&	79.28	&	84	\\	\hline
+	3DMark - Time Spy - Loop	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	1549	&	1520.5	&	1652	\\	\hline
+	3DMark - Time Spy - Loop	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	100	&	944	&	941.81	&	944	\\	\hline
+	3DMark - Time Spy - Loop	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	6	&	246	&	244.49	&	249	\\	\hline\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	33	&	38	&	40.79	&	75	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26.23	&	849	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	167	&	167	&	168.24	&	189	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	3	&	5	&	4.73	&	10	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Clearly the undervolt has made the GPU happy here as the frequency averages are markedly greater than they were before, with both beating 1500 MHz comfortably. At the same time though, the temperature statistics are nearly identical.
+
+\image{Course}
+
+Looking at this graph, it looks like we would expect, based on what we have seen before. Largely it looks like what we saw with the stock configuration's "Time Spy" run, but the frequency points resemble what we had with the "Fire Strike Extreme" results for this configuration.
+
+Turning to the temperature statistics, the lower quartile for the test period was 78 °C and this was crossed after 535 seconds, which is faster than we have been seeing, but at approximately nine minutes is still pretty good. For the Cooldown period, the 55 °C zero RPM threshold was first crossed after 182 seconds and was reasonably stable. The upper quartile is at 43 °C and it was first crossed at second 4330, which is 730 seconds after the test ended. This temperature was less stable, but that is not too surprising for passive cooling.
+
+\image{FPS}
+
+The graph itself does not tell us anything we do not already know, so we can look at the frame time statistics. The mean and median for the length of the test are 19.87 ms and 20.13 ms respectively. The earlier section had a mean of 19.26 ms and a median of 19.63 ms while the final tenth had a mean of 20.09 ms and a median of 20.51 ms. It looks like the performance was not as stable as we saw with the "Fire Strike Extreme" results, but this is still pretty good. The slopes are greater than we had before, which is quickly clear to me as R is not attempting to show them with scientific notation. For the early section the slope was 0.0022 while the overall slope was 0.00010 and the final tenth slope was 0.00062.
+
+\image{Hist - Temperature}
+
+Now this is interesting to compare against earlier graphs because the distribution for the test period more closely resembles that of "Fire Strike Extreme" for the stock configuration than "Time Spy" for that same configuration. My interpretation would be thermally throttling is involved, based on how so much of the data is nearly pushed against 85 °C. In comparison with the stock configuration then, by enabling the automatic undervolt, the GPU is able to push itself to this thermal limit rather than some other limit that kept its clock speeds lower earlier.
+
+\image{Hist - Power}
+
+\image{Hist - Frequency}
+
+Much like the "Fire Strike Extreme" graph earlier, this graph does a good job of showing the positive impact of the Auto UV setting. There are two clear domains to the frequency, with one in the 1450 MHz to 1500 MHz range and the other above it, surrounding 1550 MHz. The median is actually positioned in that higher range, indicating it holds the majority of the data, while the mean splits the two. This is a marked improvement to what we saw with the stock configuration as that had more data in the lower range.
+
+Looking at the percentiles, only 0.73\% was below the 1276 MHz base clock and 60.32\% was below 1560 MHz, which means there was 39.68\% above that frequency. That is about 27\% better than the stock configuration, so, truly, the Auto Undervolt is having a positive impact.
+
+\image{Hist - Frame}
+
+Though less obvious, we can also see some differences between this graph and the one for the stock configuration. Though it is subtle, the range is a bit narrower as the tail just manages to cross 24 ms here, while before it was reaching towards 25 ms. Not a large change, but it is present. What is curious, however, is the presence of the fifth peak, which we saw earlier with the pulsing "Time Spy" stock data, but not with the looping data. This does make me wonder the source of this peak. In any case, if you closely compare the two, you can see how the mean and median are both better with this Auto UV configuration than they were at stock.
+
+\image{TS - Frame}
+
+We can see in this some flatness to the start of the test period, but clear flatness from about second 1600 onward. Something I have not brought up before but I think might be the explanation is the change here following the temperature behavior closely. I do not necessarily mean thermal throttling is involved in all of the RX Vega 64 data, though it is certainly a factor in some recordings, but just how temperature increases impact performance naturally. After all, when we look at the temperature trend a little later, or if you go back you will see it took a while before the temperature stabilized at a point throttling may be involved, but we see the trend change here earlier than that. I will be coming back to this point later.
+
+\image{TS - Frequency}
+
+Aside from the initial high, this graph looks pretty flat over all, even if the trend data is waving up and down. We can see some of that waving in the smooth line, but it is fairly smooth still, at least compare to some other graphs.
+
+\image{TS - Power}
+
+\image{TS - Temperature}
+
+The one thing I think is somewhat interesting to note here is how there does appear to be a turn near the end of the trend data. It has not finished so we cannot know for certain, but in some of the Auto Default configuration graphs we could see a turn to a higher stable temperature, but it was not present with the "Fire Strike Extreme" results for this configuration. Perhaps it would have happened here, but the test ended before it could manifest. Instead we have the start of a turn, which is enough to pull the smooth line up some.
+
+\graphicspath{{Media - GPU/11 - RX Vega 64 - Auto UV/FS Loop/}}
+\subsection{Fire Strike - Loop}
+
+Time for the last seamlessly looped run I have for this GPU, this time for "Fire Strike," which runs at 1920x1080 as opposed to 2560x1440 as the Extreme version and "Time Spy" do.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	23	&	27	&	26.5	&	29	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26.28	&	111	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	168	&	174	&	176.26	&	428	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	6	&	6	&	6.29	&	12	\\	\hline\hline
+	3DMark - Fire Strike - Loop	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	27	&	76	&	75.1	&	79	\\	\hline
+	3DMark - Fire Strike - Loop	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	1469	&	1486.49	&	1641	\\	\hline
+	3DMark - Fire Strike - Loop	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	95	&	944	&	942.07	&	944	\\	\hline
+	3DMark - Fire Strike - Loop	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	9	&	247	&	245.25	&	249	\\	\hline\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	32	&	35	&	38.32	&	70	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26.23	&	849	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	167	&	167	&	168.35	&	485	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	4	&	6	&	6.03	&	13	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+It is interesting to see the Warm-up period have such low temperature averages, as I do not think that was a cold July day when I captured this. Besides 27 °C is not far from normal room temperature, so it might just be the GPU had not yet done enough to heat up that day. (The Auto Default run of "Fire Strike" was collected later the same day, for those curious. If you look at the folders in the GitHub repository, the dates are all recorded in their names.)
+
+The temperatures for the test period are very different from what we saw with the stock configuration earlier, as it came up to the hard throttling temperature of 85 °C, while here 80 °C is not even crossed. Curiously the frequency is not that far off from what we saw before. Of course, based on what we have seen previously it could be from the distribution shifting to higher frequencies and having more stable performance, which would be a definite improvement. We will have to see as we continue into the graphs though.
+
+\image{Course}
+
+This graph certainly looks a lot like what we saw earlier with "Fire Strike," including with the greater range to the frame rate data. We can also see the two lines to the frequency data too, with one being around 1450 MHz and the other higher, around 1550 MHz, though this higher line does not appear to be very dense. The histogram later will tell us more about that, but first the temperature statistics.
+
+The lower quartile for the test period's temperatures was 75 °C, so we can definitely expect some bouncing around that as the median was 76 °C. Still, it took 434 seconds to first cross that threshold, which I think is the fastest we have seen thus far. It looks like the lower temperatures of the Warm-up period were not enough to keep it cool for long. For the Cooldown period the 55 °C threshold was first crossed on second 3720, after 120 seconds, but there was some instability. It is not too much though as the tenth recording below that level was at second 3738. The upper quartile for the Cooldown period was 40 °C and that was first crossed at second 4375, or 775 seconds after the load ended.
+
+\image{FPS}
+
+The frame time statistics are better for this Auto UV configuration, but not be very much. For the whole of the test period, the mean was 8.52 ms and the median was 8.44 ms, which is a fraction of a millisecond faster. The early section had a mean of 8.45 ms and a median of 8.39 ms while the last tenth had a mean of 8.53 ms and median of 8.47 ms, which were all, again, a fraction of a millisecond better than the stock configuration. Better is better, but it does seem the real benefit with this configuration is the substantially lower temperature.
+
+\image{Hist - Temperature}
+
+Except that it will vary between GPUs, fixing the upper limit of the X scale to 85 °C would have been helpful here to see there is room before the GPU would need to throttle. Something interesting to notice is the median is on the second tallest peak to the data, as the tallest is actually under the upper quartile of 78 °C. The mean is at the lower quartile thanks to the low temperatures that were short-lived but captured in this recording. Nothing too special in the idle periods, though we can see the gradient ran out for the Warm-up period as two of the columns are gray instead of blue.
+
+\image{Hist - Power}
+
+\image{Hist - Frequency}
+
+As we could have guessed from the earlier graph and from what we saw with the other tests for this configuration, the frequency distribution shows two domains, with the smaller but still significant one around 1550 MHz. The larger domain is between 1400 MHz and 1500 MHz and contains the median, but the mean is not too far off thanks to the upper domain. Even if the frame time performance did not necessarily show an impressive improvement with Auto UV enabled, this is better as are the temperature measurements. As for the percentiles, 0.67\% of the data was below 1276 MHz and 80.43\% was below 1560 MHz, which is about 17\% better than stock with 19.57\% of the data above the stated boost clock.
+
+\image{Hist - Frame}
+
+A similar story here to what we have seen with the other frame time histograms when comparing Auto Default with Auto UV; the distribution is a bit tighter as the tail does not reach quite as far to longer frame times. Here it has crossed the 11.5 ms mark, but before it had crossed 12 ms. It is not much of an improvement, but still means the range for the frame time was a bit better than it was.
+
+\image{TS - Frame}
+
+That is a very flat trend and smooth line. It is a little hard to make out under the minimum-value label, but we can see the trend data was lower and turned high, but for almost the entire graph the data is flat, which means it was also quite stable. I do wonder about the occasional and brief drops in frame time, but really do not know what might be causing these anomalies.
+
+\image{TS - Frequency}
+
+We have some undulating here, which is not desirable, but I do think more data would have shown the smooth line should not be so angled downward at the end. Of course it does still seem like the trend, overall, had a downward angle, though that might be more from the waving up and down diminishing combined with the turn at the end that had not turned back up, assuming it would have with more time. The range for the smooth line spans about 50 MHz, so at least the variability to the trend here was not very extreme.
+
+Out of curiosity, I went back to the code to see the result if I added the random component from the time series (so only the seasonal component is missing from the original data) and the graph is very noisy, but the smooth line is significantly flatter. There is actually no waviness to it at all and the range is smaller to, at about 40 MHz, but I do not think I will bother including the graph. (Seriously, it is very noisy.)
+
+\image{TS - Power}
+
+\image{TS - Temperature}
+
+This actually is somewhat interesting to see as it appears the temperature reached an initial plateau and then started rising again after a time. We can see the trend stabilizes afterward, but that is still an odd behavior captured here, at least compared to the other recordings.
+
+\graphicspath{{Media - GPU/11 - RX Vega 64 - Auto UV/FS/}}
+\subsection{Fire Strike - Pulse}
+
+With the looping results covered, time to get to the pulsing data starting with "Fire Strike" being repeated.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	35	&	38	&	37.23	&	39	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26	&	26	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	168	&	174	&	175.84	&	218	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	6	&	7	&	7.21	&	8	\\	\hline\hline
+	3DMark - Fire Strike	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	36	&	66	&	65.04	&	72	\\	\hline
+	3DMark - Fire Strike	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	1448	&	1303	&	1643	\\	\hline
+	3DMark - Fire Strike	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	83	&	944	&	868.29	&	944	\\	\hline
+	3DMark - Fire Strike	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	8	&	246	&	165.45	&	249	\\	\hline\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	37	&	41	&	42.91	&	63	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26.69	&	850	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	0	&	167	&	168.15	&	190	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	6	&	7	&	7.1	&	9	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Comparing these statistics to the stock configuration results of the prior section, the frequency averages did not consistently go up or down, with the median being lower and the mean higher. While that is curious, there might be some missing context that can be found by examining the graphs. The other statistics are all very much in line with what we saw with the other configuration.
+
+\image{Course}
+
+While this is certainly a busy graph, it does appear the frequency should be better than it was with the stock configuration, because we can see the secondary line above 1500 MHz like we have been. I am not sure why the median would be lower, but the histogram may help to explain that. In any case, we can look at the temperature stats, starting with the lower quartile for the test period being 63 °C and it took the GPU 80 seconds to cross that. There was some instability to it, but some of that could easily be from the pulsing so we do not need to be too concerned about that. In the Cooldown period it took 51 seconds to cross the zero RPM line at 55 °C but there was some instability with that. Crossing the upper quartile of 45 °C took longer, as that first occurred at second 4245, or after 645 seconds and the stability was not great as the tenth measurement is at second 4294.
+
+\image{FPS}
+
+Looking at the frame time stats now, they are all rather consistent across the different sections. For the entire test period the mean was 10.97 ms and the median was 8.55 ms while the early section was also 10.97 ms and the median 8.51 ms. The final tenth then was 10.89 ms for the mean and 8.54 ms for the median. As I said, they are all very consistent. The slopes are more different, but with the loading time interfering with those values, their significance is questionable.
+
+\image{Hist - Temperature}
+
+I do not think there is much to talk about with this graph, even when comparing it to the Auto Default version, so we can move on.
+
+\image{Hist - Power}
+
+\image{Hist - Frequency}
+
+Unfortunately some of the P-states were popular enough to throw off the scaling during the test period, but we can still make out there are two domains to the higher frequencies. One of these is between 1400 MHz and 1500 MHz, and it appears to contain more data than the other that goes from a bit above 1500 MHz, say 1530 MHz to about 1630 MHz.
+
+Looking at the percentiles, 35.84\% of the data was below 1276 MHz and 83.48\% was below 1560 MHz, which represents an improvement of 13\%. The percentages below the base clock are effectively identical between the two configurations, which makes sense as that data should only be from the idle periods that ought to be independent from the GPU configuration.
+
+\image{Hist - Frame}
+
+Looking between this and the stock configuration's graph, it is hard to spot any difference. The frame time statistics are a little better, but by fractions of a millisecond, so it would be hard to impossible to spot here. Regardless, consistency in frame time makes some sense if we assume the undervolt has been reducing the impact of temperature throttling, because when pulsing like this, temperature throttling should be minimal. Of course with the higher frequencies indicated by the previous graph you would think would improve frame time performance, but there might be something more going on. The "Time Spy" results might prove interesting, as the GPU seems to like clocking higher with that to begin with.
+
+\image{TS - Frame}
+
+I do not think there is much of interest here, besides seeing the generally flat behavior of the trend. I am not sure why the smooth line is turning downward at the end, but if the data continued, I would believe it would flatten itself out.
+
+\image{TS - Frequency}
+
+Though the undulating is pretty clear here, the range to the smooth line is only about 30 MHz, which is not too much, and overall it seems balanced. There is neither a strong upward or downward turn to the data, but that makes sense as the pulsing is meant to remove or reduce possible restraints from the performance.
+
+\image{TS - Power}
+
+Thought the pattern is certainly different, this looks like the Frequency graph above, as it is quite balanced between highs and lows.
+
+\image{TS - Temperature}
+
+The spike at the beginning here is very similar to what we saw with the stock configuration, though less extreme. The rest of the trend does show the temperature increasing, but also stabilizing so I wonder where it may have finally arrived at, if the test period went longer than an hour.
+
+\graphicspath{{Media - GPU/11 - RX Vega 64 - Auto UV/TS/}}
+\subsection{Time Spy - Pulse}
+
+These results will wrap up the RX Vega 64, and then we will be able to get to the various NVIDIA GPUs I have in my collection. It should prove somewhat interesting to see what comparisons can be made across the brands as well as across generations, but first things first.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	37	&	40	&	39.59	&	40	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26	&	26	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	168	&	174	&	175.54	&	209	\\	\hline
+	Warm-up	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	6	&	7	&	6.93	&	8	\\	\hline\hline
+	3DMark - Time Spy	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	39	&	71	&	69.87	&	78	\\	\hline
+	3DMark - Time Spy	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	1491	&	1372.54	&	1646	\\	\hline
+	3DMark - Time Spy	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	167	&	944	&	891.24	&	944	\\	\hline
+	3DMark - Time Spy	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	7	&	245	&	181.36	&	249	\\	\hline\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Temp (°C)	&	38	&	42	&	44.45	&	67	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Clock (MHz)	&	26	&	26	&	26.23	&	848	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	VRAM Clock (MHz)	&	167	&	167	&	168.21	&	188	\\	\hline
+	Cooldown	&	RX Vega 64 (Auto UV)	&	GPU Power (W)	&	5	&	7	&	6.6	&	10	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+The average frequencies both show an increase over the stock configuration, but 12 MHz was the greater of the two, making the impact rather mild, at least for these statistics. The temperature averages also show a minor fall of about a degree or two, but it is hard to say just how significant that is.
+
+\image{Course}
+
+Once again we see how this graph is very similar to what we saw before with pulsing, but also we see how the second line of frequency data is above the primary, just as we have seen before with this Auto UV configuration. Looking at the temperature statistics, the lower quartile for the test period was 67 °C and it was first crossed after 232 seconds. It appears that the temperature remained at that level until the run ended, as after falling below it at second 239, it does not cross again until second 290. As for crossing the zero RPM threshold in the Cooldown period, 55 °C was first achieved after 116 seconds, but there was some of variability such that the tenth measurement at or below that value was at second 26 seconds later. The upper quartile is 47 °C and that was first crossed at second 4215, which is after 615 seconds, but the temperature did not remain there for long. In fact the instability was enough that the tenth measurement at that point was at second 4327, over one hundred seconds later. Such variability does seem to be part of the cost of passive cooling though and really only has an impact on paper as the electronics will not mind these temperatures, one way or another.
+
+\image{FPS}
+
+As for the frame time statistics, looking at them compared to the stock configuration, the differences are fractions of a millisecond, so almost certainly unimportant. In any case, the mean was 23.89 ms and median 19.68 ms for the length of the test period while the early section had a mean of 23.13 ms and a median of 19.50 ms. The last tenth was slightly worse than the overall values, with a mean of 23.94 ms and median of 19.94 ms, but the difference is fractions of a milliseconds, so while interesting to see in the statistics, there is likely no real impact on the experience.
+
+\image{Hist - Temperature}
+
+I am not seeing much of any interest here, besides confirmation the temperatures were not at the throttling point. We can also see the tallest peaks are around the third quartile at 73 °C and 74 °C, but when the hard throttling point should be just more than ten degrees above greater, this does not necessarily mean much.
+
+\image{Hist - Power}
+
+\image{Hist - Frequency}
+
+The power distribution is not something we have not seen before, and neither is the frequency but it is a little more interesting to talk about. We can see the confirmation of the two domains, but what is interesting is how it appears there is more data in the domain at the higher frequencies of 1550 MHz to 1600 MHz. The placement of the median and two quartiles confirm there is more data in that upper domain, as the distance between the first quartile and the median is much greater than between the median and third quartile. Clearly the GPU prefers the Auto UV configuration for running "Time Spy."
+
+As for the percentiles, 28.59\% of the time the frequency was below 1276 MHz while 63.99\% of the time was below 1560 MHz. That is about 20\% better than the stock configuration that had 83.29\% of the data below 1560 MHz. The time below the base clock was effectively identical between the two configurations.
+
+\image{Hist - Frame}
+
+I am failing to spot any differences between this and the similar graph for Auto Default. It all looks very much the same, which may mean then that the performance is being most impacted by the lack of any thermal throttling, thanks to the pulsing. The frequency tended lower with the stock configuration, but that is not always everything for performance.
+
+\image{TS - Frame}
+
+This is a mostly flat graph, but not completely. Comparing it to the other configuration, there is more of a curve to it, but nothing I think is cause for concern, or perhaps even curiosity. The range between the minimum and maximum of the smooth line is slightly greater than it was, but as I just said, I doubt there is much there to worry about as it is still a very tight range.
+
+\image{TS - Frequency}
+
+That dip around second 1200 is unusual, but ignoring that it appears the trend is mostly flat, though with a downward angle. I have no idea for an explanation of that dip, but if I add the random component to the data, it seems to disappear, along with the up and down movement. It is perhaps worth noting the random component does balance out to zero, meaning a smooth line for just that component would be flat and along 0. (At least that is what I observed each time I built such a graph.) The point being, this dip might not be as significant as it appears, or not even present in the data.
+
+However, there is still a visible if not great downward trend to the smooth line when including the random component, much like we see without it. This does not concern me though because the GPU is technically still heating up, and if the frequency is mildly sensitive to temperature, that could be the explanation.
+
+\image{TS - Power}
+
+Since the dip is visible here as well, I tried adding the random component again, and not only does the dip vanish, but the smooth line goes completely flat, which does align with expectations. Once the seasonal pattern is removed, the power consumption should be consistent like it is when seamlessly looping. It is not my intention to suggest the dip is not important, as it likely is, but it might not be cause for concern.
+
+\image{TS - Temperature}
+
+Nothing too special here as we just see the temperature increasing, but the rate of increase decreasing as it goes, which is expected. It does seem to have flattened out at the end though, so perhaps the maximum value of 78 °C (using the actual statistics, not the values from the graph) is the equilibrium point for this configuration and test.
+
+That finishes off the RX Vega 64 data I have, and it does indicate, quite clearly, the Auto UV configuration is superior. It consistently enabled higher frequencies and often reduced temperatures as well. The power consumption was not impacted, but if I truly wished to achieve that, I would also look into underclocking. There is probably an optimal point for power usage and performance, but that was not the purpose of this experiment.

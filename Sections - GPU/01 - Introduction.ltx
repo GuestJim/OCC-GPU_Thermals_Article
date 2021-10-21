@@ -1,0 +1,54 @@
+\section{Introduction:}
+When I have an idea, I rarely tend to leave it alone, even after completing it. The scripts I wrote for processing frame time data I have overhauled multiple times, so it should not be surprising that I decided to work more on the \href{http://www.overclockersclub.com/reviews/cpu_thermal_scripts}{CPU Thermal Testing Scripts} I wrote, or the similar \href{http://www.overclockersclub.com/reviews/gpu_thermal_scripts}{GPU Thermal Testing Scripts}. While I have made significant changes to these GPU scripts, they do still rely on 3DMark Professional Edition, which is out of reach for most people. However, I have decided to share these scripts on GitHub, as I have the \href{https://github.com/GuestJim/OCC-CPU_Thermals}{CPU Scripts}, as part of publishing this article. (\href{https://github.com/GuestJim/OCC-GPU_Thermals}{OCC-GPU\_Thermals})
+
+Among the changes I have made to these scripts are the addition of the "Port Royal" benchmark in 3DMark, though I am not using any data from that here, significant changes to the graphs, and, perhaps most importantly, the addition of \href{https://github.com/GameTechDev/PresentMon}{PresentMon}. For those unfamiliar with it, PresentMon is a very significant piece of open source software for anyone interested in collecting video game performance data as it captures the frame time data many use in reviews and similar. It is not the easiest piece of software to use, however, which is why I tend to use \href{https://github.com/GPUOpen-Tools/OCAT}{OCAT}, that utilizes PresentMon but provides a very convenient front end. You see, that is the singular weakness, in my mind, of PresentMon, as it is controlled with command line arguments. While that is a problem when wanting to record performance for an arbitrary game, when running scripts it is an advantage. (By the way, PresentMon is from Intel's Game Developer resources while OCAT is from AMD's GPUOpen initiative.)
+
+Integrating PresentMon support was not easy, as it does have some quirks to deal with, or at least tricky to match with my own, but it means I am not only able to examine GPU-side performance information, such as frequency and power consumption, but also the resulting performance for the entire length of the hour long test. For anyone wondering, the recordings range from 6.22 MB to 34.3 MB, with those extremes coming from the EVGA GTX 770 and NVIDIA RTX 2080 in my graphics card collection; the least and most powerful I have. I decided to capture data for almost my entire GPU collection, skipping only the RX 580 as I do not wish to lock myself out of using my desktop for a bit over two hours at a time.
+
+As that implies, I have collected data across multiple GPUs, and in the case of NVIDIA, across multiple generations. While the general concept of each GPU's performance is certainly interesting, there is something else I wish to examine here, because it is something these scripts will capture; boost behavior. In the previous article with these scripts, we could see how the behavior for frequency and power both changed with time. I found it interesting to see the differences between the boosting of the RTX 2060 and RX Vega 64, and with this article we can see the differences between the GTX 770, GTX 980, GTX 1070, GTX 1080, and RTX 2080 as well as the two previously mentioned cards. (I did collect fresh data for them.) On top of that, with the PresentMon data, we can also look for trends there, though it may not always be that easy because of its variability during the length of each run. Speaking of which, I have experimented with a method that can help address some of that variability; time series analysis. Unfortunately my lack of actual statistics education limits what I am able to do with this, but I have new and interesting graphs to share.
+
+In case the implication of the above was not clear enough, allow me to definitely state there is going to be a lot of data in this article. Originally I had planned to just use the results from seamlessly looped runs, but then decided that rather than explain why I am testing the boost behavior without pulsing, I should implement proper pulsing and collect more data. Prior to working on this article I overhauled the CPU Thermal scripts and solved some issues I had with pulsing those tests, so I have now brought that code to these scripts. The original issue was a lack of means to terminate a test at the proper time. 3DMark tests always take some time to load, except when using seamless looping, so I have set the default pulsing pause to be 0 seconds, which is just the load time that can vary between 3DMark tests and between hardware configurations.
+
+There are a couple things about the pulsing data that I do want to mention quickly. One is I made a mistake that I did not wish to completely correct when collecting the data. When I collected the seamless data I used "Fire Strike Extreme" and "Time Spy" because they are both run at 2560x1440, but I forgot that when collecting the pulsed data and so collected "Fire Strike" data, which is 1920x1080, in addition to "Time Spy" data. This makes comparing the seamless and pulsed data less than appropriate, but the data is all still good, so I am not running through all of the GPUs again. However, I do have a seamless run of "Fire Strike" on the RTX 2060 from when I originally collected data and as the RX Vega 64 is the current GPU in the test system, I collected seamless "Fire Strike" data with it in both the "Auto (Default)" and "Auto (UV)" configurations. I am unsure just how valuable the ability to directly compare the seamless and pulsed "Fire Strike" data will be, but for those two GPUs, it will be possible. The "Time Spy" data is all with the same default version of the test.
+
+As a portion of this article will be focused on documenting the scripts, a topic that might not be of great interest, I am going to do like I did with the \href{http://www.overclockersclub.com/reviews/serious_statistics_and_scripts}{Serious Statistics Reprocessed: Statistics and Scripts} and create separate versions. One version will include the sections on the scripts, while the other will lack them. The version that covers the scripts will be available on GitHub, along the scripts, data, and graphs for this article.
+
+Before getting too far then, here are the test system specifications as well as a list of the software used by these scripts:
+
+\subsection*{Test System Specs:}
+
+\begin{itemize}
+	\item	Processor: AMD Ryzen 7 2700X with PBO Enabled and -0.0750 V Offset
+	\item	Cooling: AMD Wraith Prism (Box Cooler)
+	\item	Motherboard: MSI B450 Mortar
+	\item	Memory: Corsair 2x8 GB (16 GB) @ 3000 MHz 16-17-17-35
+	\item	PSU: Seasonic FOCUS Plus 650 Gold
+	\item	OS: Windows 10 Home 64-bit
+	\item	Drivers – AMD: Radeon Software 21.4.1
+	\item	Drivers – NVIDIA: GeForce Game Ready Driver 466.27
+\end{itemize}
+
+\subsection*{Tested GPUs:}
+
+\begin{itemize}
+	\item	EVGA GTX 770 (2 GB)
+	\item	\href{http://www.overclockersclub.com/reviews/nvidia_gtx_980/}{NVIDIA GTX 980}
+	\item	\href{http://www.overclockersclub.com/reviews/nvidia_geforcegtx_1070_founders_edition/}{NVIDIA GTX 1070}
+	\item	\href{http://www.overclockersclub.com/reviews/nvidia_geforcegtx_1080_founders_edition/}{NVIDIA GTX 1080}
+	\item	\href{http://www.overclockersclub.com/reviews/nvidia_geforce_rtx2060_founders_edition/}{NVIDIA RTX 2060}
+	\item	\href{http://www.overclockersclub.com/reviews/nvidia_geforce_rtx2080ti_rtx2080_founders_edition/}{NVIDIA RTX 2080}
+	\item	Gigabyte Radeon RX Vega 64 Gaming OC 8G (Auto-Undervolt)
+\end{itemize}
+
+I freshly installed the same drivers with each GPU swap and restarted the system follow each install.
+
+\subsection*{Software Involved:}
+
+\begin{itemize}
+	\item	\href{https://www.python.org/}{Python}
+	\item	\href{https://www.r-project.org/}{R}
+	\item	\href{https://www.techpowerup.com/gpuz/}{GPU-z}
+	\item	\href{https://github.com/GameTechDev/PresentMon}{PresentMon}
+	\item	\href{https://benchmarks.ul.com/3dmark}{3DMark Professional Edition} 
+\end{itemize}
+

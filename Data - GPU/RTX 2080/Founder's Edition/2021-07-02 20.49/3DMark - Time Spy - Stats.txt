@@ -1,0 +1,78 @@
+3DMark - Time Spy
+RTX 2080
+Founder's Edition
+
+Pulse pause length, in addition to loading:	0 s
+
+Warm-up Period
+  Period      Measurement   Min Median   Mean    Max
+ Warm-up    GPU Temp (°C)  33.6   33.7  33.74   35.1
+ Warm-up  GPU Clock (MHz) 300.0  300.0 309.03 1515.0
+ Warm-up VRAM Clock (MHz) 101.3  101.3 112.33 1750.0
+ Warm-up    GPU Power (W)   1.7    2.3   2.54   31.6
+
+3DMark - Time Spy Period
+            Period      Measurement   Min Median    Mean    Max
+ 3DMark - Time Spy    GPU Temp (°C)  34.4   80.0   77.95   85.4
+ 3DMark - Time Spy  GPU Clock (MHz) 300.0 1860.0 1496.46 1980.0
+ 3DMark - Time Spy VRAM Clock (MHz) 101.3 1750.0 1382.60 1750.0
+ 3DMark - Time Spy    GPU Power (W)   5.3  219.6  163.84  230.4
+
+Frequency Percentages
+<1515 MHz =1515 MHz <1710 MHz <1800 MHz 
+    23.45      3.01     26.46     26.48 
+
+Linear Model Slopes:
+                GPU_Temp    GPU_Clock     GPU_Power
+Test Period 0.0030809172 -0.005074797  0.0006015125
+1% to 11%   0.0603271983 -0.232471972  0.0019992407
+89% to 99%  0.0003066472 -0.119727373 -0.0058953817
+
+Linear Model Slopes (minute):
+              GPU_Temp   GPU_Clock   GPU_Power
+Test Period 0.18485503  -0.3044878  0.03609075
+1% to 11%   3.61963190 -13.9483183  0.11995444
+89% to 99%  0.01839883  -7.1836424 -0.35372290
+
+Frame Rate Summary
+            Median     Mean    Slope_(ms)    0.1%      99% Unit
+Test Period 14.274 18.37294  4.899183e-05 10.7860 38.78273   ms
+1% to 11%   14.034 17.63464  7.054576e-04 10.6350 37.42510   ms
+Last 10%    14.452 18.96208 -4.843193e-03 10.9808 39.95480   ms
+
+First Quartile Temperature Reached
+74.5 °C
+
+ Time GPU_Temp GPU_Temp_Diff
+  231     74.5           0.0
+  232     74.5           0.2
+  233     74.7           0.1
+  234     74.8           0.2
+  235     75.0           0.4
+  236     75.4           0.1
+  237     75.5           0.1
+  238     75.6           0.1
+  239     75.7           0.0
+  240     75.7          -0.1
+
+Cooldown Period
+   Period      Measurement   Min Median   Mean    Max
+ Cooldown    GPU Temp (°C)  34.2   35.4  37.94   74.8
+ Cooldown  GPU Clock (MHz) 300.0  300.0 300.04  420.0
+ Cooldown VRAM Clock (MHz) 101.3  101.3 101.97 1250.0
+ Cooldown    GPU Power (W)   1.6    2.1   2.34   34.4
+
+Third Quartile Temperature Reached
+38.1 °C
+
+ Time GPU_Temp GPU_Temp_Diff dTime
+ 4486     38.1           0.1   886
+ 4492     38.1           0.1   892
+ 4494     38.1           0.0   894
+ 4495     38.1          -0.1   895
+ 4496     38.0           0.0   896
+ 4497     38.0           0.1   897
+ 4498     38.1           0.0   898
+ 4499     38.1           0.0   899
+ 4500     38.1           0.1   900
+ 4502     38.1           0.0   902

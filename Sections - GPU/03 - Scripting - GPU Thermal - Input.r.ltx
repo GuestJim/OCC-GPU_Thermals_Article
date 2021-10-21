@@ -1,0 +1,163 @@
+\section{Scripting: GPU Thermal – Input.r}
+
+For years now I have employed a modular approach to R scripts, and some documents as well because it makes updates and tweaks easier to propagate. Whenever you have a modular design though, you need a central piece that connects it all together and that is what this "GPU Thermal – Input.r" script represents. It contains the details about the different configurations, such as the GPU, graphics card cooler, and specific test, which are important for the GPU thermal data these scripts are to collect and process. There may be some specifics that will occasionally need to be changed within the Output.r script, because they cannot be controlled in this script, but such tweaks should be rather uncommon.
+
+In any case, R supports loading in package libraries to add to its built-in functionality, much like Python does. My preference is to load these at the start of the Input.r script, so that is where we begin.
+
+\subsection{R Library Loading}
+\begin{styleR}
+library(readr)
+library(tidyr)
+library(ggplot2)
+\end{styleR}
+
+All three of these libraries are from Tidyverse, a collection of packages for data science, and I almost always find myself using something from this collection. The first one, \textit{readr} provides functions for importing and exporting data. It is true R already has means to import files, but the \textit{readr} functions have become my standard and they sometimes offer features I find useful or necessary. Though not for these scripts, but the \textbf{skip} argument can be useful if there is unnecessary information at the start of a file. Also this library's functions are able to import and export compressed files, and when you are dealing with potentially hundreds of megabytes of raw data, a compression ratio of 16.6 to 1 is very nice to have. (Just the PresentMon data for this article is 899 MB, but when compressed is 54.1 MB.)
+
+The \textit{tidyr} library is not as common a library for me, but does have some very powerful tools in it. Specifically its pivot functions that can take data spread across columns to nicely labelled rows, or the reverse. These scripts, and the CPU ones more so, involve many different measurement types and some of the ways R already has to process them will produce the exact situation I described above, and pivoting those columns to rows makes it much easier to read.
+
+The \textit{ggplot2} library, however, is one I make extensive use of as it is my preference for building any graphs. It is possible to construct graphs with R's built-in tools, but the grammar for this library makes manipulating its wide selection of graph features very easy. We will not see any of that until the Output.r script, though there are some things for it set in this script.
+
+There is one more library I use, but I load that closer to where I use it in the Output.r script, and it is the \textit{tableHTML} that does exactly what the name suggests; create HTML tables. Initially the ability to export HTML tables directly was something I experimented with to get right, and I tend to keep the parts of an experiment close together. Even though I have successfully finished the experiment, I have not bothered to place the loading of the library with the others.
+
+A quick reminder that the "\#" symbol is for line comments in R, with everything to the right of symbol being ignored.
+
+\subsection{Data Configuration Information}
+\begin{styleR}
+duration	=	!DUR!
+warm		=	!WARM!
+TESTname	=	"!TEST!"
+GPUname		=	"!GPU!"
+COOLERname	=	"!COOLER!"
+PULSE		=	!PULSE!	#only relevant if test was pulsed
+testLEN		=	!LEN!	#approximate run length
+\end{styleR}
+
+This is the first batch of variables created and set to values R will need for proper data processing and graph creation. If you read through the previous section on the "GPU Thermal – 3dmdef.py" file you know I use surrounding exclamation points for terms that are to be replaced.
+
+Anyway, \textbf{duration} and \textbf{warm} both are values in seconds, representing the lengths of the test and Warm-up periods, respectively. There is nothing here to recognize the length of the Cooldown period, but that is fine because we know it is the final period and the lengths of the other two.
+
+The three "name" variables that follow all identify what the variable names suggest; the test, the GPU, and the graphics card's cooler. You can see I have the terms to be replaced surrounded by quotes here, which allows the Python script to replace the terms but not need to worry about adding the quotes to tell R they are strings. The terms here lacking the quotes will be interpreted as numbers by R; more specifically data type numeric.
+
+\subsection{Period Factor Levels}
+\begin{styleR}
+levsPER		=	c("Warm-up", TESTname, "Cooldown")
+\end{styleR}
+
+I just mentioned the R data type or class "numeric," which handles numbers and have implied the string or "character" class, but there are more than that. The other four most important for what I do are "data frames", "logicals", "vectors", and "factors", but there are some others that will come up at times. Vectors are simple lists, as "list" is a different data class with some special features, and an example of a vector is to the right of the equals sign here. It will be a collection of strings and is created very easily with the \textbf{c} function and commas separating the elements.
+
+Factors, which is what this \textbf{levsPER} variable is for, are very important when formatting things because they are kind of like mapped lists. By that I mean a list of values is created and each value or "level" is mapped to a number. In the data then, these numbers are stored instead of the "level" itself, which may provide some compression benefits, but mostly is useful because you can set the order of the levels when something wants to work with the factors. The calendar can provide some examples to explain factors: imagine some dataset that includes dates broken down by month and day of the week. Months and days both have a restricted number of values and the order for both are not alphabetical, so factors, more specifically ordered factors, are the best data class to use for those columns in the data. I am essentially doing the same thing here, creating an ordered list for the levels based on the periods in the data, hence the name \textbf{levsPER}.
+
+Logicals are what R calls Boolean values, such as "TRUE" and "FALSE" and "NA." The last value is for missing values and that will come up at times as missing values can happen in data collection and it can be used to tell R or a function to do its own thing.
+
+Data frames are a very important data class because of how powerful they are. Matrices are similar in that both are rectangular, meaning data is contained in rows and columns, but a matrix can have just one data type while each column in a data frame can be a different type. Data frames can also have readable names for each column and row, which makes manipulating them much easier and we will see some of that in this script. (Matrices can too, but I do not take advantage of that capability.)
+
+There is more to data classes in R, but I wanted to cover that much before moving on because they are important to have at least a basic understanding of.
+
+\subsection{Graph Theme and Output Controls}
+\begin{styleR}
+theme_set(theme_grey(base_size = 16))
+DPI			=	120
+ggdevice	=	"png"
+\end{styleR}
+
+These three lines are all for managing some \textit{ggplot2} formatting. The first changes the theme for the graphs to use a base font size of 16. The second and third are actually for the saving of the graphs. The \textbf{DPI} is, well, the DPI of the output images while \textbf{ggdevice} is setting R to produce PNG files, as opposed to PDFs, the other file type I have it configured to support currently.
+
+\subsection{Graph Controls}
+\begin{styleR}
+gWIDTH	=	16
+gHEIGH	=	9
+app.BREAK	=	TRUE
+graphTS		=	TRUE
+FREQ.COEF	=	NULL
+#	this will be set automatically in Output.r based on maximum power and clock values
+#	it might be desirable to manually tweak this value, and if you do here it will not be altered
+fH.UPPER	=	0.999
+#	frame time histogram arguments as sometimes they need to be altered, mainly UPPER, especially for pulsed data
+\end{styleR}
+
+The variables here are again for manipulating the graphs with the first two controlling their dimensions. The \textbf{app.BREAK} variable holds a logical value, in this case "TRUE," and is to control a function in Output.r I wrote for adding line breaks to scale labels, which can help with readability. The \textbf{graphTS} control is for if the time series graphs should be generated, which is present because I am not particularly familiar with time series and so the ability to easily disable them may be desirable. I will explaining the time series graphs later.
+
+The \textbf{FREQ.COEF} value is the ratio between maximum power and frequency for a graph. Power, temperature, and frame rate are all close enough to be on the same scale, but frequency can be a full order of magnitude different making a coefficient to align them necessary. With this set to "NULL" a value will be calculated for it, but sometimes the result is not ideal, making it better to manually set the value.
+
+The \textbf{fH.UPPER} value is for the frame time histogram and is most important to manipulate with pulsed data. You see the loading of 3DMark tests can make the PresentMon data extreme, as in having frame time values in the hundreds while most values are in the teens. Normally \textit{ggplot2} will try to select scale limits based on the extremes of the data, but those extreme values throw it off, badly, so I set it to use a quantile of 0.999 or 99.9%, leaving just the upper 0.1% outside the scale. For seamless data, that works well because the test loaded once for the hour of data, but with pulsed data each run is accompanied by loading. This makes using a slightly lower quantile necessary, such as 0.975, but it is worth experimenting to dial it in. Rather than set this in the individual Output.r scripts as I originally had (which was easier when experimenting) I have created this variable. There are other arguments to the \textbf{frameHIST} function in the Output.r script, but we will get to those when the time comes.
+
+\subsection{Additional Configuration Information}
+\begin{styleR}
+zRPM		=	!zRPM!
+maxPWR		=	!maxPWR!
+FREQspec	=	NULL	#	for frequency specs, can take vector
+pulseTSoff	=	0		#	offset for incorporating load time for GPU-z based time series graphs. Requires manual tweaking but 9 for Fire Strike and -15 for Time Spy work for me
+\end{styleR}
+
+These variables are all optional, but can help with the graphs. The first is to record if the graphics card has a zero RPM feature and what the temperature is, so this can be drawn on the appropriate graph and used in some of the statistics. The \textbf{maxPWR} value is to identify the maximum power of the GPU, but this can also be gotten from the data itself, and so is not strictly necessary. The calculated value will be rounded up to the nearest 75 W though, as the PCIe specification works on multiples of that. The Python script will write these values in if the user provides them, but otherwise will leave them as "NULL," which the scripts are configured to handle.
+
+The \textbf{FREQspec} variable will not be written by the Python script but is something that can be worth manually adding. It can take a list of the frequency specifications for the GPU, and like \textbf{zRPM} will be drawn onto the appropriate graph and be used in certain statistics. In theory it can take as many frequencies as you wish, but the scripts are configured around two being provided, a base clock and a boost clock.
+
+The \textbf{pulseTSoff} is a more complicated variable to explain, but also very important. Basically the time series graphs can benefit from having an offset applied to how they search for temporal patterns, and this is the variable to control the offset. This really only matters for pulsed tests as the wait between runs impact the patterns in the data. Zero is an appropriate default then for seamlessly looped tests and one should manually tweak the value for best results. I found an offset of 9 works best for the pulsed "Fire Strike" data I have and, curiously, -15 is the best for pulsed "Time Spy." I truly have no idea why a negative value is best for that data, but I will explain the impact it has when we get to the time series graphs.
+
+\subsection{Setting Working Directory}
+\begin{styleR}
+if (interactive())	{
+	setwd("!PATH!")
+}	else	{
+	pdf(NULL)
+}
+\end{styleR}
+
+R scripts can be executed directly from the file or by running them in the GUI, and there are some differences between them. When run directly, the working directory is assumed to be where the script is, so paths are relative to that, but at one point running a script this way would also create empty and unwanted PDF files. It does not appear this is the case anymore, but I have left the fix in place because it does not cause any issues.
+
+The \textbf{interactive} function can be used to identify if the script is being run in the GUI or not, returning "TRUE" if it is, in which case \textbf{setwd} is used to set the working directory. If it is not, meaning the script is being run directly, then \textbf{pdf(NULL)} is run to prevent those unwanted PDFs from being created. At this point the latter is not necessary it seems, but as I said, it does not hurt to have. The call to \textbf{setwd} does need to be behind the \textbf{interactive} check though, in case the path placed by Python does not match the actual path to the data, such as if you collect data on one computer and process it on another. This function will override the assumption when running the script directly.
+
+By the way, the \textbf{getwd} function will report what the current working directory is.
+
+\subsection{Data Importing}
+\begin{styleR}
+if (file.exists("Data.csv.bz2"))	{
+	dataALL		=	read_csv("Data.csv.bz2")
+}	else	{
+	source("~GPU Thermal - Data.r")
+}
+\end{styleR}
+
+This block of code, and the one after it, is a little backwards but not hard to explain. When the Data.r script is run, it will create formatted and compressed versions of the recorded data. As there are two recordings there are two files, with one of them named "Data.csv.bz2." With the \textbf{file.exists} function, R can check if it is there, and if it is, then \textbf{read\_csv} will be used to import it and assign the data to \textbf{dataALL}. If it is not present, then the \textbf{source} function will read and execute the contents of the "{\til}GPU Thermal – Data.r" script (found in the current working directory), which will then produce the compressed files. It will also assign the data to the same variable names as loading in the compressed files, so there is little difference between these two data importing methods.
+
+\subsection{PresentMon Importing}
+\begin{styleR}
+if (file.exists("PresentMon.csv.bz2"))	{
+	PresentMon	=	read_csv("PresentMon.csv.bz2")
+}	else	{
+	PresentMon	=	NULL
+}
+\end{styleR}
+
+As the Data.r file will have been run by this point, there either will or will not be the "PresentMon.csv.bz2" file. If there is then the data will be assigned to \textbf{PresentMon}, and if there is not then the variable should be assigned "NULL." By using the \textbf{is.null} function, the Output.r script will know to skip attempts to use the frame time data, while the contents of \textbf{dataALL} are used.
+
+In case you are wondering why the frame time data is not included in \textbf{dataALL}, despite its name, it is because I am not sure how to merge it properly. The measurements in \textbf{dataALL} have a sampling frequency of 1 Hz while the PresentMon data has a variable frequency, with measurements taken as events occur.  Some things might be easier if the data could all be in the same object, but this works well enough, and allows the scripts to work even when PresentMon data is missing.
+
+\subsection{Data Formatting}
+\begin{styleR}
+dataALL$Period	=	ordered(dataALL$Period, levels = levsPER)
+dataALL$GPU		=	ordered(GPUname)
+dataALL$Cooler	=	ordered(COOLERname)
+dataALL$Test	=	ordered(TESTname)
+dataALL$Timestamp	=	NULL	#unnecessary column and breaks viewing dataALL due to POSIXct class, but keeping in Data.csv.bz2 is best
+
+if (min(PresentMon$TimeInSeconds) > warm)	PresentMon$TimeInSeconds	=	PresentMon$TimeInSeconds - warm
+\end{styleR}
+
+Each of these lines is concerned with making sure the data is formatted as it needs to be for the Output.r script to work correctly. The first four make sure certain columns in \textbf{dataALL} are not just factors but ordered factors by assigning the output of \textbf{ordered} to them. There are multiple ways to select a column from a data frame and among them is by name with the \$ symbol. Square bracket notation can also be used, as we will see later. In any case, running \textbf{ordered} can be as simple as just giving it the list of values to be used as factor levels as its argument, and assigning that to the appropriate column. This is what happens for the "GPU" and "Test" column, and while those columns will have many rows to them, R knows to set every value in the selected column to be the supplied ordered factor.
+
+For the "Period" column, things are a little different. While a single GPU, cooler, and test can be assumed and applied safely, the period does change over the course of the data. The Data.r script will assign the appropriate period name to the data, so it is just a matter of making the column ordered factors. Passing the column to \textbf{ordered} as its first argument will convert the values to factors, and by providing the \textbf{levsPER} vector as the \textbf{levels} argument, the function is told what the order should be, rather than assuming it is alphabetical. The resulting output will be visually identical to the input then, as it will not reorder the data from the column; it just knows the order the data should be in for certain situations.
+
+I should mention there is also the \textbf{factor} function that \textbf{ordered} is just a special version of, where the \textbf{ordered} argument is set to "TRUE." Factors do not need to be ordered, but it can be desirable, as I explained earlier. With single-level factors, ordering is unnecessary, but for consistency I used the same function.
+
+The Timestamp column is assigned the value "NULL" which will actually remove it from \textbf{dataALL}, and while removing information is rarely a good idea, there are some things to consider. One is this column is unnecessary for the operation of these scripts at this point and another is its presence will make viewing the data frame impossible. The POSIXct class R uses for storing time values cannot be viewed with the convenient \textbf{fix} function. With that you are able to open most any object and view its contents, possibly to make changes but also to just see what it contains. Also, and this is important, the column is only removed from the object in memory and not from the compressed file or the original GPU-z Sensor Log it is from, if it is ever necessary.
+
+The last line is to correct for PresentMon starting at the beginning of the Warm-up period instead of the beginning of the test period. Though no measurements will be recorded during the Warm-up period, because there are none to make, the TimeInSeconds data will be aware of the gap. What this line does is first check if the minimum value in that column is greater than the length of the Warm-up period. If it is, then the length of the period will be subtracted from the values in column, so the start of the test period is at time 0. I feel setting the start of the test period to be 0 makes the graphs a bit easier to read, so it is important the data aligns with that. This adjustment is also done by the Data.r script, which is why the check is necessary, so as to not apply it twice.
+
+\subsection{Call for Data Processing}
+\begin{styleR}
+source("@GPU Thermal - Output.r")
+\end{styleR}
+
+Once more a call of the \textbf{source} function to run the Output.r script that handles the bulk of the data processing and all of the graph generation, closing out this Input.r script. Next up is the "GPU Thermal – Data.r" script, so you can see how I import and format the data.

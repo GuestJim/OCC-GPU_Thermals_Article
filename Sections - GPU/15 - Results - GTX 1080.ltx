@@ -1,0 +1,281 @@
+\section{Results: GTX 1080 Foudner's Edition}
+
+For a time the GTX 1080 was the top of the line from NVIDIA and is nicely ahead of the GTX 1070 with more cores unlocked and higher clock speeds. The base clock is 1607 MHz, the boost is 1733 MHz, and the frequency step should be 13 MHz based on the data for this and the also Pascal-based GTX 1070. According to the specifications, the GTX 1080 has a 180 W TDP and it should share the same 83 °C throttling temperature as the GTX 1070.
+
+\graphicspath{{Media - GPU/15 - GTX 1080/FS Extreme Loop/}}
+\subsection{Fire Strike Extreme - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 1080	&	GPU Temp (°C)	&	34	&	36	&	35.91	&	40	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	229.61	&	1607	\\	\hline
+	Warm-up	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	174.29	&	1251.5	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Power (W)	&	8	&	8.6	&	10.55	&	40.6	\\	\hline\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 1080	&	GPU Temp (°C)	&	33	&	82	&	81.64	&	84	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	1607	&	1617.94	&	1898	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	1251.5	&	1249.2	&	1251.5	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 1080	&	GPU Power (W)	&	11.4	&	141.8	&	142.48	&	195.7	\\	\hline\hline
+	Cooldown	&	GTX 1080	&	GPU Temp (°C)	&	30	&	34	&	36.71	&	77	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	143.97	&	1607	\\	\hline
+	Cooldown	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	105.14	&	1251.5	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Power (W)	&	7.8	&	8.4	&	8.6	&	47.3	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Being the first set of data for this GPU, we should look at the idle period statistics where we see the temperature averages being around 36 °C. The idle GPU frequency is apparently 139 MHz with the idle VRAM frequency being at 101.3 MHz, while the idle power consumption is around 8 W to 10 W.
+
+Turning to the test period, the temperatures are all near the 83 °C limit and are not far from where the GTX 1070 was, but that is practically expected. The frequency results, however, are different from the GTX 1070 as we see the median at the base clock, and the mean not much greater. It is certainly interesting to see the lesser GPU winning here, not only besting its boost clock but actually running at a higher frequency. In a way though, that is not unreasonable because of what the similarities are differences are between these two. Both use the same GP104 die but this GTX 1080 has more of it activated, a higher TDP, faster GDDR5X memory, but I believe the same cooler is attached. With more energy being pumped in, more to utilize it, and the same ability to dissipate it, it makes sense the GTX 1080 would run into its thermal limits where the GTX 1070 does not. This is not the only behavioral difference between them though.
+
+\image{Course}
+
+As I just said, the behavior of the GTX 1080 is different from its sibling as it appears the boost behavior is more like the two GPUs before that. After the initial peak, the frequency, power consumption, and frame rate data all turn downward. The frequency can be seen running against the base clock, forming a solid line completely unlike the GTX 1070, though it did still try to reach higher frequencies at time. The power consumption data does look similar though, at least in as far as its variability, but not its pattern. There is no plateau here, just a fall followed by a very noisy line.
+
+Coming to the temperature statistics, the lower quartile for the test period was 82 °C, which was first crossed after 137 seconds and then the GPU stayed above it pretty well. The upper quartile for the Cooldown period was 37 °C and the second time it was crossed was at second 4431, or after 831 seconds. The first time it crossed was at second 4149, which is so much earlier I felt it appropriate to ignore. There is still some instability after second 4431, as the tenth measurement is at second 4464, but it is not too bad.
+
+\image{FPS}
+
+Based on the graph, it looks like the performance data falls between the loading data, which is good to know when we get to the histogram. As for the statistics, the median frame time for the length of the test period was 18.82 ms and the mean was 19.16 ms. For the 1\% to 11\% early section the median was 18.28 ms and the mean was 18.54 ms while the final tenth had a median of 18.91 ms and a mean of 19.24 ms. As for the slopes, both the period overall and the final tenth have slopes with magnitudes of -5, while the early section has a slope with magnitude -3, so one hundred times greater. This is not too surprising, considering the boosting we saw earlier in the Course graph.
+
+Looking at the slopes for the other measurements the slope of the GPU frequency for the length of the test period was -0.85 MHz/min and 0.13 MHz/min for the 89\% to 99\% late section, but -30.01 MHz/min for the early section. Power consumption is similar with the overall slope being -0.19 W/min, the late section being 0.03 W/min, and the early section being -6.49 W/min.
+
+\image{Hist - Temperature}
+
+As we can see here, the GTX 1080 reached its thermal equilibrium during the test period point very quickly, based on how small the left-hand tail is. The bulk of the data appears to be in the 82 °C column but we can also see a good amount is in the 83 °C column, which would suggest thermal throttling occurred, and it was not necessarily infrequent either.
+
+\image{Hist - Power}
+
+The man body of the distribution has a range of about 130 W to 150 W and then we can see a tail stretching from that upper end to about 190 W. This might be a 180 W TDP GPU, but it certainly does not appear that it wanted to draw that much power, and its power draw was rather variable too.
+
+\image{Hist - Frequency}
+
+I am not sure what needs to be said about this graph as it captures quite nicely how little time the GPU spent above its base clock. According to the percentiles there was just 0.39\% of the data below 1607 MHz and 78.30\% at the base clock. As for the boost clock, some 95.95\% was below that level.
+
+\image{Hist - Frame}
+
+Nothing unusual here as that looks very much like what we have been seeing for "Fire Strike Extreme" with other GPUs.
+
+\image{TS - Frame}
+
+As one would have predicted from the Course graph, we can see a steep increase to the frame time at the beginning, as the boost exhausted, and then it stabilized afterward. It is curious to see the bump where the maximum value of the smooth line occurred, but I do not have an explanation for that just now.
+
+\image{TS - Frequency}
+
+Now I do have an explanation for the frame time bump as it aligns here with the dip that produced the smooth line's minimum. The GPU recovered from that, if only slightly and for a limited time before the trend flattened out.
+
+\image{TS - Power}
+
+The smooth line is very similar to that of the frequency trend graph above, but it is not identical so we are not looking at the wrong data somehow being used.
+
+\image{TS - Temperature}
+
+Here we see three bumps that do certainly correspond to the data, and with these temporary increases to temperature, the GPU would respond by reducing clock speeds and power usage. The first of those three bump here corresponds to the dip in the frequency graph where the minimum for the smooth line is reported, so it appears we have the explanation for that. It is more subtle, but the other two bumps also correspond with dips to the frequency, but my guess is by that time the GPU was already running so close to the base clock, the impact was minimal.
+
+\graphicspath{{Media - GPU/15 - GTX 1080/TS Loop/}}
+\subsection{Time Spy - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 1080	&	GPU Temp (°C)	&	32	&	34	&	34.28	&	36	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	172.62	&	1607	\\	\hline
+	Warm-up	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	128.33	&	1251.5	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Power (W)	&	8	&	8.5	&	9.3	&	40.4	\\	\hline\hline
+	3DMark - Time Spy - Loop	&	GTX 1080	&	GPU Temp (°C)	&	35	&	82	&	81.24	&	83	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	1632.5	&	1637.18	&	1898	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	1251.5	&	1246.72	&	1251.5	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 1080	&	GPU Power (W)	&	11.3	&	132.4	&	134.27	&	192.6	\\	\hline\hline
+	Cooldown	&	GTX 1080	&	GPU Temp (°C)	&	31	&	35	&	37.35	&	78	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	144.39	&	1607	\\	\hline
+	Cooldown	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	105.5	&	1251.5	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Power (W)	&	7.9	&	8.4	&	8.62	&	40.9	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Much like we have been seeing, the frequencies are a bit better with "Time Spy" than we just saw with "Fire Strike Extreme." The averages are only a couple steps above the base clock, but it is still better than just being at the base clock. The temperature is practically the same as above but the power consumption averages are lower. The maximum power consumption is lower too, but not by enough to be especially concerned about.
+
+\image{Course}
+
+At first I did not think there was much interesting here, as we can clearly see an initial boost and fall, and that the frequency data does have a hard line at the base clock, but there is something curious. Across the power, frequency, and frame rate data we can see some dips. It is hard to pick out in the frame rate but when the power drops a little before second 1800 and again after second 2400, we can also see dips in the frequency data. I cannot make out an increase in the temperature at that time, but perhaps it will show up in one of the later graphs.
+
+As for the temperature statistics, the lower quartile for the test period was 82 °C and it was first crossed after 140 seconds, and the temperature was reasonably stable afterward. The upper quartile for the Cooldown period was 37 °C and it was first crossed at second 4404, or after 804 seconds. There is some variability, but it does not look too bad with the tenth measurement being at second 4421.
+
+\image{FPS}
+
+Much like we have been seeing, despite the higher frequencies "Time Spy" is apparently harder to render as the frame time averages are worse than they were for "Fire Strike Extreme." The overall median was 22.57 ms and the mean was 22.76 ms. For the early section the median was 21.58 ms and the mean was 21.69 ms while the final tenth had a median of 22.87 ms and a mean of 22.90 ms. As for the slopes, for the length of the test period had a magnitude of -5 and the final tenth a magnitude of -4, while the early section had a magnitude of -3. Not particularly surprising, considering the boost behavior.
+
+Looking at the slopes for the other measurements, the GPU frequency had a slope of -30.73 MHz/min for the early section, while the late section had a slope of -3.58 MHz/min, and the overall slope was -0.95 MHz/min. As for power consumption, the early section was -7.63 W/min, the late section was -0.62 W/min, and the test period as a whole had a slope of -0.26 W/min.
+
+\image{Hist - Temperature}
+
+Clearly the thermal equilibrium was at 82 °C as almost all of the test period's data is contained in that column. Despite that, the barely present measurements at lower temperatures still pulled the mean down from the very appropriate median.
+
+\image{Hist - Power}
+
+This looks quite a bit like the "Fire Strike Extreme" graph, though the bulk of the power data for the test distribution is even further away from the 180 W TDP. It also looks like the range for the bulk of the data might be wider too, going from 120 W to about 150 W, but then I am eyeballing this anyway, so that is hardly conclusive.
+
+\image{Hist - Frequency}
+
+Technically this is better than the "Fire Strike Extreme" result, but the GTX 1070 did a better job staying above the base clock and even the boost clock than this. Looking at the stats, only 0.56\% of the data was below the base clock but 38.60\% was at that frequency of 1607 MHz. For the boost clock, 93.05\% was below 1733 MHz. Of course the GTX 1070 has a lower boost clock, but still that GPU was only below 1683 MHz 2.20\% of the time for the same test. More than frequency goes into determining performance, but it is an interesting comparison to be able to make.
+
+\image{Hist - Frame}
+
+Nothing unusual here as that does look like what we have been seeing for "Time Spy" histograms throughout this article.
+
+\image{TS - Frame}
+
+As usual we can see the frame time increase at the beginning as the boost exhausts, but we can also see the frame time undulate afterward. I am starting to wonder if there is something weird about the Pascal architecture because we were seeing similar behavior for the GTX 1070 as well, though I cannot recall it being quite as pronounced as this. Two of these bumps, including the one the maximum is located at, correspond to the dips in frequency and power we saw on the Course graph earlier.
+
+\image{TS - Frequency}
+
+Nothing surprising here as we have the boost ending followed by the wave we could have predicted from the frame time trend data. We can also see the dips visible in the Course graph as well. Next is the power consumption and I am guessing we will see this pattern there as well.
+
+\image{TS - Power}
+
+Just like in the frequency and frame time trend graphs, there is a steep slope at the beginning followed by a wavy pattern with performance dips aligning across all three measurements. By the way, the direction of the pattern in all three is towards decreasing performance, as in longer frame times, lower frequency, and lower power consumption. Not exactly a favorable pattern to see, but it is what the data suggests is happen.
+
+\image{TS - Temperature}
+
+There is no clear waviness here, though there might be some beneath the smooth line, around the 2700 second mark, but it does not look like it would be very significant, if present. The temperature just increased rapidly and then stabilized with little variation. Unfortunately that means we cannot use the temperature to explain the pattern we saw in the other graphs; the GTX 1080 just reduced its frequency and power consumption, resulting in longer frame times without a clear reason.
+
+\graphicspath{{Media - GPU/15 - GTX 1080/FS/}}
+\subsection{Fire Strike - Pulse}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 1080	&	GPU Temp (°C)	&	36.8	&	37.8	&	38.32	&	43.2	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	187.09	&	1607	\\	\hline
+	Warm-up	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	139.42	&	1251.5	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Power (W)	&	8.1	&	8.7	&	9.76	&	41.1	\\	\hline\hline
+	3DMark - Fire Strike	&	GTX 1080	&	GPU Temp (°C)	&	38.3	&	81.2	&	79.96	&	83.3	\\	\hline
+	3DMark - Fire Strike	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	1708.5	&	1678.98	&	1860	\\	\hline
+	3DMark - Fire Strike	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	1251.5	&	1240.95	&	1251.5	\\	\hline
+	3DMark - Fire Strike	&	GTX 1080	&	GPU Power (W)	&	11.7	&	137.2	&	120.45	&	196.7	\\	\hline\hline
+	Cooldown	&	GTX 1080	&	GPU Temp (°C)	&	35.8	&	36.8	&	38.86	&	74.9	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	139.31	&	670.5	\\	\hline
+	Cooldown	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	101.36	&	202.5	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Power (W)	&	8.1	&	8.5	&	8.66	&	15.6	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+It is looking like the GTX 1080 is a bit happier with the pulsed test as it got to cooldown between each run, at least based on the frequency statistics. The temperature does not look that great though, as both averages are pretty close to the 83 °C limit. Although, it has occurred to me this might be by design, to ride against the thermal limit instead of engaging the fans to stay far below it. Until it needs to throttle, the silicon does not really care about the temperature. Power consumption has fallen some, as could be expected. The maximum is the greatest we have seen for this GPU thus far, but not by much and it does not need to mean much anywhere, being a single point in time.
+
+\image{Course}
+
+It is somewhat crazy, but there are still some things we can pull out of this graph. One is the boost at the beginning exhausting as the frequency and power data both fell. The frequency data is interesting to look at as we can see a lower line for the base clock, and a higher line that corresponds to the boost clock, but there are also points above that level, most clearly visible in the initial boost. Behind it the power data appears to be boosting up to about as high as it started, but once the initial boost ends we can see its bottom edge reach about 130 W. The histogram can tell us more about that, but clearly we can see a lot of power consumption variability.
+
+It is hard to make out, but I can somewhat see the curve to the front of the frame time data, certainly the result of the boost expiring, but that is something we will need to look at the time series trend graphs to learn more about.
+
+As for the temperature statistics, the lower quartile for the test period was 78.4 °C and it was first crossed at second 134. Though this appears to be stable, the run ended not long after and it did not get back above that line until second 171. The Cooldown period's upper quartile was 38.8 °C and this was first crossed at second 4472, but there was some instability. In fact it is not until second 4495 that the next second did not see a temperature increase. Still, it almost looks like every other second was below the quartile, so at least it kept close to it, even if it was unstable.
+
+\image{FPS}
+
+Unfortunately it appears the 9 ms spike we have repeatedly seen in the frame time histograms is right in the middle of the performance data, so that may throw off the distribution some. Luckily that is always a spike, and so it will certainly stand out from the other data.
+
+As for the statistics, the median for the length of the test period is 9.65 ms while the mean is 12.46 ms. As for the early section the median is 9.35 ms and the mean is 12.25 ms while the final tenth has a median of 9.76 ms and the mean is 12.46 ms. Remember, the mean is likely being pulled away because of the data from repeatedly loading "Fire Strike."
+
+\image{Hist - Temperature}
+
+The tallest column corresponds to 83 °C, the throttle temperature, so this does not look very good when it comes to that. At least there does not appear to be anything wrong or weird with the data; it is just that the GPU was quite warm and always near if not at the throttling point.
+
+\image{Hist - Power}
+
+Based on what we have been seeing, this plot of the test period makes sense. The GTX 1080 is appropriately drawing 180 W, matching its TDP, but there is some variability here, so that hill in the distribution looks to span from about 170 W to 190 W. However, like we have been seeing, the GPU does not like to draw that much power and instead draws appreciably less, around 135 W, and again there is some variability here, with the range for that hill appearing to be from 125 W to 145 W or 150 W. It is hard to tell where the upper range of the lower hill should be because of the data between the two hills. It is interesting how the lower hill is centered on a lower value than we saw with the looping "Fire Strike Extreme," but it does not appear to be off by much. The averages, both the median and the mean appear to have been impacted by the data from when the GPU could idle, but at least the median is within one of the two hills.
+
+\image{Hist - Frequency}
+
+The base clock has the highest column here and the next highest is not on the boost clock, but a couple steps higher, it appears. According to the percentiles, 3.83\% of the data was below the 1607 MHz base clock while 27.82\% was at the base clock. Just over half, 53.20\% of the data is below the 1733 MHz boost clock, so that means 46.80\% is at or above that value, which is nice but it is still the case that most of the time the GPU could not reach its boost clock.
+
+\image{Hist - Frame}
+
+As I warned earlier, the 9 ms spike is present and within the distribution, but being a spike we can more easily ignore it. By the way, the upper limit to the X-scale is at the 97.29 percentile of the data so there is nearly 3\% cut off, but that is still enough to pull the mean towards it. The median looks to be in an appropriate position though.
+
+\image{TS - Frame}
+
+That is an interesting appearance. I know some of these graphs have shown a directionality change, but never something this extreme. Remembering how the time series processing works, making sure the seasonal pattern component and random noise are both balanced on zero, that means these spikes correspond to vertical shifts in the original data that R thinks belong in the trend data. I do think it is not a coincidence that the flip occurs where it does, as going back to look at the Course graph, this is roughly when the frequency crossed the 1733 MHz boost clock, and so started being between that and the boost clock. It does seem odd for that to produce this result with the frame time trend extremes, but that is roughly the timing.
+
+\image{TS - Frequency}
+
+Once again we have the sudden falls in the data that I am willing to attribute to a quirk of the data and processing, especially as we can see three measurements at the idle frequencies at those times in the Course graph, but there is more to notice than that. One is a significant fall a little after 300 seconds, and the reason this is interesting is because it roughly corresponds to where we just saw the directionality of the frame time trend flip. It is also interesting to notice the swing upward at the end, but my guess is this is incorrect. Looking back at the Course, I believe the GPU was able to keep above the base clock a bit better than it had been, which impacted the trend as we see. However, the even if the center of distribution of the frequency data at that time shifted a bit, its upper and lower limits did not. That shift could also have just been a fluke and so I doubt it was going to continue if the test had.
+
+\image{TS - Power}
+
+Again we can see the fall from the boost exhausting at the beginning, and it even appears there are some dips at the same positions as in the frequency trend graph above. My guess is the GPU dropping to idle speeds and GPU-z measuring the frequency just happened to line up those few times, and this coincidence has caused this pattern to appear.
+
+\image{TS - Temperature}
+
+Nothing unusual here as we see the GPU heated up and became close to stable at around 300 seconds.
+
+\graphicspath{{Media - GPU/15 - GTX 1080/TS/}}
+\subsection{Time Spy - Pulse}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 1080	&	GPU Temp (°C)	&	36.3	&	36.6	&	36.71	&	38.7	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	178.69	&	1607	\\	\hline
+	Warm-up	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	135.25	&	1251.5	\\	\hline
+	Warm-up	&	GTX 1080	&	GPU Power (W)	&	8.2	&	8.7	&	9.63	&	40.6	\\	\hline\hline
+	3DMark - Time Spy	&	GTX 1080	&	GPU Temp (°C)	&	37.9	&	81.4	&	79.23	&	83.3	\\	\hline
+	3DMark - Time Spy	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	1620	&	1461.42	&	1885.5	\\	\hline
+	3DMark - Time Spy	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	1251.5	&	1085.64	&	1251.5	\\	\hline
+	3DMark - Time Spy	&	GTX 1080	&	GPU Power (W)	&	11.6	&	131.9	&	118.32	&	192.4	\\	\hline\hline
+	Cooldown	&	GTX 1080	&	GPU Temp (°C)	&	36.2	&	37	&	38.98	&	73.6	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Clock (MHz)	&	139	&	139	&	139	&	139	\\	\hline
+	Cooldown	&	GTX 1080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	101.3	&	101.3	\\	\hline
+	Cooldown	&	GTX 1080	&	GPU Power (W)	&	8.1	&	8.5	&	8.66	&	12.5	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+It is interesting to see the frequencies averages are lower here than they were for pulsing "Fire Strike" but as I have been going through everything for a second time, I think I know why. Though I originally made comments that because "Time Spy" is a longer test, at 60 seconds instead of 30, the bias should be towards more load data than idle, I have been observing this is incorrect. A closer examination of the frame rate graphs as well as looking at the frequency percentiles indicates pulsing "Time Spy" apparently has more idle time as the loading takes longer. This then pulls the mean down clearly but can also impact the median, as we see here. Fortunately we have the graphs and statistics necessary to learn about the load being present.
+
+In any case, the temperature values are pretty high, at around 80 °C and I do think this is interesting. As I mentioned in a previous subsection, I suspect the GPU Boost algorithms for Pascal allow it to ride at or near the thermal throttling point and then boost the frequency and power as it can without crossing the throttling threshold. Of course we are also seeing the power consumption being rather removed from the GPUs TDP, which stands for Thermal Design Power. If my interpretation of the algorithm is correct, I am left wondering why it is not able to pull more power and increase the frequency while staying under the throttle point, as opposed to running lower and using less power while at the same thermal limit?
+
+\image{Course}
+
+Seeing the frequency data here, I am definitely interested in examining the frequency histogram because of how we can see two clear lines to the data. The lower line looks to be the base clock of 1607 MHz but the upper line is above the boost clock and appears to be around 1825 MHz. It will also be interesting to see the histogram because it looks like there is more data on those two lines, including the upper line, than between them, though that could be incorrect as there is no indication of density here. It almost seems like the same can be said of the power consumption, though it is hard to tell behind the frequency data. Still, it looks like there are two lines, an upper one that is staying near 180 W and the lower around 125 W, which is quite a range.
+
+Naturally we can see the boost exhausting near the beginning, much like we saw before, and a decline to the frame rate can also be observed.
+
+Coming to the temperature statistics, the lower quartile for the test period was 77 °C, which it first crossed after 135 seconds, and remained above for the ten measurements I see. For the Cooldown period, the upper quartile was 39 °C and this was first crossed at second 4466, or after 866 seconds, but it was not very stable. In the first ten measurements there are only two pairs that are consecutive and the tenth measurement is at second 4494.
+
+\image{FPS}
+
+Looking at the frame time statistics now, the median over the length of the test period was 22.45 ms and the mean was 27.04 ms. Looking at just the early section, the median was 21.56 ms and the mean was 25.82 ms while the final tenth has a median of 22.45 ms and a mean of 26.51 ms. The only thing particularly interesting about the slopes is the final tenth has a negative slope, while the others are positive. Not exactly what one would expect for the last six minutes of an hour of pulsing a benchmark on and off, but that is what the data says. Of course the magnitude is -3 so it is relatively close to zero, but it is still curious to see it is negative.
+
+\image{Hist - Temperature}
+
+At first glance this is not a particularly interesting graph, if only because it is not all that different from others we have seen. However, if we look more closely we can see that the tallest column is at 83 °C, the throttle limit. Of course we will want to see the frequency histogram to be certain, but this would tend to suggest there will be a lot of data at the base clock, which the GPU will go to when at or surpassing the throttle point.
+
+\image{Hist - Power}
+
+Much like we saw with the pulsing "Fire Strike" results, there are two hills to the data with one surrounding 180 W, the TDP, and the other around a lower value, about 132 W if we go by the median. The GTX 1080 was clearly trying to reach its 180 W TDP, but when it found it could not maintain that power level, it fell about 50 W. It is hard to accurately guess the range of these two hills because of the data between them, but it seems to be about 20 W; 10 W on either side of their centers. The data between the hills makes it harder to estimate their ranges.
+
+\image{Hist - Frequency}
+
+At last we can examine the frequency distribution, and as the temperature histogram suggested, there is a lot of data at the base clock of 1607 MHz. The next tallest column is just above 1800 MHz, which we could see from the Course graph, and is curious because that is a fair distance above the 1733 boost clock. It makes it look like the GPU tried to push the frequency so high it caused the temperature to increase enough to force throttling, which then leads to the question of if a less aggressive boost might have resulted in a higher average frequency during the load.
+
+Comparing the statistics to the pulsed "Fire Strike" results would suggest that was running better, but it also seems to have had fewer measurements at idle frequencies. According to the statistics 21.28\% of the time the frequency was below the 1607 MHz base clock and 28.04\% of the time it was at the base clock. As for the 1733 MHz boost clock, 64.47\% of the time the frequency was below that.
+
+\image{Hist - Frame}
+
+Nothing unusual here, though again we confirm one of the disadvantages to the mean.
+
+\image{TS - Frame}
+
+Though we do not have an unusual pattern like in the pulsed "Fire Strike" data, we do see the curious turn towards shorter frame times at the end, as the slopes suggested. I am unsure what would cause this, but looking at the trend data behind the smooth line, it appears the line is exaggerating it. Perhaps if the test just ran longer we would see the decline stop and reverse itself. It is not the most obvious, but we can see some waves in the data prior to this so it will be interesting to see if any of these correspond to patterns in the other trend graphs.
+
+\image{TS - Frequency}
+
+At either end the behavior lines up with what we saw in the frame time trend graph; performance decreasing as the initial boost exhausts and then the dip near second 3000 appears to precede the longer frame times. Other than those two cases though, I am not seeing any other clear relation between them. Even then, there seems to be a lag between those two cases, with the frequency dipping first and then the frame time lengthening. Of course these are only approximate times, so perhaps that lag is not quite real, but I would not think it would be off by as much as we see here. It is interesting to note the frequency does not appear to be increasing at the end, so the downward turn in the frame time data is not explained here.
+
+\image{TS - Power}
+
+Going back and forth between this and the frequency trend data, it is hard to see clear similarities between their smooth lines. We can align some power and frequency spikes though, but the power does appear to be more stable than the frequency was.
+
+\image{TS - Temperature}
+
+Nothing too special here as we see the temperature increased and then largely flattened out. There is some variability, but nothing out of the ordinary.
+
+Examining this GTX 1080 data has actually been quite interesting, I think, mainly for the comparison to make with the GTX 1070 results. It seems the GTX 1080 was often running near its thermal limits while the lesser GPU was not. Of course they share a cooler and so a similar ability to dissipate heat while the GTX 1080 features higher frequencies and more activated cores in its die. It makes sense for this GPU to be running into thermal limits more often than the other, but at the same time it would have been nice if it was better able to keep within its limits without having to drop in frequency or power consumption.

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<benchmark>
+
+  <application_info>
+    <selected_workloads>
+      <selected_workload name="FireStrikeGt1XST"/>
+    </selected_workloads>
+  </application_info>
+
+<!-- Fire Strike loop is approximately 30 seconds -->
+<!-- Time Spy loop is approximately 60 seconds -->
+<!-- Port Royal loop is approximately 110 seconds -->
+
+	<settings>
+		<setting>
+			<name>loop_count</name>
+			<value>245</value>
+		</setting>
+			</settings>
+
+</benchmark>

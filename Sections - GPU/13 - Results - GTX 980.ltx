@@ -1,0 +1,299 @@
+\section{Results: GTX 980 Founder's Edition}
+
+The GTX 980 is from the Maxwell 2.0 series of graphics cards that represented a significant step for NVIDIA with its more gaming-focused design compared to Kepler and Fermi before it. Having covered the Kepler-based GTX 770, it will be interesting to see how this new design behaves.
+
+Being a Founder's Edition, this is the reference design and so might be behind AIB models in terms of cooling. The base frequency is 1126 MHz while the boost is 1216 MHz, and it appears the frequency step is 13 MHz, the same as Kepler, and it appear the throttling temperature is the same 80 °C. The maximum GPU temperature is stated as 98 °C but I suspect that would be the hard throttle or thermal-shutdown point. Curiously, though I see 165 W as the stated TDP, looking at the GPU-z recordings, the math indicates it is 180 W. Conveniently GPU-z has a column for consumption as a percentage of TDP as well as a raw recording in watts. I do not know why there would be this disagreement, unless it is something like the 165 W value is just for the GPU and VRAM while the 180 W is the total board power, and so includes the other components such as fans and any lights. NVIDIA's specifications page states "Graphics Card Power" is 165 W which I would think is the total power, but then I am left without a reasonable explanation for the difference. As it comes from the data, I will go with the 180 W value.
+
+\graphicspath{{Media - GPU/13 - GTX 980/FS Extreme Loop/}}
+\subsection{Fire Strike Extreme - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 980	&	GPU Temp (°C)	&	35	&	35	&	35.1	&	36	\\	\hline
+	Warm-up	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	179.1	&	1126	\\	\hline
+	Warm-up	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	219.37	&	1752.8	\\	\hline
+	Warm-up	&	GTX 980	&	GPU Power (W)	&	16	&	16.2	&	17.34	&	47.4	\\	\hline\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 980	&	GPU Temp (°C)	&	36	&	81	&	80.65	&	83	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 980	&	GPU Clock (MHz)	&	135	&	1126	&	1127.53	&	1303.6	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1748.8	&	1752.8	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 980	&	GPU Power (W)	&	22.5	&	152.5	&	152.69	&	183.2	\\	\hline\hline
+	Cooldown	&	GTX 980	&	GPU Temp (°C)	&	35	&	36	&	38.07	&	74	\\	\hline
+	Cooldown	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	136	&	911.3	\\	\hline
+	Cooldown	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	162.95	&	1502.3	\\	\hline
+	Cooldown	&	GTX 980	&	GPU Power (W)	&	15.9	&	16.2	&	16.33	&	51.6	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Looking at the idle periods first, we see the Warm-up period had an average of about 35 °C, which was also the minimum temperature then and for the Cooldown period. The idle power consumption appears to be around 16 W or 17 W, and the idle frequency is 135 MHz for the GPU and 162 MHz for the VRAM.
+
+Looking at the test period now, we can see from the averages the GTX 980 definitely spent time above the 80 °C limit, so it is not surprising to see the 1126 MHz base clock as the median. As for power consumption, the averages are around 152 W, which is below either TDP value we have, but not as significantly as we saw with the GTX 770. The maximum actually beats the 180 W TDP by a little, so it does seem this is the appropriate TDP value to use.
+
+To be clear on this point, the GPU was run completely stock and I do not even have software on the test system for modifying the power limit or anything else.
+
+\image{Course}
+
+Just like we saw with the GTX 770, there is a boost at the beginning with both the power consumption and frequency being appreciably higher than where they settle after a few minutes. We can also make out the frame rate's downward trend as this boost was exhausted. Once the temperature got to about 80 °C though, everything flattens out it seems.
+
+Looking at the temperature statistics, the lower quartile for the test period was 81 °C and it was first crossed after 181 seconds. The temperature was mildly unstable, falling below that level then coming back at second 189, only to fall and return again at second 198. For the Cooldown period, the upper quartile was 38 °C and it was first crossed at second 4479, or after 879 seconds. Once again we have some mild instability with similarly brief bounces back across the line, only to then fall back shortly after. The tenth measurement at or below 38 °C was at second 4496.
+
+\image{FPS}
+
+Remembering "Fire Strike Extreme" runs at 2560x1440, these results are not that bad as this is not a GPU meant for that resolution. Looking at the statistics, we see the median frame time was 31.40 ms and the mean was 31.83 ms for the length of the test period. The 1\% to 11\% section has a median of 30.78 ms and mean of 31.19 ms while the final tenth has a median of 31.51 ms and mean of 31.91 ms. It seems none of these values are far from the others, though the linear regression slope for the early section is an order of magnitude greater than the others. (0.0091 as opposed to 0.00014 for the test period and 0.00075 for the final tenth.) For the other measurements, we can see the GPU frequency had a slope of -21.08 MHz/min for the early period, compared to -0.14 MHz/min overall and effectively zero for the 89\% to 99\% section. For power consumption, the slope for the early section was -4.91 W/min compared to -0.012 W/min overall and -0.13 W/min for late tenth.
+
+\image{Hist - Temperature}
+
+This graph certainly looks similar to what we have seen before as the data is almost entirely contained at a single value; 81 °C. With how quickly the temperature reached this point, it certainly appears this cooler is not particularly impressive, and that point is compounded by the average power consumption being below the TDP.
+
+\image{Hist - Power}
+
+As we can see here, there is some data near enough the 180 W TDP, and even a little over it, but the bulk of it is around the 153 W averages. We can see from this distribution there was some variability, but the range is not that wide so this is still pretty consistent, just not perfectly so.
+
+\image{Hist - Frequency}
+
+While there is some data visible above 1200 MHz, even a little above 1300 MHz, the clear majority is at the 1126 MHz base frequency, causing the boxplot to be a single line and the mean line to be almost exactly on top of it. The percentiles tell us 0.36\% of the data was below 1126 MHz with 96.20\% at the base clock. With 97.29\% below the 1216 MHz boost clock, less than one percent was between these two frequencies.
+
+\image{Hist - Frame}
+
+Not sure what needs to be said here other than this distribution looks about right. It is odd the number of separate peaks, but the overall shape is what we have seen with other GPUs and so there is nothing out of the ordinary to comment on here. We are able to see the spike at 9 ms, but fortunately it is dwarfed by the other data.
+
+\image{TS - Frame}
+
+We can see some data at the very beginning of the trend from before the boost exhausted, but then it did and we get a mostly stable pattern. The trend does show some waviness, but it does not look too bad to me. The exact cause of this waviness, I do not know as we will soon see the frequency was completely stable by this time. However, the power consumption trend was fluctuating, so perhaps that is the explanation.
+
+\image{TS - Frequency}
+
+This is what we should expect, with the flat line to the trend data once the boost ended. Unfortunately the smooth line over-shot the trend data, but that just seems to be a thing that happens.
+
+\image{TS - Power}
+
+Following the boost we can see a little dip, but it is not much. Looking at the variability to the data, it does not appear to be all that bad. As I mentioned earlier, the variability seems to roughly align with what we saw in the frame time trend data, but not perfectly. Still, we can see some increases to power consumption here that roughly correspond with the decreases in the frame time trend, which indicates improved performance.
+
+\image{TS - Temperature}
+
+This is actually somewhat interesting because I think the expectation has been for the temperature trend to be quite flat for these looping tests. One possible interpretation could be the GPU constantly trying to push to its limits. It does seem at least some of the bumps here match up with the small increases in the power consumption trend graph, so perhaps that is related.
+
+\graphicspath{{Media - GPU/13 - GTX 980/TS Loop/}}
+\subsection{Time Spy - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 980	&	GPU Temp (°C)	&	36	&	36	&	36.03	&	37	\\	\hline
+	Warm-up	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	155.63	&	1126	\\	\hline
+	Warm-up	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	188.44	&	1752.8	\\	\hline
+	Warm-up	&	GTX 980	&	GPU Power (W)	&	16	&	16.3	&	16.79	&	47.6	\\	\hline\hline
+	3DMark - Time Spy - Loop	&	GTX 980	&	GPU Temp (°C)	&	36	&	80	&	79.21	&	81	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 980	&	GPU Clock (MHz)	&	135	&	1126	&	1130.04	&	1303.6	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1747.47	&	1752.8	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 980	&	GPU Power (W)	&	22.8	&	136.1	&	136.93	&	181.1	\\	\hline\hline
+	Cooldown	&	GTX 980	&	GPU Temp (°C)	&	36	&	37	&	38.62	&	74	\\	\hline
+	Cooldown	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	135.99	&	911.3	\\	\hline
+	Cooldown	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	162.95	&	1502.3	\\	\hline
+	Cooldown	&	GTX 980	&	GPU Power (W)	&	16	&	16.2	&	16.37	&	51.5	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Like we have seen previously, the temperature was slightly better than it was for "Fire Strike Extreme" and the mean frequency is also a step greater, but when we get to the frame time statistics, we might not see any improvements there. Power usage is down from the previous test, which again is something we have seen before when comparing these two tests and is still something I find somewhat interesting. Overall, these numbers are not that bad, but there is certainly more to see first.
+
+\image{Course}
+
+Just like before, we see the boost failing as the GPU returns to its base clock and the lower power consumption after so many minutes. It is interesting to see in the frequency fall how there is some bouncing, like the GPU was trying to go back up a step, but it never succeeded at staying there for long. Credit is due for trying, but it is still somewhat disappointing to see the temperature reach 80 °C while the power consumption is under 140 W.
+
+As for the temperature statistics, the lower quartile for the test period was 80 °C and it took 129 seconds to cross. The upper quartile for the Cooldown period was 38 °C and that was first crossed at second 4454, or after 854 seconds, but the temperature was not particularly stable at this point, as several times the temperature increased again, if only enough to avoid being in my list here. The tenth measurement at or below 38 °C is at second 4487.
+
+\image{FPS}
+
+Once again we get a nice look at the pattern for "Time Spy" before getting into the statistics. Overall, the median frame time was 40.20 ms and the mean was 40.11 ms while the early section had a median of 38.86 ms and a mean of 38.54 ms. That is quite a difference between those two sets of averages, which is perhaps not too surprising as the GPU was able to stay boosted for longer than we saw with the "Fire Strike Extreme" results. For the final tenth, the median was 40.64 ms and 40.31 ms, closer but still separate from the overall results. As for the slopes, the overall slope was 0.000093 and the final tenth had a slope of 0.00023 while the early section had the significantly greater slope of 0.012 ms.
+
+As for the slopes of the other measurements, the frequency had a slope of -28.75 MHz/min for the early section, about one hundred times greater than the overall slope of -0.36 ms. The slope for the frequency in the late section is effectively zero because of how stable the frequency was at that point. As for power, the early section had a slope of -7.96 W/min while the late section was 0.042 W/min compared to the -0.089 W/min slope for the length of the test period.
+
+\image{Hist - Temperature}
+
+Much like before, we can see the temperature almost seemed to leap directly to 80 °C and stayed there for consistently, as the next tallest column at 79 °C is quite short. At least the 81 °C maximum is the shortest column of the three from when the GPU was certainly under load.
+
+\image{Hist - Power}
+
+This graph makes it almost look like an error that the GPU was consuming around 180 W because there is so little data there, it resembles outlier results. The great bulk of the data is around 136 W.
+
+\image{Hist - Frequency}
+
+The frequency distribution here is quite similar to the power one before it, with the higher frequencies appearing to be outliers while the bulk of the data is at the 1126 MHz base clock. To be specific, 86.78\% of the data is at 1126 MHz while 0.59\% is below it. As for the 1216 MHz boost clock, some 96.79\% of the data was below that.
+
+\image{Hist - Frame}
+
+I decided to pull up another graph to compare the shape of this distribution with, and it is curious, the differences. It seems more of the data is concentrated in the peaks here, and less between them than what I was comparing against (RX Vega 64 (Auto UV)), and perhaps this is why there appear to be two peaks on the right side at about 45.5 ms and 47.5 ms. It is curious, but I see no reason to question the results here.
+
+\image{TS - Frame}
+
+While there is some variability seen after the boost runs out, this trend data appears to be much flatter than what we saw for "Fire Strike Extreme." Of course we do still have the boost at the beginning that exhausts and dramatically impacts the trend, but that is expected at this point. Comparing the boost failing between these two datasets, the slope here appears to be more gradual, which makes sense with what we saw earlier in the Course graph.
+
+\image{TS - Frequency}
+
+There is not much to comment on here, except possibly that the boost clearly lasted longer for this data than what we saw with the previous data set. We can also see some of the stepping in the data as well as the attempts to go back up a step, before continuing the fall down to the base clock.
+
+\image{TS - Power}
+
+Again, not much to say about this one, though we can see there is no dip following the boost at the beginning and that, like the frequency, there were times the power consumption tried to increase, but ultimately fell down to the stable 136 W or so, based on the statistics seen earlier. (Remember, the values on these time series graphs are not necessarily accurate.)
+
+\image{TS - Temperature}
+
+We can see some variability here, but it does not seem to be very much, despite what the smooth line suggests. We can also see the GPU did very quickly heat up, based on the initial slope of the trend line.
+
+\image{TS - Temperature}
+
+This is actually somewhat interesting because I think the expectation has been for the temperature trend to be quite flat for these looping tests. One possible interpretation could be the GPU constantly trying to push to its limits. It does seem at least some of the bumps here match up with the small increases in the power consumption trend graph, so perhaps that is related.
+
+\graphicspath{{Media - GPU/13 - GTX 980/FS/}}
+\subsection{Fire Strike - Pulse}
+
+Time for the first pulsing results for the GTX 980. Remember, "Fire Strike" is a 1920x1080 test and so this GPU should have a much easier time with it than we saw with the 2560x1440 tests earlier.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 980	&	GPU Temp (°C)	&	35.8	&	36.5	&	36.76	&	39.5	\\	\hline
+	Warm-up	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	158.71	&	1126	\\	\hline
+	Warm-up	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	193.74	&	1752.8	\\	\hline
+	Warm-up	&	GTX 980	&	GPU Power (W)	&	16	&	16.2	&	16.85	&	47.8	\\	\hline\hline
+	3DMark - Fire Strike	&	GTX 980	&	GPU Temp (°C)	&	36.6	&	80.2	&	77.25	&	81.6	\\	\hline
+	3DMark - Fire Strike	&	GTX 980	&	GPU Clock (MHz)	&	135	&	1126	&	1139.42	&	1303.6	\\	\hline
+	3DMark - Fire Strike	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1719.43	&	1752.8	\\	\hline
+	3DMark - Fire Strike	&	GTX 980	&	GPU Power (W)	&	22.1	&	146.8	&	123.84	&	199	\\	\hline\hline
+	Cooldown	&	GTX 980	&	GPU Temp (°C)	&	34.1	&	35.3	&	37.26	&	69.7	\\	\hline
+	Cooldown	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	140.6	&	1126	\\	\hline
+	Cooldown	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	169.23	&	1752.8	\\	\hline
+	Cooldown	&	GTX 980	&	GPU Power (W)	&	16	&	16.2	&	16.44	&	49.4	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Looking at the temperature, the values are actually looking pretty good, but if we turn back to the "Fire Strike Extreme" results, you will see they are only a few degrees warmer. One would hope the pulsing would have reduced the temperature a bit better than this, but apparently not. Still, it was enough for the mean frequency to be a step better than the base clock. The pulsing has also allowed the power consumption to drop compared to the seamless test, though that might also be related to the difference in resolution between them. Interestingly the maximum power consumption is 199 W, which is well above the 180 W TDP and it is hard to say how that outlier was achieved, or if it was an outlier, until we get into the graphs.
+
+\image{Course}
+
+I do wonder what it is about the "Fire Strike" tests that make this graph so much messier than pulsing "Time Spy." Regardless, there are some interesting things to notice here with almost all of the measurements present. Starting with the frequency data, we can see the boost at the start and how it successfully kept from falling to the base clock for maybe about three to four minutes. After that though, the frequency seemed to most consistently be at the base clock with some boosting above it, though I doubt the boost ever lasted long. The histogram should give us better insight into that.
+
+Next I want to look at the temperature data because it appears to have two parallel lines to it, something we have seen previously in fact. At first this geometry confused me a little, but after making some graphs to look more closely, reviewing how cooling works, and mulling it all over, I came to realize this is likely how the physics actually works. Objects will cool at an exponential rate, so the greater the difference between an object the environment, the faster the cooling. What I think is creating this parallel line is rapid cooling from the great initial difference, but as it cools the rate of cooling also slows, making it appear the data is bunched up forming this second line. Because the loading time will be approximately consistent between each run, the amount of cooling will be the same as well. By the way, we can see the exponential cooling very clearly at the start of the Cooldown period, but it gets to continue, which is not the case in the test period.
+
+What is interesting to notice here though is how it seems the GPU was only able to cool off by about 7 °C at each pause between runs. This should relate to the efficiency of the cooler, especially if the time between runs is consistent across each GPU tested, but we also need the temperature to be consistent when the cooling started for a clean comparison.
+
+Beneath the temperature we can see the frame rate data that shows a clear decline in performance as the boost ended, but the decline continues after that point as well. This suggests the GPU was continuing to do its best to increase performance even after it found it had to go to the base clock.
+
+Lastly I think the power consumption data is interesting to examine here. Like the temperature data, it seems to show two parallel lines, with one a little under 180 W and the other down around the 147 W median. I do believe more of the data is in the lower line, but we can also see a number of points between the two. There are even some outliers above the 180 W line, but they definitely appear to be outliers so that 199 W maximum is probably not anything to be concerned about.
+
+Nearly forgot about the temperature statistics, starting with the lower quartile for the test period being 73.8 °C, which was crossed after 122 seconds. The temperature continued to increase at this point and so all ten measurements I have here are consecutive. For the Cooldown period, the upper quartile was 37.2 °C, which was crossed at second 4411, or after 811 seconds and there was definitely some instability after this point. The tenth measurement to be at or below the quartile was at second 4434.
+
+\image{FPS}
+
+Getting straight to the statistics as I do not think this graph tells us anything we do not already know, the median and mean frame times for the length of the test period at 15.50 ms and 18.63 ms, respectively. For the early period the median is 15.02 ms and the mean is 18.23 ms while the final tenth has a median of 15.64 ms and a mean of 18.64 ms. The medians are reasonable for this GPU running "Fire Strike" but the means are certainly being impacted by the long frame times from loading. The slope across the test period is 0.000098 while the early section had a slope of 0.0044 and the last tenth a slope of 0.0029. I just find it interesting to see the overall slope being so much smaller than either of the 10\% sections, with those sections both having slopes of the same magnitude.
+
+\image{Hist - Temperature}
+
+With this graph we can see the difference between the two lines I mentioned with the Course graph was indeed about 7 °C, as that is the distance between the primary peaks at 80 °C and 81 °C and the secondary peaks at 72 °C and 73 °C. Clearly though, the temperature spent more time in that primary peak than at a lower value as a whole half of the data is above 80.2 °C.
+
+\image{Hist - Power}
+
+Ignoring the data at lower values, likely from when the runs were loading, I think this graph is fairly interesting to look at. We can see the higher values, like the 199 W maximum are outliers as they are barely visible here, while the two main peaks are at about 147 W, the median, and then another around 178 W. The primary peak is at the lower value, but the clear presence of this secondary peak does tell us the GPU was consistently trying for that higher level, even if it could not maintain it as well as the lower peak.
+
+\image{Hist - Frequency}
+
+Looking at this graph, it is pretty clear the GPU was mostly at its 1126 MHz base clock. According to the percentiles, 57.15\% of the data was at the base clock, with 6.21\% below it, while 76.08\% was below the 1216 MHz boost clock. Even though the majority of the data is at the base clock, there was still about a third at higher frequencies.
+
+\image{Hist - Frame}
+
+The constant loading has skewed the Y scale by creating such a significant peak at 9 ms. Even the X-scale has been influenced some because of the data past 33.3 ms, which corresponds to 30 FPS. At least the median appears to be appropriately placed on the distribution while the mean has been pulled away. It is hard to make out much of the distribution's shape, but it looks fine and about as I would expect.
+
+\image{TS - Frame}
+
+The smooth line definitely proves its value on graphs like these, providing a central line for the data that otherwise has a wide range. Looking at the extremes of that range is interesting because there is a wave to it, like what we saw with the looping trend results earlier. The smooth line does not pick this up and my guess would be it is because the range of the data is so great, the weighting of these extreme is small enough to be missed. That is only a guess, but does not seem too unreasonable in my mind. It could also just be that they balance out nicely for the algorithm that creates the smooth line.
+
+\image{TS - Frequency}
+
+Those three sudden dips are a little worrying, but looking back at the Course graph, we can see the answer. Each of those dips corresponds to the three times we see the GPU go deeply to its idle clocks. It might be a coincidence from the sampling frequency of GPU-z to see the frequency go down farther at those three points than anywhere else, but regardless, the effect was to pull the trend down. Of course the GPU was not at the idle frequencies for as long as this graph may suggest, but it was enough to confusing the time series processing when it figured out the trend data.
+
+Separate from that, we can also see a wave along the data, and you do need to look at the data because the smooth line is impacted by the dips. At the end the smooth line does show the wave though, so perhaps the wave I noted in the frame time trend is related to this.
+
+\image{TS - Power}
+
+The dips are not present in the power trend data, but we can still see the fall from the boost state. If we look at the extremes of the data, we can also make out a wave, like that present in the two prior graphs. While the smooth line does also show some waviness, the confidence interval is wide enough to cast some doubt. Of course the highest confidence is along that line and so it is the most trustworthy path, but there is a visible chance of it being incorrect.
+
+\image{TS - Temperature}
+
+For the most part this is nothing all that interesting, except if you look closely you can see three dips and these line up with those in the frequency trend data. This suggests it is not just something unusual that happened with the timing of the data being collected as the temperature should have far more inertia to it than the GPU frequency. It seems then that at these moments the GPU was able to idle and cool off a little better than at other times. Why it could, I do not know, but it seems to have happened.
+
+\graphicspath{{Media - GPU/13 - GTX 980/TS/}}
+\subsection{Time Spy - Pulse}
+
+Time for the last bit of data for this GPU and a quick reminder (that I will probably continue to repeat for each one of these subsections) the "Time Spy" test runs for 60 seconds while "Fire Strike" runs for 30 seconds. That means the bias of loading to running will be more towards running with this test here, and that may skew certain results, especially the mean and less so the median statistics.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+  Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+  Warm-up	&	GTX 980	&	GPU Temp (°C)	&	34.8	&	35	&	35.04	&	36.2	\\	\hline
+  Warm-up	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	155.61	&	1126	\\	\hline
+  Warm-up	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	188.53	&	1752.8	\\	\hline
+  Warm-up	&	GTX 980	&	GPU Power (W)	&	16	&	16.2	&	16.71	&	47.3	\\	\hline\hline
+  3DMark - Time Spy	&	GTX 980	&	GPU Temp (°C)	&	35.8	&	80.2	&	77.06	&	81.9	\\	\hline
+  3DMark - Time Spy	&	GTX 980	&	GPU Clock (MHz)	&	135	&	1126	&	1032.3	&	1303.6	\\	\hline
+  3DMark - Time Spy	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1508.16	&	1752.8	\\	\hline
+  3DMark - Time Spy	&	GTX 980	&	GPU Power (W)	&	22.6	&	137.6	&	121.1	&	192.9	\\	\hline\hline
+  Cooldown	&	GTX 980	&	GPU Temp (°C)	&	37.1	&	37.8	&	39.66	&	72	\\	\hline
+  Cooldown	&	GTX 980	&	GPU Clock (MHz)	&	135	&	135	&	135.02	&	162	\\	\hline
+  Cooldown	&	GTX 980	&	VRAM Clock (MHz)	&	162	&	162	&	162	&	162	\\	\hline
+  Cooldown	&	GTX 980	&	GPU Power (W)	&	16.2	&	16.4	&	16.49	&	20.8	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Either by coincidence or design, the temperature statistics here are very similar to what we had with pulsing "Fire Strike." Looking at the frequency numbers is interesting because while the median is the base clock, the mean is actually lower. Hopefully that just means the idle data was enough to pull it down, but the balance of load to idle time should be more in favor of load here than the other pulsed results. This is definitely something to look at in the graphs.
+
+Before moving on, the power statistics are also interesting to look at as the median aligns with the looping version of the test but we again see the maximum being appreciably great, like occurred with the "Fire Strike" pulsing results above. This would seem to suggest it is something about the pulsing that causes the GPU to overshoot its normal power limit and I do not know why.
+
+\image{Course}
+
+Having seen this graph for other GPUs now, this all looks pretty familiar, but is still interesting to examine. We can see the heating and cooling during the short intervals of a test loading and running, as well as the fall in frequency and power consumption as the GPU tries to boost, but is soon exhausted. If you look a bit ahead of the 3000 second mark, you can also see the lone point for the maximum power consumption, confirming that was indeed an outlier. Indeed it appears most any time the power consumption crossed 180 W it was an outlier, as that appears as an upper limit for the data.
+
+As for the temperature statistics, the lower quartile of the test period was 74.7 °C and this was crossed after 138 seconds. The temperature continued to rise after this point, at least until the run ended, and so appears to be stable here. For the Cooldown period the upper quartile was 39.5 °C and this was first crossed at second 4452, or after 852 seconds, but the temperature was not stable. Of the ten measurements I have, there is only one pair of consecutive measurements, seconds 4476 and 4477. The tenth measurement is at second 4490, to give you an idea of how unstable this is.
+
+\image{FPS}
+
+Looking at this, I think we may have the explanation for why the mean frequency was so low; "Time Spy" takes quite a while to load, compared to "Fire Strike" at least. By looking at the scale we can see it took 8 seconds from the test period starting for PresentMon to first capture any data, but that does not count as loading time. We then see at about 30 seconds is when the benchmark itself is running, so that is about 22 seconds of loading., but going back to look at the "Fire Strike" graph, it looks more like 10 to 12 seconds, so the balance of benchmark and loading is not as biased towards the benchmark as I thought, but there is another point here and equally important. By spending more time loading that is more time for the GPU to decide to down-clock, and that may explain the reduced mean if there is more data at lower values. Definitely wish I had spotted this earlier, but it does not seem to have come up as clearly before.
+
+Looking at the statistics now, for the length of the test period the median frame time is 38.07 ms and the mean is 44.27 ms, with the mean likely being pulled away because of measurements while the test loaded. For the early section the median was 37.01 ms while the mean was 42.32 ms and the final tenth had a median of 38.20 ms and a mean of 43.59 ms. The linear regression slopes are somewhat interesting, as the early section had a slope of 0.011 while the final tenth had a slope of -0.011, so the frame time was getting shorter then, at least supposedly as this data is not exactly linear. The overall slope was 0.0015, so pretty stable compared to these two tenths.
+
+\image{HIST - Temperature}
+
+We can clearly see here how much time was spent at 80 °C or 81 °C, as those are the two tallest peaks and based on the median being 80.2 °C, more than half the data is above 80.0 °C. The peak within the second domain is at 70 °C, so it seems the GPU was often able to cool off about 10 °C while waiting for the next run to load. It also looks a lot like 80 °C is a thermal limit based on this and the prior tests, as the GPU goes up against it and avoids crossing it.
+
+Something else somewhat interesting and possibly worth noting is the temperature distribution for the Cooldown period is warmer than for the Warm-up period. This is not any cause for concern, but it is still interesting to see the idle temperature be a little higher than it was.
+
+\image{Hist - Power}
+
+Ignoring the data from when the GPU could idle as the next run loaded, we can see very clearly the most common power consumption value was 137 W. There is a nice, secondary peak near 180 W, but the primary peak is around 137 W, with some data between the two. That is quite a gulf of around 43 W this GPU crossed between what it starts at and what it ends at once the load is going.
+
+\image{Hist - Frequency}
+
+Clearly the mean has been pulled away by the idle time while the next test was loading. Looking at the statistics, 22.18\% of the data is below 1126 MHz while 37.58\% is at the base clock, which explains the median being there. As for the boost clock, 76.93\% of the data was below 1216 MHz, leaving 23.07\% above it.
+
+\image{Hist - Frame}
+
+The spike at 16.7 ms from loading each run is dwarfing the distribution, but we can still see the shape. What we cannot see are the outlier data causing the mean line to be pulled so far to the right. That outlier data is so far out there I adjusted the X scale to show only lower 97.5\% of the data.
+
+In any case, the shape of the distribution is rather curious because it is so different from the distribution from the looping results. Some of it is similar, but the hill on the right side was not present before. Looking at this graph for other GPUs, it appears the frame time data from running the test and data from loading it have been combined, as there is loading data around 33.3 ms and going to longer frame times. I do not know of any way to remove that data intelligently, and so we are left with this imperfect distribution. Still, we can see the median is in a fairly appropriate position within the distribution, so it seems that summary statistic is reasonable for this data.
+
+\image{TS - Frame}
+
+After the initial rise as the boost ends, we can see some slight waviness to the smooth line, but if you look to the extremes of the data, you can see the waviness there too. Likely not something to be too concerned about though, at least compared to a range of about 3 ms, but it is only fair to remember the GTX 980 is not really up for 2560x1440.
+
+\image{TS - Frequency}
+
+This does not look very good, but with a quick check by adding the random component it seems there were just some short-lived dips at those times we see the dips here. I am unsure if the dips are from the original data or the time series processing, but it is possible they result from the unfortunate alignment of the frequency falling to idle speeds and when the data was collected. The downward direction of the data is certainly accurate though, and it appears the most we can do here is lift the smooth line up enough to be nearer to flat, from about second 1200 or 1500 on.
+
+\image{TS - Power}
+
+This data is much easier to examine, and we can also see if we look at the extremes again some amount of waviness. It is not very much, but does appear to be there and also appears to align with the frame time trend data too.
+
+\image{TS - Temperature}
+
+I do not see any clear waviness to this temperature trend data though, as it appears to be quite stable after the initial boost is exhausted and the GPU was hitting 80 °C consistently.
+
+That finishes it off for the GTX 980, which has been interesting to look at because we can see it fall to its base clock, yet still try to boost itself, only to fail and fall back again. While its trying created some variability, it still kept things pretty stable, at least compared to some other GPUs.

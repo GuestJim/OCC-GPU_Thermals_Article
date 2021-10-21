@@ -1,0 +1,195 @@
+\section{Scripting - GPU Thermal - Data.r}
+
+The purpose of this "GPU Thermal – Data.r" script is to import and then format the recorded data into something easier and safer to work with. Data safety is achieved by using separate files from the original recordings, and by compressing these output files too, so there is the additional step of decompressing them before any value can be altered. Making the data easier to manage mainly comes down to the formatting of the data, such as dropping unnecessary columns and fixing column names to something R is more comfortable working with.
+
+First up in this Data.r script is the PresentMon data, and fortunately nothing too much is involved here, thanks to the column names being formatted in a way R is comfortable with; without spaces.
+
+\subsection{PresentMon Data Importing}
+\begin{styleR}
+if (file.exists("PresentMon.csv"))	{
+	PresentMon	=	read_csv("PresentMon.csv")
+	PresentMon.small	=	PresentMon[, c(
+		"Application",
+		# "ProcessID",
+		# "SwapChainAddress",
+		# "Runtime",
+		# "SyncInterval",
+		# "PresentFlags",
+		# "AllowsTearing",
+		# "PresentMode",
+		"Dropped",
+		"TimeInSeconds",
+		"MsBetweenPresents",
+		"MsBetweenDisplayChange"#,
+		# "MsInPresentAPI",
+		# "MsUntilRenderComplete",
+		# "MsUntilDisplayed"
+	)	]
+	PresentMon.small$GPU	=	GPUname
+	PresentMon.small$Cooler	=	COOLERname
+	PresentMon.small$Test	=	TESTname
+	write_csv(PresentMon.small, "PresentMon.csv.bz2")
+}
+\end{styleR}
+
+That is all this script does with the PresentMon data. It first checks if the original CSV file exists. If it does, then it is imported and assigned to the \textbf{PresentMon} variable. PresentMon was originally created as a tool for developers, so it captures more information than I need, which is where \textbf{PresentMon.small} comes in. Using bracket notation, I select just the columns I need with a list of their names and assign the result to the new variable.
+
+Bracket notation can be applied multiple ways to select the specific rows and columns you wish, but the format is consistent with the row selection first and column selection second, with a comma separating them. If nothing is specified for either then all of that dimension will be included; in this case nothing is specified for rows, so all of the rows are included. Selecting rows or columns can be done by providing indices, logicals, and names. In each case, you can use a vector or list to select multiple rows or columns.
+
+In this case I am using a list of names to get just the columns I desire, which are the Application, Dropped, TimeInSeconds, MsBetweenPresents, and MsBetweenDisplayChange columns. The Application column gives the executable name of the recorded application while Dropped indicates if the frame was dropped or not displayed. TimeInSeconds, MsBetweenPresents, and MsBetweenDisplayChange are all very accurate names for the data their columns hold. By placing these names, as strings, in a vector within the brackets, R knows to check \textbf{PresentMon}'s column names against the list and only include those columns with names that match. If I wished to select them with a list of logicals, I would want to use a function to compare the names against the list, what R is already doing internally, or provide a list of "TRUE" and "FALSE" terms, with "TRUE" for those columns I want, and "FALSE" for those I do not. Selecting by indices would require listing the numbers of the columns, which would not be very difficult to do, but I prefer working with names as it implies R search through the names, in case things move around.
+
+I should explain R does not like extra commas in lists, which is why I have the one after the last desired column commented out. If that comma were there, R would throw an error, so hide it as a comment or delete it.
+
+With just the desired columns selected, I next add three columns that are only there to add configuration information to the output file. This is completely unnecessary at the moment, but if I ever develop scripts to work with multiple of these recordings, such as to directly compare GPUs in the same graphs, this will help keep everything sorted. Ultimately the result is still \textbf{PresentMon.small} being a smaller data frame than the original, which will help with compressing it, the next step. The \textbf{write\_csv} function supports multiple kinds of data compression, but I have found bzip2 to be the most efficient for both speed and compression ratio, at least for the data I work with. By simply placing the BZ2 extension at the end of the output file name argument, the function knows to apply that form of compression to the indicated variable, \textbf{PresentMon.small}.
+
+It may occur to you that I only reference the \textbf{PresentMon} object in the other R scripts, rather than \textbf{PresentMon.small}, but I do not do anything to remove the undesired columns from this original object. In theory that means a larger object than necessary is being used, but for one thing. If you look back at the Input.r script, you will see \textbf{PresentMon} has the contents of the "PresentMon.csv.bz2" file assigned to it, which is the contents of \textbf{PresentMon.small}, and this is done after this Data.r script is run. That means \textbf{PresentMon} will be identical to \textbf{PresentMon.small}, and actually there can be some wasted memory by not removing this data frame  from R, following this script being run.
+
+\subsection{GPU-z Sensor Log Importing}
+\begin{styleR}
+GPUz	=	read_csv("GPU-Z Sensor Log.txt")
+POWER	=	NULL
+if (grepl("Vega", GPUname, ignore.case = TRUE))	POWER	=	"GPU Chip Power Draw [W]"
+#	RX Vega GPUs do not give a separate Board Power value, making it necessary to selectively search for it
+desCOLS	=	c(
+	"Date",
+	"GPU Clock",
+	"Memory Clock",
+	"GPU Temperature [",
+	"Power Consumption (W)",
+	"GPU only Power Draw",
+	"Board Power Draw [W]",
+	POWER,
+	"VDDC",
+	"GPU Voltage [V]"
+)
+\end{styleR}
+
+Unfortunately, GPU-z data is not even close to as easy to work with as PresentMon, largely for two reasons; column names containing spaces and columns changing with GPU and GPU-z version. Luckily there is no immediate issue with importing the data despite it being in a TXT file, rather than a CSV. If you open the file in a text editor you will see that commas do separate each column, and there is a lot of space padding as well but R itself or \textbf{read\_csv} knows to ignore the padding.
+
+Though the spaces in column names is a pressing issue, the names changing with GPU is what I address in this block of code. First we see I create the variable \textbf{POWER} and set it to "NULL" and then call on \textbf{if} to run a check. That check is actually done with the \textbf{grepl} function that is one of a family of string searching functions, each for different purposes. I do not know exactly where the name comes from, but the "l" at the end is because this one returns logicals for it finds the desired substring. (For reference, \textbf{grep} will return the positon the substring is found out.)
+
+The first argument for \textbf{grepl} is the substring or pattern it is to look for in the second argument. That is all it needs to run, but to avoid issues with capitalization, I have set the \textbf{ignore.case} argument to "TRUE".
+
+The reason I need to do this check for if Vega is in \textbf{GPUname} is because its power consumption is recorded differently by GPU-z than others. Rather than being under "Power Consumption" or "Board Power Draw" it is under "GPU Chip Power Draw." It is not actually just the GPU chip but the GPU and VRAM (on-package HBM2), but because that is a column name also used for other GPUs, it creates some confusion for R. My solution then is to only look for that column when a Vega GPU is being used. When that is the case, \textbf{POWER} is set to be "GPU Chip Power Draw [W]", the full name of the column, which is important because GPU-z will sometimes double columns to provide a percentage value as well.
+
+The next thing is the creation of my \textbf{desCOLS} for desired columns list. Though it needs to be applied differently, the idea here is identical to above with the creation of \textbf{PresentMon.small}. What I want are the columns containing the GPU and VRAM frequencies, the GPU temperature, power consumption, and because I can have it, the voltage. I do not actively use the voltage data, but it may be nice to have. Anyway, you may notice I have four different names there associated with power consumption, including \textbf{POWER}. This is because the column names changed I assume with an update to the application, though I cannot remember when I updated it. In any case, previously I could use simply "Power Consumption [W]" for non-Vega GPUs and "GPU only Power Draw" for my RX Vega 64, but now it is "Board Power Draw [W]" and "GPU Chip Power Draw [W]" only if it is a Vega GPU. Standardized naming across software generations are so useful, such as having a generic "Power Consumption" column that may duplicate another, but you can trust that one column to have the data you want.
+
+As I said, using that \textbf{desCOLS} list to get the selected columns is going to be a bit different from earlier, but this works. Complicating this entire process, however, are those spaces in column names. While \textbf{read\_csv} has imported the information and the \textbf{GPUz} variable is holding it, you cannot view the data, all because of those spaces. You can still manipulate \textbf{GPU-z}, however, including selecting certain columns and then renaming to something sane, by R's standards.
+
+\subsection{dataALL Creation}
+\begin{styleR}
+desIND	=	pmatch(desCOLS, colnames(GPUz))
+desIND	=	desIND[!is.na(desIND)]
+
+dataALL	=	GPUz[, desIND]
+\end{styleR}
+
+The \textbf{colnames} function will produce a list of column names, and \textbf{pmatch} for partial match will check if the contents of the first argument are in the second. It then returns a list of the positions for the matches, or "NA" if a match was not found. The partial matching capability is actually pretty valuable here because it means some of these strings in \textbf{desCOLS} do not need to be complete; just complete enough to have a unique match.
+
+The results of \textbf{pmatch}, a list of numbers and "NA" terms, are then assigned to \textbf{desIND} for desired indices. The numbers are the positions the contents of \textbf{desCOLS} were found in the column names of \textbf{GPUz}, which are therefore the indices of the desired columns. While having those indices is great, as I can use them with bracket notation to select just the desired columns, there are those "NA" terms for when no match was found. Those need to be removed, and thankfully the \textbf{is.na} function exists.
+
+As its name suggests, \textbf{is.na} reports whether a value is "NA" or not. With bracket notation I can use the logicals returned by this function to select just the "NA" terms, but I want the inverse. Inverting logicals or Booleans is quite easy though, by placing the exclamation point ahead of the function, or object as the case may be.
+
+There is also an \textbf{is.numeric} function but that is not appropriate here. Vectors in R are reported as being the data class of their contents, so running that or \textbf{is.integer} on \textbf{desIND} will simply return "TRUE." The \textbf{is.na} function will check the separate element and report on each.
+
+With the "NA" terms removed, all that remains in \textbf{desIND} are the desired column indices for \textbf{GPUz}, so those columns are selected with bracket notation and assigned to \textbf{dataALL}. It is not quite all the data yet, but a good start.
+
+\subsection{dataALL Column Names and Time Column}
+\begin{styleR}
+colnames(dataALL)	=	c("Timestamp", "GPU_Clock", "VRAM_Clock", "GPU_Temp", "GPU_Power", "GPU_Voltage")
+# colnames(dataALL)	=	c("GPU_Clock", "VRAM_Clock", "GPU_Temp", "GPU_Power", "GPU_Voltage")
+
+dataALL$Time	=	as.numeric(dataALL$Timestamp)
+dataALL$Time	=	dataALL$Time - min(dataALL$Time)
+\end{styleR}
+
+One advantage to having selected the columns is the column names can be explicitly set, as the number and order of the selected columns is consistent across GPUs. Even with the multiple names for finding power consumption, only one column will be selected. Changing column names is pretty easy, by selecting them with the \textbf{colnames} function and assigning the desired strings.
+
+With the new names applied, \textbf{dataALL} can be viewed and edited, but there should not be any need for that.
+
+The next step here is to create the Time column, which is pretty easy. By selecting the column with "\$" notation, R infers the intent is to create this non-existent column when values are assigned to it. Those values are taken from the Timestamp column, which will be stored as the class POSIXct, because R recognizes they are date and time values. That is not what I want, so I use \textbf{as.numeric} to convert them to numbers, which is the desired data type, but still not quite right. You see the values are currently Unix time equivalents to the original timestamps, which I do not care about. My only interest is in the time since the monitoring began, so I subtract the minimum of the Time column from the time column.
+
+What follows is a little complicated but very necessary because GPU-z is not very good at keeping time. It is supposed to be recording measurements every second, but sometimes it misses a second and other times it will have two recordings at the same second; a problem either way. Originally I just threw out the timestamp data and forced it all to a fixed 1 Hz sequence, which did nothing to correct the errors, but made processing possible without errors. I have since come up with the following means to correct many of the errors by taking advantage of the doubled and missed seconds often appearing next to each other.
+
+\subsection{GPU-z Time Correction}
+\begin{styleR}
+DOUB	=	which(diff(dataALL$Time) == 0)	;	MISS	=	which(diff(dataALL$Time) == 2)
+#	when GPU-z doubles a second				;	#	when GPU-z misses a second
+
+MIUB	=	intersect(MISS + 1, DOUB)						#	when a miss precedes a double
+dataALL[MIUB, "Time"]	=	dataALL[MIUB, "Time"] - 1		#	pulling double to fill miss
+
+DOUB	=	which(diff(dataALL$Time) == 0)	;	MISS	=	which(diff(dataALL$Time) == 2)
+DOSS	=	intersect(MISS, DOUB + 1)						#	when a double precedes a miss
+dataALL[DOSS, "Time"]	=	dataALL[DOSS, "Time"] + 1		#	pushing double to fill miss
+
+#	removes misses that cannot be corrected with doubles
+if (any(diff(dataALL$Time) == 0))	dataALL	=	dataALL[-(which(diff(dataALL$Time) == 0)), ]
+\end{styleR}
+
+Knowing there are doubled and missed seconds, the first line of this block of code is to find where those errors occur using the \textbf{diff} and \textbf{which} functions. The \textbf{diff} function will calculate the differences between consecutive values, and while most of the differences should be 1, doubled seconds will have a difference of 0 and missed seconds will have a difference of 2. To find when \textbf{diff} returns 0 or 2 I use the doubled equals sign, a common symbol for testing if two values are equal, and the result will be a vector of "TRUE" and "FALSE" the length of the \textbf{diff} output. While that vector has the information we want, that is not a form we want it in, thus \textbf{which} is used as it returns a vector of the indices for "TRUE," a much smaller and easier to work with vector.
+
+As I almost never use it I should explain the semi-colon here allows these two separate commands to be written on the same line, as opposed to needing separate lines. I just decided this is the format I wanted, and that is all there is to that.
+
+Now that we have these \textbf{DOUB} and \textbf{MISS} vectors, the next step is to use them to find when a doubled and missed second were adjacent to each other. We cannot check in both directions at once, so first we look for when a miss happened first, which is achieved with the \textbf{intersect} function and adding 1 to the values of \textbf{MISS}. Remember, the values of these two vectors are indices that will point to where the different errors occurred in the Time column. There will be no overlap between the two vectors normally, so an offset is necessary to find any alignment, and then \textbf{intersect} will return the values that are common to both lists.
+
+With \textbf{MIUB} created, the appropriate Time values need to be selected and shifted and while the process looks a little weird, it does work. To select the values that need to be changed, bracket notation is used where the rows are identified with \textbf{MIUB} and naturally Time for the column. We then repeat this selection on the other side of the equals sign, but subtract one from the result because the doubled second we are shifting down was after the miss.
+
+What follows is the same process repeated, but instead looks for when the missed second was after a doubled second.
+
+This process will correct a majority of the errors, but it is possible some will remain, which is what the final line of the code block deals with. Missed seconds are not a problem, but doubled seconds can confuse things, so first a check is made for if there are any doubled seconds still in the data. The \textbf{any} function will return "TRUE" if there is a single "TRUE" in the object it is given. If that check passes, then \textbf{which} is again used to find the doubled sections and by applying the negative sign to its results, the bracket notation will return all of the rows except those identified by \textbf{which}. This result is then assigned to \textbf{dataALL}, clearing all of the errors that may prove a problem when the data is processed.
+
+\subsection{PERIODS Function}
+\begin{styleR}
+PERIODS	=	function(DATA,	BREAKS = c(warm, duration),	LABELS = levsPER){
+	if	(DATA <= BREAKS[1])									return(ordered(LABELS[1], LABELS))
+	if	(BREAKS[1] < DATA & DATA <= BREAKS[1] + BREAKS[2])	return(ordered(LABELS[2], LABELS))
+	if	(BREAKS[1] + BREAKS[2] < DATA)						return(ordered(LABELS[3], LABELS))
+}
+
+dataALL$Period	=	sapply(dataALL$Time, PERIODS)
+\end{styleR}
+
+Here we have our first custom function in R, created very simply with the \textbf{function} command. Within the parentheses are the arguments for the custom function, and by setting them equal to values they are given default values. Following the parentheses, curly brackets are used to contain the code the function is to run. The brackets are not necessary, however, if the code can be a single line, which is something we will see in the Output.r script.
+
+The arguments are \textbf{DATA}, which will be \textbf{dataALL}, \textbf{BREAKS}, the transitions between the periods, and \textbf{LABELS}, the names of the periods. Both \textbf{BREAKS} and \textbf{LABELS} are given default values, assembled from \textbf{warm}, \textbf{duration}, and \textbf{levsPER} from the Input.r script.
+
+Until recently I used a different design for this function but decided to change it because I believe this version is a bit cleaner, might be more efficient, and it also introduces something that will prove quite important later.
+
+Fundamentally, all this function does is test a value against three conditions, though once a check passes, a value is returned, exiting the function. In this case the three checks are to see if \textbf{DATA} is less then \textbf{warm}, taken from \textbf{BREAKS}, between \textbf{warm} and \textbf{duration}, also taken from \textbf{BREAKS}, and lastly if it is greater than the sum of those two. These conditions correspond to the Warm-up, test, and Cooldown periods respectively, and when any of them passes, \textbf{return} is used to provide the output from the function.
+
+The output in this case comes from \textbf{LABELS}, which is \textbf{levsPER} by default, but with the added formatting of being an \textbf{ordered} factor and the order coming from \textbf{LABELS}. The ultimate purpose of this function is to create a column for \textbf{dataALL} that will be such ordered factors and it is a little cleaner to apply that formatting within the function. Though I could have each \textbf{if} statement set the value of a variable that is then made an ordered factor and returned, I like these three lines and knowing we always leave the function when a condition passes.
+
+After creating \textbf{PERIODS} we see it put to use and the \textbf{sapply} function, which is part of a family of very useful functions I do make use of. What they will do is apply some function to all of the terms in the object given to them. In this case that means apply \textbf{PERIODS} to each value in the Time column, and returning each output. If I were to use \textbf{lapply} these outputs would be collected in a list, but by using \textbf{sapply}, a wrapper of \textbf{lapply} that simplifies the result by default, a vector is returned instead. For what I am doing here, creating a new column for \textbf{dataALL}, the vector is the better object so \textbf{sapply} it is. By the way, it is this family of functions I feel is important as I will use them and related functions a fair amount later.
+
+\subsection{Configuration Information and diff.CONS Function}
+\begin{styleR}
+dataALL$Time	=	dataALL$Time - warm
+dataALL$GPU		=	ordered(GPUname)
+dataALL$Cooler	=	ordered(COOLERname)
+dataALL$Test	=	ordered(TESTname)
+
+diff.CONS	=	function(DATA, DIR = "Forward", lag = 1)	{
+	if	(DIR == "Forward")	return(c(diff(DATA, lag = lag), rep(0, lag)))
+	if	(DIR == "Backward")	return(c(rep(0, lag), diff(DATA, lag = lag)))
+}
+
+dataALL$GPU_Temp_Diff	=	diff.CONS(dataALL$GPU_Temp)
+\end{styleR}
+
+The first line of code here applies the offset so the test period starts at 0. The second, third, and fourth write into \textbf{dataALL} the name of the GPU, the cooler, and the test used, all of which are important to have if only for record keeping. It all depends on if I ever decide to write versions of these scripts that can take in data from multiple configurations, which for not I doubt, but might as well prepare for it now.
+
+The \textbf{diff.CONS} function is one I use in other scripts for finding consecutive differences. It is a bit overpowered for this task, but gets the job done. The idea is to create a column of the differences between one temperature value and the next, such that the sum of a value and the difference gives the next value. At its core is R's \textbf{diff} function, but it needs some tweaking because just applying \textbf{diff} will produce a list with one less element than necessary. One of the purposes of \textbf{diff.CONS} is adding zeroes in the proper place (beginning or end) to have the correct number of elements. The result of running it on the GPU\_Temp column is then assigned to the GPU\_Temp\_Diff column and we can move on.
+
+\subsection{dataALL Ordering and Saving}
+\begin{styleR}
+dataALL	=	dataALL[order(dataALL$Time), ]
+
+write_csv(dataALL, "Data.csv.bz2")
+\end{styleR}
+
+Closing off this script is the \textbf{order} function being applied within bracket notation for \textbf{dataALL}. Bracket notation allows for more than just selecting rows or columns, in this case rows, but also reordering them. I have observed some of the manipulations to \textbf{dataALL} shuffling its rows around and while R does not care, it harms readability. With \textbf{order} R will generate the permutation necessary to sort the indicated object into increasing order (or decreasing with the right argument changed). In other words, it creates the list of row indices that will correct the shuffling I mentioned. In this case it orders according to the values in the Time column. In the version of this script for the CPU Thermal scripts it shorts by Time, socket, core, and thread, in that order of significance, in case you were wondering just how powerful this function is.
+
+Lastly \textbf{dataALL} is written to "Data.csv.bz2" using \textbf{write\_csv}. If that file did not exist when the Input.r script was run, it would be created now but R would not import it like it imports the PresentMon data, and instead continue with \textbf{dataALL} in its current form. This makes the multiple calls of \textbf{ordered} in that other script redundant, but not harmful.
+
+With this covered, time for the next script, "GPU Thermal – Output.r," the largest and most complicated of the scripts involved as it handles all of the statistics processing and file outputs.

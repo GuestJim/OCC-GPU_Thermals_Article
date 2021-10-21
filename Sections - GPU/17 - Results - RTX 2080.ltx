@@ -1,0 +1,277 @@
+\section{Results: RTX 2080 Founder's Edition}
+
+The final GPU I have data on is the RTX 2080 Founder's Edition and it sports a base clock of 1515 MHz and a boost of 1800 MHz. The reference specification actually has a boost of 1710 MHz but NVIDIA decided to make the Founder's Edition special. Because I can, I have both boost frequencies marked in the scripts, even though this GPU does not follow the reference specification. The frequency step should be the same 15 MHz as seen with the other Turing GPU.
+
+The official specification states the TDP is 225 W, another increase over the reference specification of 215 W, and according to the GPU-z log the TDP is the higher value. Being a Turing-based GPU like the RTX 2060 it should have the same thermal throttle temperature of 83 °C. According to the \href{https://www.overclockersclub.com/guides/nvidia_rtx_2080_oc_guide/}{ Overclockers Club's NVIDIA RTX 2080 / Super Overclocking Guide} the thermal limit can be raised to 88 °C with third party software, but I have not installed any such software on the test system.
+
+\graphicspath{{Media - GPU/17 - RTX 2080/FS Extreme Loop/}}
+\subsection{Fire Strike Extreme - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RTX 2080	&	GPU Temp (°C)	&	32	&	32	&	32.27	&	35	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	337.45	&	1515	\\	\hline
+	Warm-up	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	150.76	&	1750	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Power (W)	&	1.8	&	2.4	&	3.27	&	32.1	\\	\hline\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RTX 2080	&	GPU Temp (°C)	&	32	&	85	&	83.16	&	85	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	1830	&	1821.83	&	1995	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	1750	&	1744.1	&	1750	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	RTX 2080	&	GPU Power (W)	&	5.4	&	216.5	&	213.81	&	230	\\	\hline\hline
+	Cooldown	&	RTX 2080	&	GPU Temp (°C)	&	30	&	32	&	34.54	&	75	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	303.82	&	1515	\\	\hline
+	Cooldown	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	106.39	&	1750	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Power (W)	&	1.8	&	2.3	&	2.66	&	32.8	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Looking at the idle periods we see something rather interesting as the average power consumption is far lower than it was for the RTX 2060. In fact, I do believe this idle consumption of about 3 W is the lowest of all the GPUs I have tested thus far, almost to the point of giving me doubts. All for datasets agree on this and we are looking at 65 minutes of idle time for each, so it must be accurate. It just surprises me to see such a difference between two GPUs of the same architecture as the RTX 2060 has an average idle power consumption of about 10 W. The idle frequencies, however, do align.
+
+Looking at the test period results, we can see a lot of data was apparently above the 83 °C threshold as the median is at 85 °C, which is also the maximum temperature. Based on what we saw with the RTX 2060 though, crossing that threshold does not necessarily cause the frequency to fall down to the base clock, making it a rather soft thermal limit, so this might not be too great a problem. In fact, looking at the frequency measurements it seems the GPU did not care much as both averages are above the 1800 MHz boost so that thermal limit might not be much of a limit after all.
+
+Something that is interesting to notice is the power consumption averages are in line with the 215 W reference TDP rather than the 225 W FE specification. It will be interesting to look at the graphs then, to get a better picture of the power consumption behavior.
+
+\image{Course}
+
+Having looked at so many of these graphs already, there is not much to remark on here, especially as the behavior is very similar to what we saw for the RTX 2060. Both the power consumption and frequency data show a boost behavior at the beginning, with the power consumption being quite stable and the frequency starting high and then falling. After about ten minutes then, the power consumption loses stability and the frequency too becomes less stable, though its lower line appears to be staying above 1750 MHz, which beats the 1710 MHz reference boost clock. It is also important to note that the upper line of the power data does follow the 225 W TDP, so while the averages are lower, the GPU is indeed reaching that level.
+
+Coming to the temperature statistics, the lower quartile of the test period was 84 °C, which was first crossed after 456 seconds, but it then fell and crossed again at second 468. From that point on, the temperature did not vary much, at least for the measurements I am seeing. As a quick reminder for how quartiles work, this means at least 75\% of the data is at or above 84 °C.
+
+As for the Cooldown period, its upper quartile was 35 °C and it was first crossed at second 4400, or after 800 seconds. The tenth measurement is at second 4410 as one measurement did see the temperature increase a degree, but it fell back afterward.
+
+\image{FPS}
+
+The frame time statistics are 13.88 ms and 14.11 ms for the test period's median and mean. The early section from 1\% to 11\% has a median of 13.61 ms and a mean of 13.81 ms while the final tenth has a median of 13.93 ms and mean of 14.13 ms. Looking at the slopes, they are somewhat similar to what we have seen before with the overall slope and final tenth slope having the same magnitude, -5, while the early section has a magnitude of -3. For the other measurements, the slope of the frequency during the early section was -15.07 MHz/min while the overall slope was -0.47 MHz/min and 89\% to 99\% late section was -0.33 MHz/min.
+
+\image{Hist - Temperature}
+
+As we already knew from the statistics above, the GPU spent most of its time above 84 °C, as indeed we can see that is the second tallest column, dwarfed only by the 85 °C column. I definitely find this curious as it seemed the other GPUs tried harder to achieve thermal equilibrium just below the throttle point, or on that point in the case of the RTX 2060.
+
+\image{Hist - Power}
+
+For a TDP of 225 W, this GPU is not doing a great job of keeping at it, at least compared to some of the other GPUs we have already looked at. Unfortunately we can also see the result of the instability here, with the mass of data on the left side, reaching as far as 190 W. If we treat this as two distributions pressed together, my guess would be for the lower one to have its center around 210 W. Not necessarily a great result, as that would be to not show such instability, but I would still consider this to be pretty good.
+
+\image{Hist - Frequency}
+
+As you can see I have the base frequency of 1515 MHz marked as well as the reference and FE boost clocks of 1710 MHz and 1800 MHz. The distribution is looking quite good for the lower boost frequency, but not as strong for the higher frequency. Perhaps this is the result of the temperature crossing 83 °C, causing the data fall under the FE boost clock.
+
+Looking at the statistics, 0.42\% of the data is below the base frequency and 0.03\% is at that frequency. Just 0.45\% is below the reference boost clock and 12.26\% is below the FE boost clock, which is interesting when looking at the graph. According to that the lower quartile is at 1800 MHz so we know at least 12.74\% of the data is at that frequency, the difference of 25\% and 12.26\%. We can also see the light tail from the initial boost stretching to the 2000 MHz line.
+
+\image{Hist - Frame}
+
+Nothing unusual here, based on the many other times we have seen this graph, so we can move on.
+
+\image{TS - Frame}
+
+Pretty normal here as well, as we see the frame time lengthen as the initial boost is exhausted, and then the performance appears to flatten out very well.
+
+\image{TS - Frequency}
+
+This trend makes sense, coming from the frame time trend graph as we see the fall from the initial boost, followed by fairly flat data. The smooth line makes it appear the frequency increased a little after the fall, but I do not believe that is actually the case. It is more likely the smooth line overshot and then curved back to correct, which we have been seeing in many other graphs throughout this article.
+
+\image{TS - Power}
+
+Here, however, we can clearly see the data overshot and not just the smooth line. After that though, the trend looks pretty good, though it does have a slight downward angle. The smooth line does show a small turn upward at the end, but I suspect this is just a quirk and not something that would have continued if the test continued.
+
+\image{TS - Temperature}
+
+Exactly the expected behavior here with the quick temperature increase at the beginning, and then flattening out.
+
+\graphicspath{{Media - GPU/17 - RTX 2080/TS Loop/}}
+\subsection{Time Spy - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RTX 2080	&	GPU Temp (°C)	&	27	&	27	&	27.46	&	29	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	330.35	&	1515	\\	\hline
+	Warm-up	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	139.77	&	1750	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Power (W)	&	2	&	2.6	&	3.3	&	32	\\	\hline\hline
+	3DMark - Time Spy - Loop	&	RTX 2080	&	GPU Temp (°C)	&	29	&	85	&	82.73	&	86	\\	\hline
+	3DMark - Time Spy - Loop	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	1830	&	1824.48	&	1995	\\	\hline
+	3DMark - Time Spy - Loop	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	1750	&	1739.99	&	1750	\\	\hline
+	3DMark - Time Spy - Loop	&	RTX 2080	&	GPU Power (W)	&	5.6	&	213	&	210.35	&	231.3	\\	\hline\hline
+	Cooldown	&	RTX 2080	&	GPU Temp (°C)	&	32	&	34	&	36.66	&	76	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	300	&	315	\\	\hline
+	Cooldown	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	101.36	&	202.5	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Power (W)	&	1.8	&	2.4	&	2.66	&	22.4	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+The temperature statistics look a lot like the values we saw for the "Fire Strike Extreme" results above, as do the frequency numbers, though the mean is slightly higher. The power consumption is also slightly lower, but by a small enough margin that I think examining the graphs  is necessary to decide how close it is to the 225 W TDP.
+
+\image{Course}
+
+Except for the frame rate data, the only thing that clearly distinguishes this Course graph from that for the "Fire Strike Extreme" results earlier is the caption in the lower right. Looking at the power consumption data, the upper line appears to be along 225 W, so it is likely just the instability starting at about second 600 that has shifted the averages down the small amount we saw in the statistics.
+
+\image{FPS}
+
+For the test period over all the median was 14.36 ms and the mean was 14.61 ms. For the early section the median was 13.97 ms and the mean was 14.20 ms while the final tenth had a median of 14.45 ms and a mean of 14.62 ms. As for the slopes, they are a bit more interesting than for the previous test, but only a bit. Overall the slope was -0.000036, which is curious for being negative, but could be a fluke because of how small the value is anyway. The other two slopes are both positive and with greater magnitudes with the final tenth having a magnitude of -4 and the early section a magnitude of -3.
+
+As for the other measurements the early section had a slope of -16.69 MHz/min for the frequency while the overall slope was -0.14 MHz/min and the late section had a slope of -0.91 MHz/min.
+
+\image{Hist - Temperature}
+
+The only difference from the "Fire Strike Extreme" version of the graph above I think significant enough to mention is the very small column at 86 °C. It definitely appears that measurement was an outlier, but we do still have the bulk of the data at 84 °C and 85 °C.
+
+\image{Hist - Power}
+
+This too is a great deal like what we saw before, though it does appear there is more data in the lower position than before. This would explain the reduced averages though, especially as we can still see a good amount of data around 225 W.
+
+\image{Hist - Frequency}
+
+This graph definitely looks a lot like what we saw with "Fire Strike Extreme" and the statistics are very slightly different as well. The percentage below 1515 MHz is 0.67\% while the percentage at the base frequency is 0.19\%, which sums to the value below 1710 MHz, 0.86\%. The data below 1800 MHz accounts for 10.15\% of the data, so it is a little better than we saw before, which could explain why the mean frequency was a little greater.
+
+\image{Hist - Frame}
+
+Nothing surprising or unusual here as that is what the "Time Spy" distribution looks like, in most cases.
+
+\image{TS - Frame}
+
+This is interesting because looking at the smooth line's minimum and maximum, the range is about the same as that for "Fire Strike Extreme," but the transition from the initial boost to the flat section is more drawn out. It seems to happen over 1200 seconds here and 900 seconds for the other test. We can also see a small amount of undulating in the otherwise flat section, but I do not think it is enough for any amount of concern.
+
+\image{TS - Frequency}
+
+This is actually closer to the "Fire Strike Extreme" graph than it may appear at first glance, because of the Y-scale being so stretched from the idle frequencies right at the beginning. Ignoring that, the shape is very similar and I the range for the smooth line's extremes is actually a little smaller, at 65.35 MHz instead of 87.05 MHz.
+
+\image{TS - Power}
+
+Again the idle values at the very start are impacting the scale, but the behavior is very much what we have come to expect. We have a plateau at the start, with a fall once the boost exhausts and then the rest of the trend data is flat overall, but does show some variability. That variability does not look like anything to be worried about though, as there does not even appear to be an upward or downward angle.
+
+\image{TS - Temperature}
+
+This is exactly as expected and no additional comment is necessary.
+
+\graphicspath{{Media - GPU/17 - RTX 2080/FS/}}
+\subsection{Fire Strike - Pulse}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RTX 2080	&	GPU Temp (°C)	&	33.9	&	34.4	&	34.51	&	36.7	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	329.35	&	1515	\\	\hline
+	Warm-up	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	139.77	&	1750	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Power (W)	&	1.8	&	2.3	&	3.08	&	31.9	\\	\hline\hline
+	3DMark - Fire Strike	&	RTX 2080	&	GPU Temp (°C)	&	34.3	&	78.2	&	76.08	&	83.3	\\	\hline
+	3DMark - Fire Strike	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	1875	&	1480.95	&	1995	\\	\hline
+	3DMark - Fire Strike	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	1750	&	1385.37	&	1750	\\	\hline
+	3DMark - Fire Strike	&	RTX 2080	&	GPU Power (W)	&	5.3	&	219.4	&	153.81	&	231.3	\\	\hline\hline
+	Cooldown	&	RTX 2080	&	GPU Temp (°C)	&	34.1	&	35.1	&	37.63	&	70.3	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	300	&	300	\\	\hline
+	Cooldown	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	101.3	&	101.3	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Power (W)	&	1.5	&	1.9	&	2.15	&	9.9	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Nothing surprising to these numbers, as we see median frequency and power consumption increase likely thanks to the pulsing allowing the boost to recharge between each run.
+
+\image{Course}
+
+Nothing too surprising here, especially having already seen the RTX 2060 graphs. What really stands out the most is how much more consistent the power consumption is with the pulsing, but there is something else that is also curious. At the start we see a time when the power consumption was increasing, and I cannot recall having seen that with any other GPU in any other test. Not sure what would cause this, but at least the change seems to only be about 5 W.
+
+Unsurprisingly, the power measurements are not the only data to have become more consistent with the pulsing, at least when the GPU is clearly under load. The frequency data is much tighter than it was before, so we can probably expect a narrower distribution when we get to the histogram.
+
+Looking to the temperature statistics, the lower quartile for the test period was 72.8 °C, which was first crossed after 228 seconds. This was short-lived though as it appears the run ended and so the temperature was not crossed again until second 265. As for the Cooldown period, the upper quartile was 37.7 °C and it was first crossed at second 4489, or after 889 seconds and none of the ten measurements skipped a second.
+
+\image{FPS}
+
+Looking at the statistics here, we have 7.35 ms for the median and 9.73 ms for the mean of the overall test period. For the early section the median is 7.25 ms and the mean is 9.66 ms while the final tenth has a median of 7.36 ms and a mean of 9.81 ms. The slopes are interesting only because the final tenth has the greatest value with a magnitude of -3 while the early section, which typically has the greatest slope, has a magnitude of -4, and the overall slope has a magnitude of -5. It is definitely curious to see the last tenth having the greatest slope, but perhaps we will see something in the time series trend graph to explain that.
+
+\image{Hist - Temperature}
+
+This is actually somewhat interesting to see as the heating and cooling with each run was apparently so consistent, we have multiple consecutive columns of nearly equal height. It also appears the cooling between each run was about 7 °C or 8 °C.
+
+\image{Hist - Power}
+
+This is the kind of peak I would expect to see for a GPU with a 225 W TDP as it is clearly centered nearly on that value. The center is a little below that mark, at about 223 W, but certainly within tolerance.
+
+\image{Hist - Frequency}
+
+Obviously the idle frequencies are throwing things off a bit, but this is not too dissimilar from the looping results, except for the much tighter distribution, as was predicted from the Course graph.
+
+Looking at the statistics, 25.0\% of the data is below the 1515 MHz base clock while 3.74\% is at that frequency. The percentage below 1710 MHz is the sum of the prior two percentages, while the percentage below 1800 MHz is slightly greater at 29.03\%. That leaves 70.97\% above that already elevated boost clock.
+
+\image{Hist - Frame}
+
+Nothing surprising here even as the 9 ms spike has skewed the scale. For those curious, the upper limit for the X scale is at 97.77\% of the data, so that remaining 2.23\% has values so great as to pull the mean into the distributions tail.
+
+\image{TS - Frame}
+
+Nothing unusual here but I was hoping to see something of an upward turn near the end, to explain the slope of the final tenth I shared earlier. Instead, it all looks quite flat after the initial boost exhausts.
+
+\image{TS - Frequency}
+
+Nothing too unusual here to comment on, at least not after having seen so many of these graphs already. The bump between seconds 1200 and 1800 is a little curious, but is very possibly just the result of some quirk or coincidence between the data and time series processing.
+
+\image{TS - Power}
+
+The undulating is curious, but if you look at the Y-scale, you can see the swings are not as large as one might guess. Of course we cannot trust the specific values here but I do think the range is at least moderately reliable. More importantly, we can see the increase at the beginning is not as fast as we have seen previously, likely because the power consumption actually did increase at the start of the test period, as we saw in the Course graph. My point being it is not just an elevation from idle power consumption to load levels.
+
+\image{TS - Temperature}
+
+Nothing out of the ordinary here, so we can continue on.
+
+\graphicspath{{Media - GPU/17 - RTX 2080/TS/}}
+\subsection{Time Spy - Pulse}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	RTX 2080	&	GPU Temp (°C)	&	33.6	&	33.7	&	33.74	&	35.1	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	309.03	&	1515	\\	\hline
+	Warm-up	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	112.33	&	1750	\\	\hline
+	Warm-up	&	RTX 2080	&	GPU Power (W)	&	1.7	&	2.3	&	2.54	&	31.6	\\	\hline\hline
+	3DMark - Time Spy	&	RTX 2080	&	GPU Temp (°C)	&	34.4	&	80	&	77.95	&	85.4	\\	\hline
+	3DMark - Time Spy	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	1860	&	1496.46	&	1980	\\	\hline
+	3DMark - Time Spy	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	1750	&	1382.6	&	1750	\\	\hline
+	3DMark - Time Spy	&	RTX 2080	&	GPU Power (W)	&	5.3	&	219.6	&	163.84	&	230.4	\\	\hline\hline
+	Cooldown	&	RTX 2080	&	GPU Temp (°C)	&	34.2	&	35.4	&	37.94	&	74.8	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Clock (MHz)	&	300	&	300	&	300.04	&	420	\\	\hline
+	Cooldown	&	RTX 2080	&	VRAM Clock (MHz)	&	101.3	&	101.3	&	101.97	&	1250	\\	\hline
+	Cooldown	&	RTX 2080	&	GPU Power (W)	&	1.6	&	2.1	&	2.34	&	34.4	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Nothing unusual here except for seeing the median frequency be lower here than it was for "Fire Strike," which is just a curious reversal from what we had been seeing across multiple other GPUs. It is only by a single step though, so possibly insignificant anyway.
+
+\image{Course}
+
+This is interesting mainly because of two behaviors within the power data. One is we can see it increasing slightly at the beginning, just like with the "Fire Strike" data above, though it is not as obvious. The other is how we do have the variability starting at about second 1200, as this is something we saw with other runs, but not the pulsing "Fire Strike" run. This would suggest that, for one reason or another, pulsing "Time Spy" is hard enough on the GPU for it to lose some stability, but this is still pretty good, compared to the looping results.
+
+\image{FPS}
+
+The median frame time for the length of the test period is 14.27 ms while the mean is 18.37 ms. For the early section the median is 14.03 ms and the mean is 17.63 ms while the final tenth has a median of 14.45 ms and mean of 18.96 ms. The slopes are not too interesting except for the final tenth having a negative slope. Perhaps we will see this in the trend graph later, but as we did not see the frame time increasing as these statistics suggested for the "Fire Strike" data, I am not going to make any bets.
+
+\image{Hist - Temperature}
+
+Very much like before, we see many consecutive columns with approximately the same height, suggesting the heating and cooling of the RTX 2080 was very consistent. It also appears the GPU was able to cool about 7 °C to 8 °C between each run, just like before. As for why it seems to have three steps instead of just two, I think it is a result of the GPU not wanting to pass 85 °C, so the rightmost columns are taller rather than there being another column to the right.
+
+\image{Hist - Power}
+
+The left-hand tail is somewhat light here, but once again the distribution, ignoring the idle data, looks much more like what I would expect for a 225 W TDP GPU. The center does appear to be more around 220 W than 225 W, but that is not far off.
+
+\image{Hist - Frequency}
+
+If not for the data at the idle frequency in the test period plot, and the caption, this really could be confused for the looping version of the test as both the values and shape of the distributions are pretty close. The frequency is greater here though, likely because the loading time allowed the GPU to recover its boost some. As for the percentiles, 23.45\% of the data was below 1515 MHz and 3.01\% was at it. There was no additional data between the base clock and 1710 MHz and 26.48\% was below 1800 MHz, a whole 0.02\% more than was below 1710 MHz.
+
+\image{Hist - Frame}
+
+Nothing unusual here as the distribution does appear as one would expect for "Time Spy." We also have another example of the critical disadvantage to the mean as a summary statistic, for some datasets.
+
+\image{TS - Frame}
+
+Nothing unusual here, though it does look like there might be a slight downward angle to the trend at the end. It is subtle but at least it means the negative slope was not incorrect.
+
+\image{TS - Frequency}
+
+I definitely believe the upward angle at the end here is just because the test ended before the trend turned down again. It is always somewhat annoying to see this and wish the data went a little longer, but an hour should be long enough to get this data. Nothing else is really worth commenting on as it looks a lot like what we have been seeing.
+
+\image{TS - Power}
+
+It was subtle in the Course graph but here we can more easily see the power consumption did actually increase a bit at the end, though likely only by a few Watts. The rest of the trend data is pretty stable, and while there are some ups and downs, I think it mostly balances out.
+
+\image{TS - Temperature}
+
+This is exactly as one would expect and so no comment is called for.
+
+That wraps up the RTX 2080 results, which I do think was rather interesting. It did, I think, the best job of boosting of the NVIDIA GPUs, as it seems to have somehow defied the 83 °C thermal throttling limit. I am curious about why that is, but am happy with the result. Unfortunately it still demonstrated the initial boost behavior and then loss of stability with some measurements over time, but at least it and the RTX 2060 seemed appreciably better at reaching for their TDPs than the other NVIDIA GPUs.

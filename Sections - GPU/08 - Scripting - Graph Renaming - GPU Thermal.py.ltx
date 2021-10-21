@@ -1,0 +1,232 @@
+\section{Scripting: Graph Renaming - GPU Thermal.py}
+
+This final script has a specific purpose that may or may not be useful to many. It is useful to me though, because it will assign unique names to each graph, and these names will be numbers. Images for Overclockers Club articles need to have numbers for file names and if you look back at the end of the Output.r script as well as its \textbf{customSave} function, you will see none of the graphs even have unique names between different configurations. This Python script solves that, as we shall see.
+
+This script will not be acting alone and there will be some other files you need to create. In the data folder, which is the folder "GPU Thermal – 3dmdef.py" makes named either Data or "Data GPU," you should have TXT files named "GPUs.txt" and "Coolers.txt." In the former should be the list of GPUs you have tested with and in the latter the list of coolers you have tested with. It is possible to skip the "GPUs.txt" file if you wish, as that information can be collected by Python, but Python will then order the list and that might not be what you want. The order you use in the TXT file will be respected by Python. The "Coolers.txt" list is also not necessary, but Python will not build the list for you so if you have multiple coolers for one GPU in your data, you risk having the graphs receive identical code numbers.
+
+\subsection{Module Importing and Path Finding}
+\begin{stylePy}
+import sys, os, shutil
+
+droppedPath	=	sys.argv[1].rsplit("\\", 1)[0] + "\\"
+
+os.chdir(droppedPath)
+\end{stylePy}
+
+Starting things off I load the three modules \textit{sys}, \textit{os}, and \textit{shutil}, with functions from the first two being called shortly thereafter while the one function from \textit{shutil} I use will be called near the end of the script.
+
+The first bit of code after loading modules is the creation of \textbf{droppedPath} from the script's arguments, \textbf{sys.argv}, identifying the path to the first file dropped onto this script. This should be one of the files in the folder containing the graphs you want renamed. As that path will include the name of the dropped file, I use \textbf{rsplit} to split the path at the last backslash, and then select the first section, the path, dropping the second section, the file name. I also add an escaped backslash back to the end of the string, ensuring the path is closed, making it easier to add new file names to it later.
+
+The third piece of code in this block is \textbf{os.chdir} to change the working directory to \textbf{droppedPath}. This way all of the paths and file names can be relative to this one location without issue.
+
+\subsection{Zero Padding Control and Stats.txt Search}
+\begin{stylePy}
+Z	=	1
+
+for file in os.listdir(droppedPath):
+	if file.endswith("Stats.txt"):
+		droppedSTAT	=	file
+\end{stylePy}
+
+The \textbf{Z} variable is for controlling the zero padding for the code numbers. A value of 1 will avoid any padding, so set it to 2 if there is a reason for it, such as if there are double-digit many GPUs in your collection. With proper zero-padding all of the digits in the file names will align properly, making them easier to read and interpret.
+
+The next block of code is to find the TXT file the Output.r script produces and is very important. As I just said at the start of this section, none of the graph names contain configuration information to make them unique, but the TXT file does. Using a \textbf{for} loop and \textbf{os.listdir}, Python will go through the contents of \textbf{droppedPath} to find the TXT file, whose file name ends with Stats, and assign that name to \textbf{droppedSTAT}. It will be a bit, but that file name will be used for generating multiple parts of the graphs' codenames.
+
+\subsection{GPUs and Coolers List Searching}
+\begin{stylePy}
+TYPE	=	"Data GPU\\"
+if TYPE in droppedPath:
+	droppedCOOL	=	droppedPath.split(TYPE)[1].rsplit("\\", 2)[0]
+	droppedList	=	droppedPath.split(TYPE)[0]	+	TYPE
+elif "Data\\" in droppedPath:
+	droppedCOOL	=	droppedPath.split("Data\\")[1].rsplit("\\", 2)[0]
+	droppedList	=	droppedPath.split("Data\\")[0]	+	"Data\\"
+\end{stylePy}
+
+If you look back to the "GPU Thermal – 3dmdef.py" section, one of the things it does is build a directory tree with each level holding some information in the folder name. The tree it generates has four levels with the top being Data or "Data GPU," the latter being the case if the CPU thermal scripts are found in the folder, to prevent a mixing of results from the two. The second level is the GPU name and while we can get it this way, that information is also in the TXT file name, so we can use \textbf{droppedSTAT} to get that. The third level, however, is unique to the tree and it is the name of the graphics card's cooler, and so will be necessary to capture. The fourth level is the date and time the Warm-up period started and is not relevant for this script.
+
+This block of code is responsible for finding the cooler name and the first thing it needs to do is know whether it is looking under a Data or "Data GPU" folder, which is the reason for the \textbf{if...elif} statement. The reason I am using \textbf{TYPE} is so this script can align with the CPU thermal version, so by changing the value of this variable, it works with either.
+
+Once the correct version of the data folder is identified, \textbf{droppedCOOL} is made by splitting \textbf{droppedPath}. The first split is at the data folder and the second section is selected, which is just the directory tree "GPU Thermal – 3dmdef.py" created. The \textbf{rsplit} function then splits this section twice at backslashes, creating three pieces and the first is selected. The third section is actually an empty string, as \textbf{droppedPath} ends with a backslash and the second section is the date and time that we do not need here. This leaves the first section holding the GPU name and cooler name, separated by a backslash. If no cooler name was provided then it will just be the GPU name and that will not be a problem later on.
+
+With \textbf{droppedCOOL} created, the next part is to build \textbf{droppedList} which is actually the path to the data folder. This is so the two TXT files you should have in there can be found; "GPUs.txt" and "Coolers.txt."
+
+\subsection{Finding or Building GPUs List}
+\begin{stylePy}
+if	"GPUs.txt"	in	os.listdir(droppedList):
+	GPUs	=	open(droppedList + "GPUs.txt", 'r').readlines()
+	GPUs	=	[line.rstrip('\n') for line in GPUs]
+else:
+	GPUs	=	[]
+	for DIR in os.listdir(droppedList):
+		if os.path.isdir(droppedList + DIR) and "@" not in DIR:
+			GPUs.append(DIR)
+\end{stylePy}
+
+As I have mentioned, this script is designed to work with a pair of TXT files in the data folder and the first one it tries to find and read is "GPUs.txt." The first thing we see here is Python checking if the file is present in the data folder. If it is, then it is opened and its lines read into \textbf{GPUs} using \textbf{open} and \textbf{readlines}. It might be worth noting \textbf{open} is given an argument of 'r,' telling it to open the file in read-only mode.
+
+With \textbf{GPUs} holding the contents of the script, we next need to clean it up some, and for the compactness of it, I decided to use a ternary operator. While I certainly do dislike these, at times I do desire the compactness more, or the challenge of building them, as we will see shortly.
+
+As it has been a while since the last Python script and ternary operators are a confusing concept, at least in Python, I will try to explain them again. Typical operators, such as the arithmetic $+$, $-$, $*$, and $/$ take two inputs to produce an output, but ternary operators, as the name suggests, work with three inputs. In the case of Python, a common use is to have one as a conditional statement, an \textbf{if} statement as I have been calling them, and the other two inputs are the returns for "True" and "False." Obviously that is not the only use case for them in Python as here we have a \textbf{for} loop, but the main thing I feel needs attention is the reversed format.
+
+In a ternary operator, the "True" output is written first, followed by the \textbf{if} and then the \textbf{else} or "False" output. In this case it is first the code to be run by the \textbf{for} loop, and then the \textbf{for} loop. Ternary operators can be nested, so if you wish to have an \textbf{if...else} statement run by a \textbf{for} loop, you can by having the ternary operator form of that condition written ahead of the \textbf{for} loop.
+
+Something else very important about the ternary operator here is that it is contained in the brackets. As we are working with a list or \textbf{for} loop here, that is necessary, but ternary operators just involving a conditional do not have this requirement.
+
+Getting to what the ternary operator is even doing here, Python is reading the new line symbol, "\n," from the TXT file and keeping it at the end of the strings it has stored in \textbf{GPUs}. With the \textbf{rstrip} function, that symbol is being stripped off of the right side of the strings, producing a clean list of the GPUs in a user-set order. In case you have not bothered to create the list or do not care what the order is, the \textbf{else} code block will handle that.
+
+The first step to building a \textbf{GPUs} list is to create the empty list to add the entries to. Next a \textbf{for} loop goes through the contents of \textbf{droppedList} as there will be folders there for each GPU data was collected for. Within that loop the \textbf{DIR} variable is the current item from the list and is checked for being a directory, which does require using the full path so \textbf{droppedList} is involved, and if it contains the "@" symbol. I use this symbol to highlight folders and files because they will be placed at the top by Windows, but no GPU should have that in its name, so those directories can be ignored. By using \textbf{and} both conditions must be true, and then the \textbf{append} function will add \textbf{DIR}, the desired folder name, to the list of \textbf{GPUs}.
+
+Though I am not using it for reasons, I did give myself the challenge of building this \textbf{for} loop as a ternary operator, and though it does have an annoying flaw due to Python, I wanted to share it just the same.
+
+\subsection{Ternary Operator to build GPUs List}
+\begin{stylePy}
+[GPUs.append(x)	if os.path.isdir(droppedList + x) and "@" not in x	else None	for x in os.listdir(droppedList)]
+\end{stylePy}
+
+Reading it from right to left, we can see it starts with the same \textbf{for} loop, though I am using \textbf{x} as the iterated variable rather than \textbf{DIR}. There is less need for a readable variable name when it is only used on one line. The conditional is next and, again, it checks if \textbf{x} is a directory and if "@" is in the directory name. If the checks pass, then \textbf{append} is run on \textbf{GPUs} just like before, but if the checks fail, then "None" is added to the list as that is the \textbf{else} or False output.
+
+I am not certain why, but it appears Python has a requirement that ternary operators always return some output, and apparently "None" is not like "NULL" in R as it can be added to as an element to a list. While the concept of requiring an output to avoid issues is reasonable, I personally feel it is largely unnecessary for two reasons. One is ternary operators are a confusing design and therefore an advanced technique. If you are building ternary operators you almost certainly understand the danger of trying to use a variable that may not have been created, making the requirement unnecessary and possibly burdensome, as in my situation. The other reason is the \textbf{or} term in Python that will return a value if the code before it fails to. I use this with user inputs to apply default values; if someone does not provide an input then the value following \textbf{or} will be used. I so no reason a ternary operator could not be followed by \textbf{or} to provide the exact protection the output requirement demands, but with greater flexibility.
+
+If I were to use this ternary operator instead of the code covered earlier, then I would need still more code to remove the "None" terms from \textbf{GPUs}, at that point defeating the compactness ternary operators allow. Still, I am somewhat happy with myself for figuring out the ternary operator, so I wanted to share and have it commented out in the script.
+
+\subsection{Finding Coolers List}
+\begin{stylePy}
+if	"Coolers.txt"	in	os.listdir(droppedList):
+	COOL	=	open(droppedList + "Coolers.txt", 'r').readlines()
+	COOL	=	[line.rstrip('\n') for line in COOL]
+else:
+	COOL	=	""
+\end{stylePy}
+
+Similar to before, but this time it is the "Coolers.txt" file being loaded in order to get the names of GPU coolers and the desired order for them. Technically this is not necessary, which is why \textbf{COOL} will be an empty string if the TXT file cannot be found. In theory it should be possible to read the folder names to build the list, but I feel this would be an unnecessary complication. If you are doing work that would need the file, then you are doing work that making such a file should be a simple part of the process, as opposed to just running these scripts to see the results. Also the fact there might not be a folder with the cooler name, as it is optional in the original Python script, would complicate the process of building the list.
+
+The next block of code contains a number of matrices that pair the code number with the corresponding string. Basically these are the same idea as the TXT files, but set within the script instead of using a separate file.
+
+\subsection{Code Lists}
+\begin{stylePy}
+BENCHs	=	[\
+["3DMark",	1]
+]
+
+TESTgpu	=	[\
+["Fire Strike",	1],\
+["Time Spy",	2],\
+["Port Royal",	3],\
+[" (RT Off)",	4]
+]
+
+RESO	=	[\
+["Extreme",		1],\
+["Ultra",		2]
+]
+
+PACE	=	[\
+["Loop",	1]
+]
+
+TYPEs	=	[\
+['Frequency',			0],\
+['Course',				0],\
+['FPS',					1],\
+['Hist - Temperature',	2],\
+['Hist - Power', 		3],\
+['Hist - Frequency',	4],\
+['Hist - Frame',		5],\
+['TS - Frame',			6],\
+['TS - Frequency',		7],\
+['TS - Power',			8],\
+['TS - Temperature',	9]
+]
+\end{stylePy}
+
+As I said just before these matrices, or lists of lists technically, are to match the code number with the string found in certain file names. For example, under \textbf{TYPEs}, for types of graphs, the Course graph is associated with 0, so that digit in the code name will be 0 for those graphs. We can also see I have Frequency associated with 0 as well, as that is a former name for those graphs. Normally I would prefer to avoid using 0 like this, but with ten graphs and my greater desire to not use double-digits, this is the mapping. I feel like mentioning the order of the graphs is the order I intend to cover them later.
+
+By the way, the backslashes are to escape the line break in the script, but might not be necessary. I think they were at some point or perhaps it was something else in Python where I found them necessary and so have made it a habit, but that is what they are doing.
+
+\subsection{codFind Function}
+\begin{stylePy}
+def	codFind	(statname, list):
+	for i in reversed(range(len(list))):
+		if list[i][0] in statname:
+			return(list[i][1])
+\end{stylePy}
+
+Not a very complicated function, but \textbf{codFind} does the job of finding the correct code number, given the name and list. The way it works is to loop through \textbf{list} by index, check if the contents of the first column is in \textbf{statname}, and if it is to return the value in the second column. By using \textbf{return} here, it is important to control the order the loop goes through the list, and possibly have that order disagree with the numerical order, but I will get to explaining that shortly.
+
+ The \textbf{range} function we see in the creation of the \textbf{for} loop will generate the sequence for the loop to go through, but does not generate a sequence directly. By that I mean running it outside of a loop like this will not produce a sequence of numbers. The \textbf{reversed} function reverses the output of \textbf{range} then, so instead of starting at the beginning of the supplied list, \textbf{codFind} starts at the end. This is important when there are values that may match multiple elements in the list, such as "Port Royal (RT Off)" in \textbf{TESTgpu}. By starting at the end, the more specific value of " (RT Off)" is found and returned before "Port Royal," which is what specifically matches the two versions of the test. Alternatively, \textbf{reversed} could be removed and the order of \textbf{TESTgpu} or any list could be manipulated to achieve the same result. Because these are matrices and not simple lists, the code number is specified instead of taking the index, so the order within the list is irrelevant.
+
+It should also be noted that the way the elements in the matrices given prior are identified is with bracket notation, but two sets. The first is for the row index and the second the column, with indices starting at 0.
+
+\subsection{numFind Function}
+\begin{stylePy}
+def numFind	(filename, list):
+	if list == [""]:
+		return(0)
+	for i in reversed(range(len(list))):
+		if list[i] in filename:
+			return(i+1)
+	return(0)
+\end{stylePy}
+
+This \textbf{numFind} function is similar to \textbf{codFind}, but does have certain important differences because its purpose is to checking simple lists, not matrices that map strings to numbers. One is a couple safety checks, the first returning 0 if the \textbf{list} argument is an empty string, and the second again returning 0 if there no element in \textbf{list} is found in \textbf{filename}. Getting back to the purpose of the function, this one is meant for looking at a portion of the directory path to the data, and so technically not a file name, despite the name of the argument. We will see later it is used twice, once to identify the GPU and again for identifying the cooler, both of which are recorded in directory names.
+
+By returning the row index plus one, I protect 0 from being used, except for the safety checks.
+
+\subsection{codGraph Function}
+\begin{stylePy}
+def codGraph	(filename, list):
+	for i in range(len(list)):
+		if list[i][0] + ".png" == filename:
+			return(list[i][1])
+\end{stylePy}
+
+This function is very similar to \textbf{codFind} as well, but is targeted at checking the graph name, and so in this case it does actually take a file name for \textbf{filename}. Its checking is also stricter than the others, as the \textbf{list} element with the PNG extension must match the file name, and not just be contained within it. This means the \textbf{TYPES} list must be the full graph names from Output.r.
+
+\subsection{numGen Function}
+\begin{stylePy}
+def numGen (filename):
+	CODE	=	[	[],	[],	[],	[],	[],	[],	[]	]
+	#	GPU, Cooler, Bench, Test, Reso,	Pace, Graph
+	CODE[0]	=	numFind(droppedCOOL.split("\\")[0],	GPUs)
+	CODE[1]	=	numFind(droppedCOOL.split("\\")[1],	COOL)	if	"\\" in droppedCOOL	else 0
+	CODE[2]	=	codFind(droppedSTAT,	BENCHs)
+	CODE[3]	=	codFind(droppedSTAT,	TESTgpu)
+	CODE[4]	=	codFind(droppedSTAT,	RESO) or 0
+	CODE[5]	=	codFind(droppedSTAT,	PACE) or 2
+	CODE[6]	=	codGraph(filename,		TYPEs)
+
+	code	=	""
+	for x in CODE:
+		if x != "":
+			code	=	code + str(x).zfill(Z)
+
+	return(code)
+\end{stylePy}
+
+And here we have the actual creation of the code number with \textbf{numGen}, a function that only takes \textbf{filename} as an argument, and as we shall see these files are the graphs.
+
+At the top of the function are two important lines. The first is the creation of the \textbf{CODE} list that will hold all of the separate code numbers, followed by the list identifying the purpose of each number. The first is the GPU, then the cooler, benchmark, and so on. Following this are the calls to \textbf{numFind}, \textbf{codFind}, and \textbf{codGraph} to actually determine the correct code numbers.
+
+For the most part these are pretty clear I think, except for the ternary operator for the cooler code number and those where I have "or" present. Because the GPU cooler name is optional,  there needs to be a means to check and respond to it not being provided, and that is what the ternary operator achieves here. Remember, the first part of the code for a ternary operator is what is supposed to happen when the check returns "True," so that is the running of \textbf{numFind}, and the second is the check itself. If you go back and examine \textbf{droppedCOOL}'s creation, you will see that when no cooler name is provided, it will just be the name of the GPU, which means it will not contain the escaped backslash to separate the folder names. This is ideal then for checking if there is a cooler name, and if there is not then 0 is returned, ensuring there is still a code number in this position.
+
+The two uses of "or" are for the resolution and pace codes. Both of these characteristics have unnamed values, such as the default resolution of a 3DMark test. The \textbf{RESO} list can only check for Extreme and Ultra being in the name, so if neither is present then \textbf{codFind} will not return anything. When that happens, "or" will ensure 0 is returned in that situation. For the pace code, seamless looping is identified with "Loop" in the file name while repeating the test is not identified. The reason 2 is used is because that is the number matching what is found in "GPU Thermal – 3dmdef.py" for test code numbers.
+
+With the different elements of \textbf{CODE} assigned, we get to making the \textbf{code} string, which starts with making that string but empty. A \textbf{for} loop then goes through \textbf{CODE}, and provided the current element is not an empty string, it will be converted to a string with \textbf{str}, given zero padding with \textbf{zfill}, and concatenated onto \textbf{code}. The result is a string containing the code number and that is what gets returned.
+
+\subsection{Graph Copying and Renaming}
+\begin{stylePy}
+if not os.path.exists("@Graphs"):
+	os.mkdir("@Graphs")
+
+for file in os.listdir(droppedPath):
+	if file.endswith(".png"):
+		print(numGen(file))
+		shutil.copyfile(file, "@Graphs\\" + numGen(file) + ".png")
+\end{stylePy}
+
+This finishes off the script as it checks if a "{\@}Graphs" folder exists, and if it does not, the directory is created. I do not want to rename the original graph files, so I have this folder created to hold copies of them with the code numbers.
+
+After the folder is certain to exist, a \textbf{for} loop goes through the contents of the current folder. If the file ends with ".png" the \textbf{numGen} function is run on it. The results of that function are both printed so you can watch the progress and used to name the copy of the graph created with \textbf{shutil.copyfile}.
+
+With that, the relevant scripts are finished off and so we can move on to covering results soon.

@@ -1,0 +1,91 @@
+3DMark - Fire Strike
+RX Vega 64 (Auto UV)
+Gigabyte Gaming OC 8G
+Zero RPM Threshold:	55 °C
+Pulse pause length, in addition to loading:	0 s
+
+Warm-up Period
+  Period      Measurement Min Median   Mean Max
+ Warm-up    GPU Temp (°C)  35     38  37.23  39
+ Warm-up  GPU Clock (MHz)  26     26  26.00  26
+ Warm-up VRAM Clock (MHz) 168    174 175.84 218
+ Warm-up    GPU Power (W)   6      7   7.21   8
+
+3DMark - Fire Strike Period
+               Period      Measurement Min Median    Mean  Max
+ 3DMark - Fire Strike    GPU Temp (°C)  36     66   65.04   72
+ 3DMark - Fire Strike  GPU Clock (MHz)  26   1448 1303.00 1643
+ 3DMark - Fire Strike VRAM Clock (MHz)  83    944  868.29  944
+ 3DMark - Fire Strike    GPU Power (W)   8    246  165.45  249
+
+Frequency Percentages
+<1276 MHz =1276 MHz <1560 MHz 
+    35.84      0.00     83.48 
+
+Linear Model Slopes:
+                 GPU_Temp    GPU_Clock     GPU_Power
+Test Period  0.0020931348 -0.002951145  0.0001587817
+1% to 11%    0.0125543648  0.042628488  0.0168470830
+89% to 99%  -0.0009254192  0.064202135 -0.0147467303
+
+Linear Model Slopes (minute):
+               GPU_Temp  GPU_Clock    GPU_Power
+Test Period  0.12558809 -0.1770687  0.009526904
+1% to 11%    0.75326189  2.5577093  1.010824980
+89% to 99%  -0.05552515  3.8521281 -0.884803816
+
+Frame Rate Summary
+            Median     Mean    Slope_(ms)    0.1%      99% Unit
+Test Period  8.547 10.96707  7.553902e-06 6.35500 48.00478   ms
+1% to 11%    8.509 10.96645 -6.616672e-05 6.34500 48.30476   ms
+Last 10%     8.539 10.89063  1.076369e-03 6.36214 47.69288   ms
+
+First Quartile Temperature Reached
+63 °C
+
+ Time GPU_Temp GPU_Temp_Diff
+   80       63             0
+   81       63             0
+   82       63            -2
+   84       63             0
+   85       63            -1
+   87       63            -2
+   91       64             0
+   92       64            -7
+  118       63            -3
+  125       63             1
+
+Cooldown Period
+   Period      Measurement Min Median   Mean Max
+ Cooldown    GPU Temp (°C)  37     41  42.91  63
+ Cooldown  GPU Clock (MHz)  26     26  26.69 850
+ Cooldown VRAM Clock (MHz)   0    167 168.15 190
+ Cooldown    GPU Power (W)   6      7   7.10   9
+
+Third Quartile Temperature Reached
+45 °C
+
+ Time GPU_Temp GPU_Temp_Diff dTime
+ 4245       45             1   645
+ 4257       45             0   657
+ 4258       45             2   658
+ 4262       45             2   662
+ 4266       45             3   666
+ 4271       45             1   671
+ 4275       45             3   675
+ 4284       45             3   684
+ 4293       45             0   693
+ 4294       45             0   694
+
+Zero RPM Threshold:	55 °C
+ Time GPU_Temp GPU_Temp_Diff dTime
+ 3651       55             1    51
+ 3658       55             2    58
+ 3660       55             0    60
+ 3661       55             2    61
+ 3664       55             2    64
+ 3667       55             0    67
+ 3668       55             0    68
+ 3669       55             0    69
+ 3670       55             1    70
+ 3672       55            -1    72

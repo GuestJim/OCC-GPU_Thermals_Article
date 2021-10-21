@@ -1,0 +1,301 @@
+\section{Results: EVGA ACX GTX 770 2 GB}
+
+My EVGA ACX GTX 770 is the oldest graphics card in my collection, as well as the last NVIDIA GPU I purchased thanks to the company providing all of the others over the years. One consequence of that is also it is the only NVIDIA GPU I have with an AIB cooler, but it does not feature a factory overclock. Looking at the official specifications, it has a TDP of 230 W, a base clock of 1046 MHz, a boost clock of 1085 MHz, and the memory should be running at 1753 MHz. The specifications for the GPU indicates a maximum temperature of 98 °C but I have also seen a reference that the throttling temperature is 80 °C. I should also mention it sports GPU Boost 2.0 so it does have a means of going beyond its specification, if the situation allows for it. My model has 2 GB of GDDR5 but there were some versions of the GTX 770 with 4 GB.
+
+\graphicspath{{Media - GPU/12 - GTX 770/FS Extreme Loop/}}
+\subsection{Fire Strike Extreme - Loop}
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 770	&	GPU Temp (°C)	&	36	&	36	&	36.61	&	42	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	172.64	&	1045.2	\\	\hline
+	Warm-up	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	219.08	&	1752.8	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Power (W)	&	12.7	&	13	&	14.57	&	54.6	\\	\hline\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 770	&	GPU Temp (°C)	&	37	&	86	&	85.13	&	89	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 770	&	GPU Clock (MHz)	&	135	&	1045.2	&	1045.09	&	1123.5	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1747.42	&	1752.8	\\	\hline
+	3DMark - Fire Strike - Extreme - Loop	&	GTX 770	&	GPU Power (W)	&	19.5	&	163.1	&	163.02	&	199.7	\\	\hline\hline
+	Cooldown	&	GTX 770	&	GPU Temp (°C)	&	35	&	37	&	38.19	&	67	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	135.03	&	180	\\	\hline
+	Cooldown	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	162	&	162	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Power (W)	&	12.5	&	12.9	&	12.97	&	15.6	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Being the first set of statistics for the GPU, we should look at the idle period where we see the Warm-up period had an average temperature of about 36 °C while the Cooldown period averaged a degree or two higher. For clock speeds it appears the idle frequency for the GPU is 135 MHz and for the VRAM it is 162 MHz. Idle power consumption is around 13 W to 15 W it appears.
+
+Coming to the test period, the temperatures are not looking very good as all of the temperatures are well above 80 °C, which I had seen somewhere was a throttling point. The maximum temperature according to the specifications is 98 °C though, and the silicon can probably survive still higher temperatures, but I doubt anyone wants any of their components getting this warm.
+
+As for the frequency statistics, we do see a maximum above the stated 1085 MHz boost clock, but the median and mean are both right at the 1046 MHz base clock. While GPU Boost 2.0 did achieve something, it did not last too long as both averages are at the base clock.
+
+Looking at the power consumption is curious as the averages are well away from the maximum, which is also distant from the 230 W TDP of the GPU. Of course we also saw the RX Vega 64 was not running at its stated TDP of 295 W but some 50 W below that, but then that GPU was doing something rather different from this one, as the graph is about to show.
+
+\image{Course}
+
+It appears the power consumption behaved like it was boosting at the beginning, before being exhausted and needing to return to around 163 W, much like a CPU boosting. When the power was boosted, so was the GPU frequency, but it did not last long. This is that difference from the RX Vega 64, as its power draw was practically flat the entire time.
+
+Looking at the other measurements, there is another curious behavior and one I do wish I had a reasonable explanation for. At the beginning, when the power and frequency were boosted compared to the rest, we can see the temperature was flat at 80 °C for a time. Once the boost ran out though, the temperature increased while the power and frequency fell, and that is what I cannot explain. Power and frequency both directly relate to the heat production, so why would the temperature be stable when they are high, and then increase when they fall? I am not plotting the fan speed, but looking at the data it actually increased after that period, from 2200 RPM to 2600 RPM, so it was not more aggressively cooling at that time. Perhaps it relates to the saturation of the cooler, like for that length of time the mass of metal could keep absorbing it, so the GPU itself could be in equilibrium until saturation was reached and throttling had to occur. One flaw with that hypothesis is the frequency started falling before the temperature started increasing from 80 °C, so I really do not know what is going on.
+
+Looking to the temperature statistics now, the lower quartile for the test period was 86 °C, which it first crossed after 469 seconds, but it was not stable. The tenth time it was at or above that temperature was at second 589, a full two minutes later. For the Cooldown period, the upper quartile was 39 °C and it crossed that at second 4407, or after 807 seconds. Though still not particularly stable, it was markedly better than the test period as the tenth measurement is at second 4430.
+
+\image{FPS}
+
+"Fire Strike Extreme" runs at 2560x1440 which is definitely not a resolution the GTX 770 is going to be able to handle. For those wondering, I looked at the memory use measurements in the GPU-z log file and it shows only 1 GB during the test. I also checked on the RTX 2080 with its 8 GB of VRAM to confirm the 2 GB limit of this GPU should not be a problem.
+
+Looking at the frame time statistics, the median and mean for the length of the test period were 53.18 ms and 53.46 ms, respectively. The 1\% to 11\% section had a median of 52.39 ms and mean of 52.76 ms while the final tenth had a median of 53.28 ms and mean of 53.70 ms. Overall the linear regression slope was 0.00042, the early section's slope was 0.0096, about twenty times greater, and the final tenth had a slope of -0.0018, so it seems things were improving at the end.
+
+Looking at the slopes for the other measurements, as they should be more interesting with this boosting behavior, the early section saw the frequency falling at a rate of -13.64 MHz/min and the power too was falling by -4.95 W/min. (If those values seem low, remember these smaller sections span six minutes, so with the boosting being shorter, there is non-boosting data to reduce its influence.) For the length of the test period the frequency was falling at -0.053 MHz/min and the power was falling by -0.00013 W/min, but for the 89\% to 99\% section the frequency was effectively static (-2.19*10\textsuperscript{-15} MHz/min) while the power consumption was increasing by 0.0028 W/min.
+
+For those wondering, I am not using the final percent for this late section because I noticed some issues that appeared to be Cooldown data being included with the test period. This really should not be happening, but the impact on the statistics should be minimal by this point in the period. The PresentMon data is immune to this issue as that data is only recorded while the load is active.
+
+\image{Hist - Temperature}
+
+Looking at the test period's distribution here, it very much looks to me like the GPU was hitting a thermal limit, because of how much data is at a single value and how small the right-hand tail is. We can see at 80 °C there is a small bump because of that briefly stable period I mentioned earlier.
+
+\image{Hist - Power}
+
+Clearly the power consumption is centered around the 163 W averages we saw in the statistics and above 171 W it looks like just outliers with how little is there. Officially the TDP is 230 W but that does not even appear on the scale because no measurement got close enough to it.
+
+\image{Hist - Frequency}
+
+NVIDIA uses stepped frequencies for its GPUs and it appears for the Kepler series, this step was 13 MHz. Unfortunately the frequencies do not fall exactly on multiples of 13 so the columns look like they have been nudged a little, but there is nothing incorrect here. The width of each column is 13 MHz though, which is different from the RX Vega 64 graphs, where the bin width was 1 MHz.
+
+Turning to the percentiles, some 0.50\% of the data was below the 1046 MHz base clock was 95.25\% was at it. Some 96.92\% was below the 1085 MHz boost clock, leaving 3.08\% at or above it and 1.87\% between the base and boost clock. Clearly the GPU was only able to deliver its base clock for the length of the test.
+
+\image{Hist - Frame}
+
+Ignoring the specific values for the time being, the shape of this distribution looks correct from what we have seen with other GPUs. There are four peaks of approximately the correct relative heights and horizontal positions. There is also the singular spike at 9 ms that actually holds enough data to rival if not exceed the height of any other column. That is more a statement of how much the performance varied than anything, but as we can see, the overall behavior of the performance is what we have come to expect.
+
+\image{TS - Frame}
+
+This is interesting for a couple reasons. One is we can see some data right at the beginning that appears to be more than just the trend increasing. It is to the left of the start of the smooth line even, which really tells you how early and short lived it was. I wonder if this might be when the GPU was boosting, improving the performance some, but quickly the boost was exhausted and the frame time increased significantly.
+
+At this point we see the second interesting pattern as there is undulating to the data for the length of it. I do not recall noticing behavior like this before, but perhaps the long frame times, even in this time series trend data brings it out. Of course it could also just be a quirk to the time series processing too.
+
+\image{TS - Frequency}
+
+The boosting at the start of the test period has definitely messed with the smooth line here, as it wants to be undulating while the trend is actually flat. The specific values might be wrong, but if I plotted the data itself, it would probably be hard to distinguish from this.
+
+\image{TS - Power}
+
+This is an interesting graph for two reasons. The first is dip right after the boost at the start. It is somewhat visible in the earlier graph, but there is enough variability to the raw data to make it hard to be certain. That is a strength of time series though, as it can remove regular patterns and noise.
+
+The other interesting thing to notice is that at the end it does appear the power was increasing. It is hard to see because the smooth line is on top, but the data is actually increasing behind it at the end. This would probably be short lived, but is still a little interesting to spot and I have no explanation for it.
+
+\image{TS - Temperature}
+
+It is small, but I think the little shoulder early in this graph and just below 80 °C might be from when the temperature was stable at that temperature. It does somewhat line up with the boosts of the Power and Frequency time series trend graphs above. I also think it is interesting to see the temperature had a positive trend at the end, despite having been stable for so long. Looking at the Course graph again, we can see the temperature did in fact tick up near the end, with that being more exaggerated here. This makes me wonder what would have happened if the test were to run for longer than an hour.
+
+\graphicspath{{Media - GPU/12 - GTX 770/TS Loop/}}
+\subsection{Time Spy - Loop}
+
+Like the previous test, "Time Spy" is rendered at 2560x1440, but checking the memory usage measurements shows it takes less than 2 GB, so capacity should not be an issue here.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 770	&	GPU Temp (°C)	&	35	&	35	&	35.2	&	39	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	155.8	&	1045.2	\\	\hline
+	Warm-up	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	190.94	&	1752.8	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Power (W)	&	12.7	&	12.9	&	13.79	&	54.7	\\	\hline\hline
+	3DMark - Time Spy - Loop	&	GTX 770	&	GPU Temp (°C)	&	37	&	83	&	81.71	&	85	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 770	&	GPU Clock (MHz)	&	135	&	1045.2	&	1046.02	&	1123.5	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1744.6	&	1752.8	\\	\hline
+	3DMark - Time Spy - Loop	&	GTX 770	&	GPU Power (W)	&	19.5	&	142	&	142.29	&	172.9	\\	\hline\hline
+	Cooldown	&	GTX 770	&	GPU Temp (°C)	&	34	&	36	&	37.46	&	66	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	135.42	&	823.1	\\	\hline
+	Cooldown	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	162.14	&	405	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Power (W)	&	12.6	&	12.9	&	12.95	&	29	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+The idle periods are in line with what we have already seen, as one should expect. As for the test period, the frequency statistics are not very interesting because, as we will see, the behavior was just like before with an initial boost and then falling to the base clock. What is interesting is the temperature is less than the "Fire Strike Extreme" results, as is the power consumption. Perhaps this is inverted from what we saw with the RX Vega 64, where "Time Spy" enjoyed higher frequencies, but power usage and temperature were consistent (for Auto Default). The GTX 770 might be more frequency limited, so power and temperature fell. I am not sure, but it does not seem unreasonable to me.
+
+\image{Course}
+
+Looking at this graph, there are of course some similarities to what we saw before, but also some interesting differences. One of these is initial boost period is much longer than it was for both the power and frequency. We can also see the temperature stayed at 80 °C while the fall from the boost happened as well, exactly like before. This is actually what really confounds me because temperature should be partly a function of frequency and power, so to see those two falling and then the temperature continue to rise does not make sense to me. How was the temperature kept stable at one pairing of power and frequency, but then when both are lower, the temperature increases? We are also far from the TDP, so why is the cooler not able to handle this amount of thermal power? The only aspect to this behavior that makes much sense to me is that once the base frequency is settled on, the temperature is allowed to rise above the throttle point. If we just assume the throttling is only for controlling the boost, once we are no longer boosting, the throttle point is irrelevant until some hard limit.
+
+Looking at the temperature statistics, the lower quartile of the test period is 82 °C and it was first crossed after 712 seconds, but it fell below that immediately after. At second 752 the temperature again reaches 82 °C and stays relatively stable from then on.
+
+For the Cooldown period, the upper quartile was 38 °C and that was first crossed at second 4404, or after 804 seconds, but this was short lived like the test period's lower quartile. The temperature is more stable at second 4422, though still varies some.
+
+\image{FPS}
+
+The GTX 770 is not up for running "Time Spy." For the length of the test period, the median frame time is 78.12 ms and the mean is 76.78 ms. For the early section the median was 75.69 ms and 74.24 was the mean while the final tenth had a median of 78.49 ms and mean of 77.16 ms.
+
+Looking at the other slopes, the values are pretty similar to what we saw before with the GPU frequency falling at -14.20 MHz/min and power decreasing by -4.55 W/min in the early period, while the slopes over the length of the test period and later section are much closer to zero.
+
+\image{Hist - Temperature}
+
+With this graph it looks like the GPU is hitting a thermal limit, with how the distribution is biased to the right so there is only a tail on the left. We can also see 80 °C has a peak to it, which we could have predicted from what we saw in the earlier graph.
+
+\image{Hist - Power}
+
+The values are different, but this is similar to what we saw before, where there is some data at higher values, but the bulk of the distribution is centered on a different value. In this case the value is 142 W, which is quite a distance from the 230 W TDP.
+
+\image{Hist - Frequency}
+
+Nothing too surprising here as the bulk of the test period's data is at the 1046 MHz base clock to the point the boxplot is a single line on that column. There are some lower values, but those are likely outliers from when the test was loading. For the percentiles, 0.73\% of the data was below 1046 MHz while 87.95\% was at the base clock, and lastly 93.30\% was below the 1085 MHz boost clock. On the bright side, those are better results than we saw with "Fire Strike Extreme."
+
+\image{Hist - Frame}
+
+As I already said, the GTX 770 is not up for running "Time Spy." The best frame times are from when the test was loading.
+
+\image{TS - Frame}
+
+Once the boost exhausts the frame time almost completely stabilizes, until we get to the end, and thanks to the boost lasting longer, we can see it better on this graph. We can see the trend started to have the frame time increasing again, but it also appears to be turning back down. There are some other spots that the data, not so much the smooth line, appears to turn slightly up and back down again, but the one at the end appears to be the largest turn. At least with it turning down again I do not feel as much the curiosity to see what would happen if I ran the test for longer.
+
+\image{TS - Frequency}
+
+Another look at the boosted frequency falling to the base clock, though we can see some steps to the line, likely following the 13 MHz step mentioned earlier.
+
+\image{TS - Power}
+
+Like before we can see the power boosting initially before falling, but the dip after the boost is not as large as it was for "Fire Strike Extreme." After the dip, the power stabilizes to being nearly flat, but looking closely we can see some variability behind the smooth line, though not much.
+
+\image{TS - Temperature}
+
+During the boost we can see how the temperature was stable at 80 °C for a time before increasing again. I truly find this an odd behavior, but it is what happened before the temperature started rising. Interestingly, we can see the temperature turning downwards at the end of the graph. It is not by much and might not have lasted for long, but it is there. I did not mention it earlier but the linear regression slope for the temperature from 89\% to 99\% is -0.10 °C/min. That is not much, but it is negative, like we are seeing here.
+
+\graphicspath{{Media - GPU/12 - GTX 770/FS/}}
+\subsection{Fire Strike - Pulse}
+
+The first of the pulsed tests is with "Fire Strike," which runs at 1920x1080, a resolution the GTX 770 should be more comfortable with, on top of the pauses between each run giving it some time to recover. Those pauses will also skew some of the statistics, but it should still prove interesting to see how the GPU responds to not being as heavily loaded.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 770	&	GPU Temp (°C)	&	35	&	36	&	36.56	&	42	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	157.9	&	1045.2	\\	\hline
+	Warm-up	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	196.25	&	1752.8	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Power (W)	&	12.7	&	13	&	13.92	&	54.8	\\	\hline\hline
+	3DMark - Fire Strike	&	GTX 770	&	GPU Temp (°C)	&	37	&	80	&	75.77	&	83	\\	\hline
+	3DMark - Fire Strike	&	GTX 770	&	GPU Clock (MHz)	&	135	&	1045.2	&	1051.15	&	1123.5	\\	\hline
+	3DMark - Fire Strike	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1748.63	&	1752.8	\\	\hline
+	3DMark - Fire Strike	&	GTX 770	&	GPU Power (W)	&	19.5	&	155.7	&	126.9	&	196.4	\\	\hline\hline
+	Cooldown	&	GTX 770	&	GPU Temp (°C)	&	34	&	36	&	37.29	&	67	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	139.82	&	1045.2	\\	\hline
+	Cooldown	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	169.78	&	1752.8	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Power (W)	&	12.5	&	12.9	&	13.15	&	58.1	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+It is unfortunate we cannot make direct comparisons with the looping data because that as a different version of the same benchmark, but there are still some things we can see. One is the mean frequency has improved, which suggests the GPU was able to boost more than it had been before, but we still have a median of the 1045 MHz base clock. Power consumption is down, compared to the "Fire Strike Extreme" data, but I think looking at the graphs may be more helpful with that than these statistics.
+
+\image{Course}
+
+Looking at this graph, we can clearly see some improvements from the looping test. One is the maximum clock speed was much more common, actually appearing across the length of the test, but at the same time it always fell back to the base clock, so it is not a complete improvement there. We can also see the power consumption, despite the boost and fall near the beginning, does have singular points near the maximum from the boost across the length of the test period. This higher power consumption never lasts long, but it does show the GPU trying.
+
+As for the temperature statistics, the lower quartile of the test period was 69 °C and it was crossed after just 37 seconds. The temperature was either stable or increasing until second 45, as it fell 13 °C the next second, likely from the current run ending. At least I think it is interesting to see how rapidly the temperature can fall once the load is gone.
+
+The upper quartile of the Cooldown period is 37 °C, which is adjacent to the average values in the table above. That temperature was crossed at second 4415 or after 815 seconds. That is exactly in line with the other results we have already seen.
+
+\image{FPS}
+
+Unfortunately my mistake with selecting the test means we cannot directly compare these statistics with other tests, but we can still see how it changed. For the length of the test the median was 26.27 ms and the mean was 27.84 ms. The early section had a median of 25.45 ms and mean of 27.18 ms while the last tenth had a median of 26.42 ms and the mean was 28.00 ms. Unfortunately the pulsing does make the linear model slopes less useful. Still, looking at the averages, the performance is fairly consistent as the statistics are within a millisecond of each other for all three sections of the data.
+
+\image{Hist - Temperature}
+
+This does look better than what we were seeing in the looping results, as the tallest column is a bit farther from the maximum temperature recorded, but it was still at and crossing the 80 °C threshold this GPU really does not like. Looking at the second, lower domain that is from the GPU cooling during each pause is interesting, as it suggests the GTX 770 was able to cool about 13 °C at each pause, based on the peaks. Looking back at the FPS graph, it seemed to take 15 seconds between each run, to give some context to that cooling.
+
+\image{Hist - Power}
+
+Ignoring the lower domain from when the GPU was at least near idling, this looks quite a bit like what we saw before, as the main peak is away from the maximum, and certainly away from the TDP. The key difference is the weight of the right-hand tail as there is more data at the higher power values. I am not sure exactly how much more data is there, but each of the columns are plainly visible, which is an improvement from before.
+
+\image{Hist - Frequency}
+
+More or less the same as I just said concerning the power graph can be applied here as we see more data at higher frequencies. In fact, it is enough that the upper quartile has been pulled away from the median, as before the boxplot was basically a single line. The highest frequency of 1124 MHz in particular shows more data than we saw before, and actually appears to be the second tallest column, behind only the terrifically tall base frequency.
+
+Looking at the percentiles now, just 3.30\% of the data was below 1046 MHz while 66.22\% was at the base clock. There was 81.98\% below the 1085 MHz boost clock.
+
+\image{Hist - Frame}
+
+The spike at 9 ms is so large, it has successfully dwarfed the rest of the histogram. We can still see some details to the interesting part of the distribution, though, such as the number and positions of the peaks, as well as the general range of the data. Unfortunately there is not really anything I can do to solve this beyond manual adjustment and I do not think that would be the best design to implement in the script. Luckily the more powerful GPUs should not suffer from this because the data should be at lower frame times and denser. Remember, the shorter the frame time the more frames are drawn which implicitly limits the impact of the times captured while loading.
+
+\image{TS - Frame}
+
+Though the time series processing has not completely removed the impact of the pulsing, this is looking pretty intelligible. We can see the boost at the beginning had an impact because performance worsened as it was exhausted over the first ten minutes of the period. After second 600 or so though, the performance was quite stable.
+
+\image{TS - Frequency}
+
+This is definitely a more interesting graph than we saw with the looping test, as that was just a flat line except for the impact of the boost at the start. Here we still have the boost but also the GPUs repeated attempts to reach above the base clock. It may not have succeeded for long, but it constantly tried. One thing interesting is we can see a subtle dip after the boost that the trend does recover from, and I do wonder what the cause of this behavior might be, as this is not the first time we have seen it.
+
+\image{TS - Power}
+
+A lot of what I said about the Frequency trend above can be applied here as well, as we can see the GPU continually tried to pull more power after the boost exhausted, but was not able to reach that level again. We can also see the dip after the boost ended with a bump up after it, though the smooth line does not respond to it very much.
+
+\image{TS - Temperature}
+
+Nothing too unexpected here, except for the curious dip around the center of the plot. Looking back at the Course graph though, it seems there were fewer temperature measurements at levels between the load temperatures and where the CPU cooled to during the pause. That means this could be a quirk from the measurement, or there was something specific that caused this behavior at that time. Regardless, we can see the temperature was stabilizing quite a bit at the end, and I can believe it would have been stable earlier, if not for the dip.
+
+\graphicspath{{Media - GPU/12 - GTX 770/TS/}}
+\subsection{Time Spy - Pulse}
+
+Time for the last dataset I have for the GTX 770, pulsing "Time Spy" and there are a couple things about it to keep in mind. One is because I did not make a mistake here, these results can be compared with the looping results earlier, and this test runs for a minute, so the GPU will have spent more time loaded than paused during the test period.
+
+\vspace{1.0ex}	\noindent	\resizebox{\columnwidth}{!}{
+\begin{tabular}{| l | l | l | l | l | l | l |}
+	Period	&	GPU	&	Measurement	&	Min	&	Median	&	Mean	&	Max	\\	\hline\hline
+	Warm-up	&	GTX 770	&	GPU Temp (°C)	&	34	&	35	&	35.14	&	39	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	154.93	&	1045.2	\\	\hline
+	Warm-up	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	191.04	&	1752.8	\\	\hline
+	Warm-up	&	GTX 770	&	GPU Power (W)	&	12.8	&	13.1	&	13.97	&	54.7	\\	\hline\hline
+	3DMark - Time Spy	&	GTX 770	&	GPU Temp (°C)	&	36	&	79	&	73.88	&	81	\\	\hline
+	3DMark - Time Spy	&	GTX 770	&	GPU Clock (MHz)	&	135	&	1058.2	&	929.07	&	1123.5	\\	\hline
+	3DMark - Time Spy	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	1752.8	&	1471.24	&	1752.8	\\	\hline
+	3DMark - Time Spy	&	GTX 770	&	GPU Power (W)	&	19.5	&	146.7	&	121.3	&	173.9	\\	\hline\hline
+	Cooldown	&	GTX 770	&	GPU Temp (°C)	&	32	&	33	&	34.8	&	62	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Clock (MHz)	&	135	&	135	&	135.04	&	180	\\	\hline
+	Cooldown	&	GTX 770	&	VRAM Clock (MHz)	&	162	&	162	&	162	&	162	\\	\hline
+	Cooldown	&	GTX 770	&	GPU Power (W)	&	12.5	&	12.9	&	12.9	&	28.5	\\	\hline
+\end{tabular}
+}	\vspace{1.0ex}
+
+Like we saw earlier with the looping results, the GPU ran cooler for this test than either version of "Fire Strike," which is simply curious but could also have very positive results here. We can also see from the temperature statistics, it should have stayed below the throttle point we have been observing most of the test, so we might be able to expect greater frequencies. Unfortunately the idle periods have pulled down the mean, but we can still see the median is above the base clock, which is a good sign. The mean power consumption likely also has been pulled down by the pulsing, but the median is in line with what we saw from the looping test.
+
+\image{Course}
+
+One thing quite interesting about "Time Spy" on this GPU is how very calm the data is for it, or at least less messy it seems to be. We can see regular patterns clearly in the frequency, temperature, and even the power consumption data. Technically the frame rate/time data always has a pattern to it, but with how short "Fire Strike" is, the points blur together.
+
+Coming to the temperature statistics, the lower quartile for the test period was 68 °C and this was first crossed after 60 seconds, and was reasonably stable after that, really just missing one second of the ten measurements that followed. For the Cooldown period, the upper quartile was 35 °C and it was first crossed at second 4356, or after 756 seconds, and though not as stable as the warming in the test period, was still pretty close.
+
+\image{FPS}
+
+Even with the pulsing allowing the GPU to recover some, this was not going to go well for the GTX 770. Looking at the statistics the median for the test period was 71.73 ms and the mean was 75.38 ms. For the early section the median was 69.99 ms and the mean was 74.02 ms with the final tenth having a median of 72.07 ms and a mean of 75.71 ms. If you compare these statistics to the looping results, you will see they are appreciably better, but comparing the graphs is more appropriate here. Remember, these statistics can be pulled away by the better performance of the test loading, and because the number of frames is dependent on the frame time, even the median can be dragged away. Quickly eyeballing this graph to that of the looping data, and the points from the test running do not look all that different. The histogram may tell us more though, when we get to it.
+
+\image{Hist - Temperature}
+
+This definitely looks like the GPU is running into a thermal limit, but one it can handle because of how little data is to the right of the 80 °C peak. In fact, using the quartiles of the box plot we can see at least a quarter of the data is between 79 °C and 80 °C. We can also see the maximum of 81 °C was rather rare, compared to most of the other temperatures.
+
+\image{Hist - Power}
+
+Ignoring the measurements certainly from when the GPU was able to idle during the test period, this distribution looks good because of how much time was spent at the higher values. It is still pulling less than its TDP, but is not concentrated at a much lower value, like 142 W as we saw with the looping "Time Spy" results.
+
+\image{Hist - Frequency}
+
+This is definitely neat to see as the pulsing has enabled the frequency to be much higher than it had been previously. What is quite impressive is the tallest peak being at the maximum of 1124 MHz. According to the percentiles, 21.81\% of the data was below the 1046 MHz base clock, which should mostly be from the idle periods, and 14.08\% was at the base clock. Combined with the amount below it, we can see some 64.11\% of the data was above the base clock, which is pretty good since the looping test only managed 11.32\% above the same frequency. Looking to the 1085 MHz boost clock, some 58.26\% was below that frequency, leaving 41.74\% at or above it.
+
+\image{Hist - Frame}
+
+Well, this looks horrible and is quite bad but the mean actually is in an appropriate place. It seems the influence of the short frame-times from loading was balanced out by the long frame times of running the test such that the mean appears to be in a reasonable position for it. The median is likely off from where it should be because of the 16.7 ms and 33.3 ms spikes, but at frame times as long as these, even the shift from those spikes is likely not enough to make it better.
+
+Comparing the range for this graph and the looping version, this actually has a better maximum at about 85 ms, as opposed to 91 ms. Looking at the positions of the peaks though, this only appears to be about a millisecond better at any location, which is not much. At worst is better, but the rest is difficult to distinguish, despite what the statistics earlier suggested.
+
+\image{TS - Frame}
+
+As we have been seeing, after the initial boost exhausts, the frame time seems to mostly stabilize, although we can see some waviness. I think we can still describe it as stable, though it is true the trend shifted by about 0.5 ms with this waving, but with frame times as long as these, that is not all that great a change.
+
+\image{TS - Frequency}
+
+From the initial boost we see a dip, recovery, and then another, more serious dip, followed by another recovery that is truncated by the ending of the test period. It is not the most stable of shapes, especially when you see the range to the smooth line is 50 MHz. Adding the random component definitely changes the appearance of the graph, but the range actually increases to 65 MHz, and some waviness can be seen in the "trend + random" data too, so it is not a case of the time series processing removing too much data from one component or another.
+
+\image{TS - Power}
+
+This is interesting as it almost resembles a reflection of the frequency graph above, at least as the placement of dips and recoveries from those dips are concerned. Of course frequency and power should be directly related, when controlling for the load.
+
+\image{TS - Temperature}
+
+Once the temperature finished rising at the start, it looks like it stabilized quite well and I do not think there is more to say than that.
+
+I have enjoyed looking at this data on the GTX 770, getting an idea of how such an old GPU handles its workload. The short lived boosting at the start of the test period, followed by a fall to the base frequency and temperature crossing the throttle point have left me somewhat confused though. It just does not seem right for the power level to need to be so far from its TDP for the card to handle the heat produced, and how the temperature could be kept at 80 °C while frequency and power consumption fell, but after they stopped the temperature would increase again. Of course, this will also make looking at the behaviors of the newer GPUs all the more interesting, to see how things have changed.

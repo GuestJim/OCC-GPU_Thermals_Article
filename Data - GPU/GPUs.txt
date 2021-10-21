@@ -1,0 +1,8 @@
+GTX 770
+GTX 980
+GTX 1070
+GTX 1080
+RTX 2060
+RTX 2080
+RX Vega 64 (Auto Default)
+RX Vega 64 (Auto UV)

@@ -1,0 +1,437 @@
+\section{Scripting - GPU Thermal - Output.r (Functions)}
+
+At 26 KB, this is the largest of the GPU Thermal scripts, but this is generally the case with any of my output scripts. I tend to create many custom functions to handle many parts of the data processing and that adds up. To help with this (and similar articles I have written) I am breaking "GPU Thermal – Output.r" into three sections, with this first one covering the myriad custom functions used for processing the data and preparing it for the text outputs. The second section will be for those text outputs, a TXT file and some HTML tables while the third section will be for the graphs as well as the actual output file creation. I have it configured so the output files are made when calling the appropriate functions and then placed those at the end of this file. This makes it easier to load in large chunks of the file for tweaking and experimentation, without having to make the new files each time, which can take a while with some of the graphs.
+
+\subsection{labelBreak Function}
+\begin{styleR}
+labelBreak	=	function(breaks, SEC = FALSE, r = 2)	{
+	if (!app.BREAK)	return(breaks)
+	if (is.numeric(breaks))	breaks	=	round(breaks, r)
+	BREAK	=	c("", "\n")
+	if	(is.numeric(breaks)	&	0 %in% breaks)	if	((which(breaks %in% 0) %% 2) == 0)	BREAK	=	rev(BREAK)
+	if	(!SEC)	return(	paste0(rep(BREAK, length.out = length(breaks)),	breaks)	)
+	if	(SEC)	return(	paste0(breaks, rep(BREAK, length.out = length(breaks)))	)
+}
+#	can be disabled by setting app.BREAK to FALSE
+\end{styleR}
+
+This is my \textbf{labelBreak} function that I built to solve a problem with \textit{ggplot2} graphs, and then I learned an official solution was developed and integrated into the library. I continue to use my function here though, because it has one very useful capability, especially for the graphs this script will create.
+
+The issue with \textit{ggplot2} graphs was the scale labels would always be written on a single horizontal line. Depending on their width and the width of the graph then, the labels may overlap. Naturally then, the solution is to apply line breaks so the labels go to different lines. The official solution is the \textbf{guide\_axis} function with its \textbf{n.dodge} argument for setting the number of lines that can be used. My function uses two but this built-in function can support more. The advantage my function has is its ability to detect if there is a 0 among the labels, and then alter the dodging so it is not moved. I consider 0 a reference point and so do not want its position shifted.
+
+Starting things off, there are three arguments for \textbf{labelBreak} with the first being the \textbf{breaks}, the values where the labels are to be placed. If the \textbf{labels} argument for a scale is not changed, the graph will show the \textbf{breaks}. The \textbf{SEC} argument is to set if the axis involved is the primary or secondary axis. For the primary axis you want the line breaks applied at the front, to push some labels down, while for the secondary axis, placed on the top of the graph, the breaks need to be after the label, pushing them up. Most of the time it is the primary axis, so \textbf{SEC} has the default value of "FALSE." The \textbf{r} argument is to apply rounding to the \textbf{breaks}, so they are not overly long.
+
+The first thing within the body of the function is a check on the value of \textbf{app.BREAK}, the apply break switch set in the Input.r script. If that is "FALSE" then this function should not be applied, so the exclamation point is used to invert the "FALSE" to "TRUE," passing this check so \textbf{breaks} is returned as is, exiting the function.
+
+Assuming the function is to be applied, then we have another check, this time with the \textbf{is.numeric} function that checks if the elements of \textbf{breaks} are numbers. If they are, then the \textbf{round} function will be applied with the argument of \textbf{r}, so the numbers will be rounded to that number of digits past the decimal point.
+
+The next step is to create the \textbf{BREAK} object that contains an empty string and a line break. By repeating this pairing enough times, we can have a list of the line breaks to apply to \textbf{breaks} to properly dodge the labels. There is more to it than that though, especially with this next line and its two \textbf{if} statements.
+
+The first \textbf{if} checks if \textbf{breaks}' elements are numbers and if there is a 0 among them. I have already explained \textbf{is.numeric} but not \textbf{\%in\%}, which does what it suggests; it checks if one object, the number 0 in this case, is within another objects, \textbf{breaks}. If 0 is in the list, then it will return "TRUE", bringing us to the next check that again utilizes \textbf{\%in\%}, but a little differently. Visually the difference is little, but the effective change is quite significant.
+
+When the 0 was on the left side of \textbf{\%in\%} the check was if it was present in \textbf{breaks} on the right. By flipping this though, with \textbf{breaks} on the left, the check will now go through each element of \textbf{breaks}, determining if any of them are in 0, or rather are 0. This means the output is a list of logicals the length of \textbf{breaks}, with only the location of 0 being "TRUE." This is where the \textbf{which} function comes in, as it returns the indices for a list of logicals where the element is "TRUE." There should only be one 0 in \textbf{breaks}, so it should return just one value, and that brings us to the \textbf{\%\%} operator; the modulus operator.
+
+With the modulus operator it is possible to determine if a value is cleanly divisible by another, meaning it does not leave a remainder. A remainder of 0 means it is divisible. The idea here is to check if 0 is in an even position or not. If it is, then we need to reverse the contents of \textbf{BREAK}. If you look back to that two-element list, you can see the second element is the line break, which means all of the even elements of \textbf{breaks} will have the line break applied to them. Therefore, if 0 is in an even position, we want to reverse \textbf{BREAK} so it will be the odd elements dodged.
+
+The next two lines are very similar, checking if \textbf{SEC} is "FALSE" or not, and then applying \textbf{BREAK} at the beginning or end of \textbf{breaks}, depending on which is appropriate. For the primary axis (\textbf{SEC} is "FALSE") \textbf{BREAK} should be applied to the beginning, and if it is the secondary axis (\textbf{SEC} is "TRUE") \textbf{BREAK} should be applied to the end. Applying \textbf{BREAK} is not very difficult, but as you can see, there are still some manipulations to do.
+
+The outer manipulation is the easier to explain, so I will start with \textbf{paste0}, which is a special version of the \textbf{paste} function. What it does is take an arbitrarily long list of objects and concatenates them as strings. The \textbf{paste} function will add a separating substring between each object, and that can be changed with an argument, while \textbf{paste0} does not add such a separation, making it a bit cleaner to work with. I do want to point out that both of these functions appropriately infer that whatever objects they are given, they should be converted to strings.
+
+The inner manipulation with \textbf{rep} is to address the likely possibility that \textbf{breaks} is more than two elements long like \textbf{BREAK}, by repeating \textbf{BREAK} to the appropriate length. There are multiple ways \textbf{rep} can work; repeating the provided object so many times or repeating it to a certain length. The latter is what we want here, to ensure the output is the same length as \textbf{breaks}, which is where the \textbf{length.out} argument comes in as that is how you set the output length. Then the \textbf{length} function is used to return the length of the \textbf{breaks} list, so \textbf{rep} can do its thing correctly.
+
+\subsection{Formatting Functions}
+\begin{styleR}
+sci2norm	=	function(DATA)	format(DATA, scientific = FALSE)
+rem_		=	function(INPUT)	gsub("_", " ", INPUT)
+round2	=	function(DATA, r = 2)	{
+	numCOL		=	sapply(DATA, is.numeric)
+	DATA[numCOL]	=	round(DATA[numCOL], r)
+	return(DATA)
+}
+\end{styleR}
+
+These functions all serve the purpose of presenting the data a little better. For \textbf{sci2norm} it is to ensure a value is written in normal notation instead of scientific notation. This is achieved with the \textbf{format} function and setting its \textbf{scientific} argument to "FALSE." This built-in function is actually described in the official documentation as having the purpose of formatting R objects for "pretty printing."
+
+The \textbf{rem\_} function is to remove underscores from strings, and it is used later. Underscores are a good replacement for spaces in column names, and later on column names are moved into rows, making it appropriate to convert these characters back to spaces. This is achieved with the \textbf{gsub} function and while I do not know why the "g" is there, it is a substitution function for strings. The first argument it takes is the pattern to replace; the second is the string to replace the pattern with; and finally we have the string for this to be applied to. There is also a \textbf{sub} function that has a near identical behavior, except it only replaces the first instance of the pattern, while \textbf{gsub} replaces all instances.
+
+Normally one would expect a function like \textbf{round2} to be very simple, basically just running the \textbf{round} function with the \textbf{digits} argument set to 2, but it is a little more involved. I am not sure what it was I encountered the issue with, but, simply put, not all objects in R can be rounded. An easy example of this is strings, and the solution will require identifying if an object is a number or not. To do that we want the \textbf{is.numeric} function, but when the object in question is a data frame with columns of different data classes, we need a way to run the function across the columns. And thus, \textbf{sapply} makes its return as it, and its siblings, are specifically designed to apply the supplied function across each element in the provided object. When the object is a data frame, it goes along the columns.
+
+Returning to the situation of \textbf{round2} specifically, \textbf{sapply} will produce a list of logicals and I have that assigned to \textbf{numCOL}, for numeric columns. With bracket notation we can use that to select just the numeric columns in the \textbf{DATA} argument, and that is exactly what the next line of code does, twice. It selects the columns for \textbf{round} to be applied to on one side of the equals sign, and it then assigns the results to them on the other. Lastly \textbf{return} is called so \textbf{round2} outputs the new version of \textbf{DATA}.
+
+I already explained wrapper functions so I just want to point out that both \textbf{sci2norm} and \textbf{round2} are wrapper functions, much like \textbf{sapply} and \textbf{paste0}. One is a wrapper of \textbf{format} and the other for \textbf{round}, though \textbf{round2} is more complicated than just setting a specific argument.
+
+\subsection{nearCEIL and nearFLOOR Functions}
+\begin{styleR}
+nearCEIL	=	function(DATA, VAL)	ceiling(max(DATA, na.rm = TRUE) / VAL) * VAL
+nearFLOOR	=	function(DATA, VAL)	floor(max(DATA, na.rm = TRUE) / VAL) * VAL
+\end{styleR}
+
+R already has the \textbf{round}, \textbf{ceiling}, and \textbf{floor}functions, which round to the nearest integer, always round up, and always round down, respectively, but something it does not have a capacity to do is round to the nearest multiple of some arbitrary value. For example, rounding to the nearest multiple of 75, something desirable for the power data here because the PCIe power specifications are based on multiples of 75; the PCIe slot is able to provide 75 W as is the 6-pin connector, and the 8-pin connector provides 150 W. While many GPUs do not have TDPs that fall on multiples of 75, using that as a step for the maximum power is appropriate.
+
+The way these functions work is to first find the maximum of the \textbf{DATA} argument, and by using the \textbf{max} function the argument can be a single value or a vector, list, or column from a data frame. Importantly the \textbf{na.rm} argument for \textbf{max} is set to "TRUE," which means any "NA" values in \textbf{DATA} are to be removed from the calculation. Many built-in R functions have this argument and have it set to "FALSE" by default, but because GPU-z can be weird, I have found it necessary to use it in this script.
+
+With the maximum of \textbf{DATA} found, it is divided by \textbf{VAL}, which is the base value we want to round to a multiple of. The result of that division then has either the \textbf{ceiling} or \textbf{floor} function applied to it, which will be the appropriate coefficient to multiply \textbf{VAL} by to get the desired result.
+
+\subsection{maxPWR and FREQ.COEF Calcuation}
+\begin{styleR}
+if	(!is.numeric(maxPWR))	maxPWR	=	nearCEIL(dataALL$GPU_Power, 75)
+if	(!is.numeric(FREQ.COEF))	{
+	maxCLK		=	nearCEIL(dataALL$GPU_Clock, 500)
+	# FREQ.COEF	=	nearFLOOR(maxPWR/maxCLK, 0.1)
+	FREQ.COEF	=	signif(exp(round(log(maxPWR/maxCLK), 0)), 1)
+}
+\end{styleR}
+
+Here we see the two prior functions put to use, starting with the calculation of \textbf{maxPWR}, maximum power, if it was not already provided. That check is done by applying \textbf{is.numeric} to \textbf{maxPWR}, which is set in the Input.r script by the Python script as either the number provided by the user or "NULL" if no value was set while running the Python script. The use case is then as described above, with \textbf{nearCEIL} being used to find the next multiple of 75 above the power measurements.
+
+After that one-line of code, things are a little more complicated as we come to where I have \textbf{FREQ.COEF} automatically calculated. First we have an \textbf{if} statement check if \textbf{FREQ.COEF} was given a value in Input.r, and if it was not then \textbf{maxCLK} is determined. This again uses \textbf{nearCEIL} to round up to the nearest multiple, but clock speeds do not have any specific step to follow. That just means I can use my judgement and so decided on 500, which I feel is neither too large nor too small to upset the appearance of the frequency scale these calculations are going to influence.
+
+Next we have two versions for actually calculating \textbf{FREQ.COEF} with the first being commented out as it is an older version that works, but not perfectly. In both versions, the quotient of \textbf{maxPWR} and \textbf{maxCLK} is critical, which makes sense as \textbf{FREQ.COEF} is supposed to be a coefficient for \textbf{maxPWR} that gets us to a value above \textbf{maxCLK}, ensuring the frequency scale is properly large to include all values. The first version applies \textbf{nearFLOOR} to round the quotient down to the nearest multiple of 0.1, but this has a certain flaw to it as sometimes the result is 0. One way to address that is to provide a value for \textbf{FREQ.COEF} in the Input.r script. Another I realized is the mildly messy second version here.
+
+Starting with the innermost function, we have \textbf{log}, the logarithm function, which is the natural logarithm by default but can be given any appropriate base. I realize logarithms can be intimidating for some, but I promise it will help here. The result of the logarithm, which should always be negative due to \textbf{maxPWR} being always less than \textbf{maxCLK} and logarithms of fractions are negative, is rounded to the nearest integer. We then undo the logarithm with the \textbf{exp} or exponential function.
+
+The output of that function then has \textbf{signif} applied to it, a function that is related to \textbf{round} but still rather different. It is named for significant figures, a very important concept in the sciences as it relates to the accuracy and precision of any measurement. In simplest terms, it is the number of digits for some measurement, and in some cases the number that can be trusted. A very precise measurement may produce a value with ten digits, but if the measurement is not accurate, the number of significant figures may be smaller, say three for this example. This means only the first three digits can be used reliably while the remaining digits are not trustworthy.
+
+What \textbf{signif} does is allow you to set the number of significant figures for a value, so you can take your ten digit measurement and have R cut it down to the three most significant figures. In this case, however, I have it set to cut the result of the exponential function down to a single digit, and importantly, the place of this digit is irrelevant. This is important because I have found in the situations the prior method for calculating \textbf{FREQ.COEF} returned 0, a value of 0.05 was appropriate, and that has a single significant figure (5, to be specific). Also, the irrelevance of the place is part of what distinguishes \textbf{signif} from \textbf{round}, as the latter is focused exclusively on the integers.
+
+As it happens, the result of \textbf{exp} on the chain of functions I described above, comes out near 0.05, but not quite for those cases the previous code returned 0. It is close enough to 0.05 for \textbf{signif} when set to preserve only one significant figure, to produce an output of 0.05. Other reasonably possible values it may produce are 0.02, 0.1, and 0.4, but both 0.02 and 0.4 would require some very extreme differences between frequency and power. One way to get the value 0.02 would be to have a GPU draw 225 W and have a maximum clock speed of 7500 MHz and a way to get 0.4 would be to have a 225 W draw paired with a frequency of 1000 MHz. The GTX 770 comes the closest in my collection, but still not quite as that pairing is 225 W and 1500 MHz (which returns 0.1).
+
+\subsection{stats Function}
+\begin{styleR}
+stats		=	function(DATA)	{
+	return(c(
+		Min		=	min(DATA,		na.rm	=	TRUE),
+		Median	=	median(DATA,	na.rm	=	TRUE),
+		Mean	=	mean(DATA,		na.rm	=	TRUE),
+		Max		=	max(DATA,		na.rm	=	TRUE)
+	)	)
+}
+\end{styleR}
+
+This \textbf{stats} function is for the purpose of calculating certain statistics from the data, and as we can see by looking into the function, these statistics are the minimum, median, mean, and maximum. Depending on your familiarity with R, you may recognize this custom function is not completely necessary as R already has the \textbf{summary} function that returns those four values as well as the first and third quartile.  There are reasons to have and use this function though, but some may just be to satisfy my idiosyncrasies.
+
+One reason to create this function is to have the names I wish for the outputs. By looking into the value for \textbf{return} you can see I have a vector not of simple values but of values set equal to some word. What this achieves is giving a name to the element in the vector. The result of \textbf{min} will have the name "Min" applied to it in the vector, and similarly "Median," "Mean," and "Max." With \textbf{summary} it is the names R sets, which are similar but not those I may set. This is even more important if I wish to add other statistics to this list that are not part of \textbf{summary} or if I wishe to use the quartile values as it actually has spaces in those names. This extra level of control over names and statistics I find very desirable.
+
+Another advantage that is not apparent yet is the difficulty of removing the undesired statistics, such as the quartiles from \textbf{summary}. This is because of a quirk to how the \textbf{aggregate} function we will see later works, and while I have a solution to it, adding in the removal of undesired statistics and correcting some names will make it significantly more complicated than just using this custom \textbf{stats} function.
+
+A final advantage to \textbf{stats} over \textbf{summary} is the support of \textbf{na.rm} with the individual functions within the custom function. It is true \textbf{summary} will not have its statistics impacted by the presence of "NA" values, but it adds another value to what it provides; the count of "NA" values and that may complicate some processing later.
+
+Sometimes custom functions are not about adding functionality but producing cleaner results.
+
+\subsection{sepCOL Function}
+\begin{styleR}
+sepCOL	=	function(aggOUT)	{
+	matCOL	=	sapply(aggOUT, is.matrix)
+	out		=	aggOUT[, !matCOL]
+	for (FUN in which(matCOL))	{
+		DATA			=	as.data.frame(aggOUT[, FUN])
+		colnames(DATA)	=	paste(colnames(aggOUT)[FUN], colnames(DATA), sep = " - ")
+		
+		out	=	cbind(out, DATA)
+	}
+	return(out)
+}
+\end{styleR}
+
+Though we have not gotten to the first use of the \textbf{aggregate} function, this is the custom function I created to overcome an issue with it. What \textbf{aggregate} does, and makes it one of my favorite built-in functions, is find groups in the object you provide and then applies some function to the selected data in those groups. For example, \textbf{dataALL} can be set to have groups according to the period, and then have \textbf{mean} applied to the power data, and so the output will be the mean power for the three separate periods.
+
+The issue or quirk is when the function produces multiple outputs, such as \textbf{stats} above or \textbf{summary}. When that is the case, the output column containing the results of the function will be a matrix containing the different outputs as their own columns. In other words, rather than the output being a single level object, it has two levels and this messes with both the naming of those columns as well as your ability to access the data within them. With \textbf{sepCOL}, the results are placed into separate columns, hence the name.
+
+For \textbf{sepoCOL}, there is only one argument needed and it is named \textbf{aggOUT} because it is an \textbf{aggregate} output. The first step is to apply the \textbf{is.matrix} function to the columns of \textbf{aggOUT}, as this will identify which columns hold the matrices, and assigns the information to \textbf{matCOL}, for matrix columns. The \textbf{is.matrix} function is a test and so returns "TRUE" or "FALSE," just like \textbf{is.numeric} earlier with the \textbf{round2} function.
+
+Next we have the creation of \textbf{out}, the variable name I often use within custom functions for holding and manipulating what will ultimately be the output. In this case, it is created and set to be the non-matrix columns of \textbf{aggOUT}. This is done using the bracket notation and inverting the \textbf{matCOL} elements.
+
+Now we need to start working with the matrix columns and for that a \textbf{for} loop will work to go through them all. To have a list of column indices for the loop to iterate through, the \textbf{which} function is used as it will return the indices of "TRUE" in \textbf{matCOL}. Within the loop the first step is to select the column of \textbf{aggOUT}, convert it to a data frame with \textbf{as.data.frame}, and assign the result to \textbf{DATA}. After that is done the column names for \textbf{DATA} are addressed.
+
+Column names in a multi-level object can be a little odd as the upper name will be shown ahead of the names in the lower object, separated by a dot. I want something a bit different here, so I take the column names of \textbf{aggOUT} and select just the one for the current column. This will be the name of the data being used, such as GPU\_Power. The column names from \textbf{DATA} are also needed, as these are the names from the function \textbf{aggregate} ran (Min, Median, Mean, and Max for \textbf{stats}. To combine these two sets of names I am using \textbf{paste} because I do want a regular separation string between the two. In this case, that separation is a dash surrounded by spaces.
+
+For those wondering, yes, these are inappropriate column names because they contain spaces, but this will not be an issue for too long.
+
+With the new \textbf{DATA} data frame created and possessing understandable column names ("GPU\_Power – Mean" for example), it can be combined with the \textbf{out} object created earlier. That object holds all of the non-matrix columns from \textbf{aggOUT}, which for the output of \textbf{aggregate} means the columns that identify the groups from the data. Combining these two data frames is easy with \textbf{cbind} for column bind. This function will take objects and attach them to produce a single, wider object. The \textbf{rbind} function is similar, but will produce a longer object instead and will have special limitations on it, as the data class for each column must agree between the two objects.
+
+As the \textbf{for} loop will go through each matrix in \textbf{aggOUT} and add them to \textbf{out} as additional columns, all that is left to do outside of the loop is to call \textbf{return} and identify the function's output.
+
+\subsection{remUNI Function}
+\begin{styleR}
+remUNI	=	function(IN)	IN[, -intersect(
+	which(!sapply(IN, is.numeric)),
+	which(lapply(lapply(IN, unique), length) == 1))
+	]
+#	identifies the columns identifying the groups first so it will not alter the data
+\end{styleR}
+
+This is a fairly new function and I made it to clean up some of the statistics to come. As I have already mentioned, the \textbf{aggregate} function will apply a function to groups identified within the data it is provided. For the results of the function to be of any use, there are columns for each group with rows identifying elements of each group. Where this function comes into play is that you can identify more groups than necessary, which is what I do later in this script. Only period will vary for a single configuration, and as only a single configuration is operated on at a time grouping by GPU, cooler, and the test is unnecessary, but I still want to use them for potential future proofing, if I ever do feed this or a similar script data for multiple configurations.
+
+What \textbf{remUNI} does is find the non-numeric columns that only contain a single value, and removes them from the data frame, which translates to only the relevant groups are kept. Taking the argument \textbf{IN} for input, this function builds two lists of column indices and then the \textbf{intersect} of them to know which columns do not hold data and which columns contain only one unique value. The first list is built by using \textbf{sapply} with \textbf{is.numeric} on \textbf{IN} to identify the columns with data using logicals that are then inverted so \textbf{which} will give the indices of the non-data columns.
+
+The second list is built with nested calls of \textbf{lapply} to first create a list of the unique values in each column with \textbf{unique}, and then the count of those values with \textbf{length}. I will admit I do not remember why I am using \textbf{lapply} instead of \textbf{sapply} as it does seem to work with the latter function, but I am confident there is a reason. I think it is because \textbf{which} may complain about the data type it is given and \textbf{lapply} is more reliable, but at the same time I just did a quick test and it worked fine with \textbf{sapply}. In any case, after building a list of the number of unique values in each column, they are tested to see if they are equal to 1, and then \textbf{which} is used again to get the indices.
+
+With these two lists, \textbf{intersect} is used to find just those columns that do not hold data and those with a single unique value in them. These columns are then removed by placing the negative sign in front of the vector within the bracket notation, indicating they are not selected. The lack of a \textbf{return} call is not a problem here because R assumes the last evaluated expression within a function is what should be returned, if not specified, and this function is actually just one expression. Technically R is not even aware of the line breaks because they are within the parentheses and brackets, which take precedence over line breaks.
+
+\subsection{unitCOL Function}
+\begin{styleR}
+unitCOL	=	function(DATA)	{
+	levs	=	levels(DATA)
+	if	(is.character(DATA))	levs	=	DATA
+	levs[grep("GPU_Temp", levs)]	=	paste0(levs[grep("GPU_Temp", levs)],	" (°C)")
+	levs[grep("Clock", levs)]		=	paste0(levs[grep("Clock", levs)],		" (MHz)")
+	levs[grep("Power", levs)]		=	paste0(levs[grep("Power", levs)],		" (W)")
+	
+	return(rem_(levs))
+}
+\end{styleR}
+
+This function is relatively simple as its purpose is to read the contents of a column, and then based on those contents add appropriate units. Shortly \textbf{aggregate} will be used to get the \textbf{stats} outputs for the different measurements in \textbf{dataALL}, but the labels will not include the units. These labels will also be column names rather than in a column, but that will be taken care of shortly after \textbf{aggregate} is run. This \textbf{unitCOL} function will add units to the column that identifies the measurement type, which does also mean it would be more appropriate to place a little later, but I prefer to keep the creation of custom functions near each other.
+
+The first step of \textbf{unitCOL} is to get the factor levels of the \textbf{DATA} argument with the \textbf{levels} function and assign them to \textbf{levs}. Remember the way the \textbf{factor} class works is make a list of the unique elements in the data and then replace the original data with references to that list. This list is the factor \textbf{levels} and this function grabs just them.
+
+Because I sometimes forget or change my mind on how best to apply my custom functions, the next line is for the case of providing a list that is not already factors. The \textbf{if} statement checks if \textbf{DATA} contains strings, and if that is correct then this list of strings is assigned to \textbf{levs}.
+
+With \textbf{levs} created, one way or another, we can get to changing the strings, which is a little involved because we only wish to apply certain changes to certain strings; we only want the "MHz" unit applied to clock frequencies and not temperature. This is achieved with the \textbf{grep} function that will find every instance of a string pattern in a string or list of strings. As this is a list of strings being worked with, \textbf{grep} returns the indices of those elements that contain the indicated pattern.
+
+The \textbf{grep} function is used twice for each unit to be applied: first to select which elements of \textbf{levs} are going to have a new value assigned to them (the left side); and second to select each of those elements the unit is to be applied to (the right side). It is important to select the elements to apply the units to, rather than just provide a fixed string to assign because multiple measurements may share the same unit. For example, both GPU\_Clock and VRAM\_Clock are recorded, and by having \textbf{grep} such for "Clock" both will be found and both will have "MHz" applied to the full string.
+
+With the units applied, there is just one thing left this function does, and that is call \textbf{rem\_} to replace the underscores with spaces. The output of that is then what \textbf{unitCOL} returns.
+
+\subsection{dataSUM Creation and Formatting}
+\begin{styleR}
+GROUPS	=	list(
+		Period		=	dataALL$Period,
+		GPU			=	dataALL$GPU,
+		Cooler		=	dataALL$Cooler,
+		Test		=	dataALL$Test
+		)
+DATAS	=	list(
+		GPU_Temp		=	dataALL$GPU_Temp,
+		GPU_Clock		=	dataALL$GPU_Clock,
+		VRAM_Clock		=	dataALL$VRAM_Clock,
+		GPU_Power		=	dataALL$GPU_Power
+		)
+
+dataSUM	=	sepCOL(aggregate(DATAS, GROUPS, stats))
+dataSUM	=	remUNI(dataSUM)
+\end{styleR}
+
+This is a little backwards, but it is necessary for the \textbf{GROUPS} and \textbf{DATAS} objects to be defined first. The \textbf{aggregate} function accepts multiple arguments and in this case there are three we are concerned with. The first is the data to be acted on; the second is the grouping elements; and the third is the function to be applied. As the grouping elements is actually the more important to get right, I have \textbf{GROUPS} defined first, and as you can see I am using a \textbf{list} and it is important to use that rather than a \textbf{vector}. Though these two classes are similar, there is also a difference between them that is critical in this situation; a \textbf{vector} is a single-level object while a \textbf{list} can be multi-level.
+
+In this situation, the multi-level capability is necessary as it allows the separate columns from \textbf{dataALL} to remain separated. If you were to replace \textbf{list} with \textbf{c} to make it a vector, the "Period," "GPU," "Cooler", and "Test" names would still be used, but on a single object containing all of the elements of the columns. With this \textbf{list}, however, it contains four elements only, and if you specifically select one of those elements, then you have the full contents of the original column. The names are applied to these list elements, and so can be used to select them. They are also used by \textbf{aggregate} as column names for the data frame it will produce. (For example, there will be a "Period" column name containing "Warm-up," "Cooldown," and the name of the test in its rows.)
+
+As I have mentioned multiple times now, these scripts are currently only configured for working with a single test configuration, so only the Period really matters here. However, I want to include the others for future proofing and they will not harm the process in the slightest, especially with \textbf{remUNI}. With that function, the unnecessary columns will be removed, so you will not even know they are all in \textbf{GROUPS} from the output.
+
+By the way, one could create a function similar in purpose to \textbf{remUNI} to remove the unnecessary elements from \textbf{GROUPS} before the call to \textbf{aggregate}, but I prefer it this way. The list is somewhat fundamental and can have uses elsewhere, while \textbf{dataSUM}, is a (soon to be produced) output and I am more comfortable manipulating an output.
+
+The \textbf{DATAS} list is much the same concept as \textbf{GROUPS} except for being the data \textbf{aggregate} applies the function to. This ability for \textbf{aggregate} to work with lists to group by multiple things and accept multiple datasets is part of the reason I like it, and all with the power to name the resulting columns.
+
+With the two lists created, \textbf{aggregate} can be called, with those lists and the \textbf{stats} function provided as arguments. As you can see, \textbf{stats} is only referred to by its name and not with the parentheses to provide arguments. If you wish to pass arguments to the identified function (not necessary or appropriate for \textbf{stats}) you can place them after the name like they were arguments for \textbf{aggregate}. R has a special word of "..." which it understands to mean accepting arbitrary elements and you can find it in the documentation for many functions, including \textbf{aggregate}. It accepts those arguments and will pass them on to the identified function exactly as though it were being called normally, and when creating a function that word can be used to add this behavior.
+
+In addition to running \textbf{aggregate}, its results have \textbf{sepCOL} run on them to make the data frame a single level and easier to work with. That output is then assigned to the variable \textbf{dataSUM} for data summary, as these are summary statistics, and then \textbf{remUNI} cleans it up. This object is only an intermediate though, as we shall soon convert it into something easier to read.
+
+\subsection{longSUM Creation}
+\begin{styleR}
+longSUM	=	pivot_longer(dataSUM,
+	cols			=	which(sapply(dataSUM, is.numeric)),
+	names_to		=	c("Measurement", ".value"),
+	names_sep		=	' - ',
+	names_ptypes	=	list(Measurement = factor(ordered = TRUE))
+)
+\end{styleR}
+
+At last the reason the \textit{tidyr} library is loaded; the \textbf{pivot\_longer} function. What it does is take a data frame and, based on the provided arguments, pivots data from columns into their own rows. The output of \textbf{aggregate} just before has multiple columns for single measurements, with those separate columns being for the different summary statistics, such as Median and Mean. With \textbf{pivot\_longer} the measurements will be made into rows while the columns of statistics remain. In other words, there will be a Mean column when this is done, and rows for GPU\_Temp, GPU\_Clock, VRAM\_Clock, and GPU\_Power instead of columns for the mean of each of those measurements.
+
+The first argument for \textbf{pivot\_longer} is the data frame it will be working on, which is \textbf{dataSUM} and I identify it at the opening of the function's parentheses. After that I have the list of other arguments because I find this format makes them easier to read and work on. The function actually supports many more arguments than I am using here, but these are all I need.
+
+The first of the other arguments is \textbf{cols} and tells the function which columns it will be pivoting. The columns identifying the groups do not need to be pivoted and it would be inappropriate to do so. To select the data columns I use \textbf{is.numeric} with \textbf{sapply} to get logicals and then \textbf{which} to make those into indices.
+
+The next argument is a little odd because it consists of two terms and one of them is a special term for the function. The idea for \textbf{names\_to} is to inform the function how to get the names for the new rows and new columns. If just a string is provided, it will use that to name the column created to hold the original column names. In this case that is "Measurement" as the column will contain GPU\_Temp, GPU\_Clock, and so on. The catch here is that it is not just that column that needs to be properly named, but also the columns that will contain the summary statistics. Those names will come from the original column names, so to tell \textbf{pivot\_longer} it should use those names, the term ".value" is used. It is not quite as simple as that, but the next argument addresses what is missing.
+
+With the \textbf{names\_sep} argument, \textbf{pivot\_longer} is being told how to separate the original column names to create the Measurement column and the statistics columns. In \textbf{sepCOL} I had these very same values set to be separated by a dash surrounded by spaces, and so that is what I tell it to use here.
+
+The final argument is \textbf{names\_ptype} and its purpose is to set the data class for the indicated column. As this is \textbf{names\_ptype} it is given a \textbf{list} indicating the Measurement column should be ordered factors. I do not recall if the \textbf{ordered} function can be used here instead of \textbf{factor} with the \textbf{ordered} argument set, but it is possible only the basic function (\textbf{factor}) is acceptable. There is also a \textbf{values\_ptype} argument, and I have used it in other scripts but it is not necessary here.
+
+I should also mention that since I originally developed these scripts, the arguments have changed a little, so these "ptype" arguments might not set the classes. Instead they test to confirm what type they are while "transform" arguments will actually change them. The end result still works fine, but potentially it will be necessary to change the argument name.
+
+While this pivoted version of \textbf{dataSUM} is better formatted, it is not perfect which is where the next block of code comes in.
+
+\subsection{longSUM Formatting}
+\begin{styleR}
+levels(longSUM$Measurement)	=	unitCOL(levels(longSUM$Measurement))
+longSUM	=	round2(longSUM)
+\end{styleR}
+
+Both the \textbf{unitCOL} and \textbf{round2} functions have already been explained, but here is a quick reminder. With \textbf{unitCOL} the contents of the Measurement column in \textbf{longSUM} are given the appropriate units. With \textbf{round2} the number values in \textbf{longSUM} are rounded to the hundredths place, ensuring the data frame is not too unwieldy with its numbers.
+
+\subsection{tempCROSS Function}
+\begin{styleR}
+tempCROSS	=	function(DATA, PERIOD, QUAN, OP = NULL, LIST = 10)	{
+	COLS	=	c("Time", "GPU_Temp", "GPU_Temp_Diff")
+	out		=	DATA[DATA$Period == PERIOD, COLS]
+	if (PERIOD == "Cooldown")	out$dTime	=	out$Time - duration
+	
+	if (QUAN < 1)	LIM	=	quantile(out$GPU_Temp, QUAN)
+	if (QUAN > 1)	LIM	=	QUAN
+	
+	if (is.null(OP))	{
+		if (PERIOD == TESTname)		OP	=	">="
+		if (PERIOD == "Cooldown")	OP	=	"<="
+	}
+	
+	if (OP == "<=")		return(out[out$GPU_Temp <= LIM, ][1:LIST, ])
+	if (OP == ">=")		return(out[out$GPU_Temp >= LIM, ][1:LIST, ])
+}
+\end{styleR}
+
+Originally I had two functions covering what this one does, and while I still wish for a more elegant solution than this, this is better than what I had before. For the TXT output, which will be covered in the next section, I want lists of times the temperature crossed certain values. For the test period this is when the lower quartile (25\textsuperscript{th} percentile) is crossed; for the Cooldown period when the upper quartile is crossed (75\textsuperscript{th} percentile); and also for the Cooldown period, when the zero RPM threshold was crossed, though only if the graphics card has that feature.
+
+What complicates my desire to have these lists is I have not been able to find an easy way in R of switching between using "greater than or equal to" and "less than or equal to" within a function. Because the "\>=" and "\<=" symbols are operators, they must be presented as strings and I have not found any successful means of having R treat a string as an operator, or at least not with much complexity around it. In any case, the arguments for this function are \textbf{DATA}, \textbf{PERIOD}, \textbf{QUAN}, \textbf{OP}, and \textbf{LIST} with the last two having default values. With \textbf{LIST} the number of rows of data to be printed in the TXT file can be controlled while \textbf{OP} is the string identifying the comparison operator to use ("\<=" or "\>="). Generally, the operator can be inferred from the \textbf{PERIOD} argument ("\<=" for the Cooldown period and "\>=" for the test period), and that happens if no value is given to \textbf{OP}, leaving it as "NULL," but I want it there just in case there is some need to change the operator. Of course the function will only work with the two operators shared in the parentheses, but there might still be some reason to override the default and want to find when the temperature during the test period was below some value, rather than above.
+
+To make things cleaner, I created the \textbf{COLS} and \textbf{out} variables, and the latter will come to be used for the output. Actually \textbf{COLS} might not really be necessary at this point, as the desired columns could just be stated in the creation of \textbf{out} on the next line, but it can be nicer to work with a list of strings on its own, then as part of a line of other things. With \textbf{out}, the contents of \textbf{DATA} are filtered down to just the selected period, and the selected columns, and \textbf{DATA} should always be \textbf{dataALL}. Technically this is not ideal, creating a subset of \textbf{dataALL} in memory, but once outside of the function it will be flushed.
+
+The next thing that happens is a quick check for what \textbf{LIM}, the limit used in the comparison, should be. If the value of \textbf{QUAN} is less than one, that implies we are working with a quantile value, and so \textbf{quantile} is used to get the desired quantile of the data. Quantiles are the same concept as percentiles, but they are unitless and so have values between 0 and 1, rather than being percentages with a value between 0 and 100. The \textbf{quantile} function works by being given the data to find the quantile of, and then the desired quantile or list of quantiles to find. If the argument is greater than one, this implies it is actually a temperature value, such as the zero RPM threshold, and so \textbf{LIM} is assigned the value.
+
+After this we have the check for if \textbf{OP} has been set or not using the \textbf{is.null} function. If the argument is the default value of "NULL" then it will be set to be which is more appropriate based on the \textbf{PERIOD}. If it is the test period, it should be "greater than or equal to" as we want to see when the temperature is crossing a value from below, while for the Cooldown period, we want "less than or equal to" as we will be crossing the value from above.
+
+Lastly we filter the contents of \textbf{out} based on the value of \textbf{LIM} and \textbf{OP}. The filtering is done with bracket notation and as \textbf{out} only consists of the desired columns, we do not need to specify anything on that side of the comma. Then the first so many rows are selected by providing a sequence from one to the value of \textbf{LIST}.
+
+\subsection{FPSsummary Function}
+\begin{styleR}
+FPSsummary	=	function(UNIT = "ms", DATA = PresentMon)	{
+	# DATA$FPS	=	1000/DATA$MsBetweenPresents
+	SECTS	=	function(QUAN)	quantile(DATA$TimeInSeconds, QUAN)
+
+	# slope	=	function(IN)	lm(FPS ~ TimeInSeconds,	IN)$coefficients[2]
+	slope	=	function(IN)	lm(MsBetweenPresents ~ TimeInSeconds,	IN)$coefficients[2]
+
+	STATS	=	function(IN)	{
+		UNITdata	=	switch(UNIT,	"ms" = IN$MsBetweenPresents,	"FPS" = 1000/IN$MsBetweenPresents)
+		c(median(UNITdata),	mean(UNITdata),	slope(IN),	quantile(UNITdata, c(0.01, 0.99)))
+		}
+
+	out	=	data.frame(matrix(ncol = 5, nrow = 0))
+	out	=	rbind(out,
+		STATS(DATA),
+		STATS(DATA[SECTS(0.01) <= DATA$TimeInSeconds	&	DATA$TimeInSeconds < SECTS(0.11), ]),
+		STATS(DATA[SECTS(0.9) <= DATA$TimeInSeconds, ])
+	)
+
+	colnames(out)	=	c("Median",	"Mean",	"Slope_(ms)",	"0.1%",	"99%")
+	rownames(out)	=	c("Test Period",	"1% to 11%",	"Last 10%")
+	out$Unit	=	UNIT
+	return(out)
+}
+\end{styleR}
+
+With the addition of support for PresentMon data, it becomes appropriate to do some processing of the frame time data. Though this data is not the focus of these scripts, it should be more than just additional points and lines on graphs.
+
+The arguments for this \textbf{FPSsummary} function are \textbf{UNIT} and \textbf{DATA}, neither of which should need to be changed from their defaults, but they can be if the need arises. The purpose of the former is to set which unit is used for the presentation of most statistics at the end, with the options being the default "ms" and "FPS." As frame time (the "ms" option) is a linear measurement, I would generally recommend using it, even if frame rate is easier to comprehend. 
+
+Entering into the body of the function, the first thing we see is the creation of a new column for \textbf{DATA} that will hold FPS data, but it is commented out. Initially I did have use for this column, and while I do not anymore, I have left this record of it.
+
+After that I create the first of three functions within this function. All three of these inner functions will be used multiple times and so creating them this way means there is less repeated code. For anyone curious, these inner functions will not be available outside of the \textbf{FPSsummary} function; in a higher environment.
+
+The first of the custom functions is \textbf{SECTS} and is for selecting sections of the data. One of the primary inspirations for these scripts is to observe how the behavior of a graphics card changes over the length of a load, which means it is appropriate to look at early and late sections of the data to compare them, instead of just using summary statistics for the full data. There are a few ways the data sections could be selected and I decided to use quantiles, a decision I will explain now. Fixed times would be inappropriate for the beginning and end of sections because changes to the length of the test period may cause the processing to fail. Using division to find the sections is better, as it removes the issue of duration changing, but not density. PresentMon records its measurements when certain events occur, rather than on some fixed sampling frequency. This means it is possible for the density of these measurements to change over time and simple division could then lead to inaccurate sectioning. Quantiles, however, are based on the data and thus will not be influenced by changes in density. Rather than having to constantly write out \textbf{quantile} and select the TimeInSeconds column of \textbf{DATA}, I created \textbf{SECTS} so that information is already present.
+
+The next part is a bit complicated in part because I do not fully understand all of how it works, and because R's syntax here is, well, not something I agree with. As the name of this next function suggests, I thought getting the slope of the frame time data would be interesting, so we can see if the performance tended to increase or decrease over time. I have also constructed graphs to show this, but that is for later. The core of my \textbf{slope} function is the \textbf{lm} function for linear modeling. This is R's built in function for finding the straight line that most closely corresponds to the data. It can take many arguments, but in this case it need only take two, with the second being the \textbf{IN} for input argument of the \textbf{slope} function. If you look ahead you will see this is always \textbf{DATA} or a subsection of it.
+
+The thing I do not agree with is the syntax of the first argument here, which is a formula. R understands there to be some relation between the objects on either side of "\til" and the thing I dislike is the lack of clear documentation and what the different sides are. Assuming these are axes on a graph, I would expect the X value to go first and the Y value second, or rather the independent term on the left and the dependent term on the right, but this is incorrect. The syntax is more akin to the classic "$Y = mX + b$" formula, so the dependent or "response" goes on the left while the independent or "terms" values goes on the right. While I can understand that you do not always have an independent variable, applying that naming convention I feel would be clearer, and certainly a different design than using "\til" would be clearer as well.
+
+Much later, when working with the graphs there is the concept of facets, allowing one to place multiple plots in a single graph based on certain characteristics. For this data the characteristics will be the period that will be placed on separate rows. When defining how the faceting should be done, this same formula syntax can be used, but they also accept a different method where you define the rows and columns according to the variables. I saw some months ago now a discussion about this on the library's GitHub because this \textbf{vars} formatting has been depreciated in related libraries in favor for the formula syntax. Fortunately the decision appears to be for support of \textbf{vars} to remain because of the unusual characteristics of faceting, but some also made the point that it is much clearer than the formula notation and they are less likely to make a mistake. Though I doubt it would happen, I think I would enjoy seeing a version of this \textbf{vars} formatting in base R as the added verbosity makes intent clear and will help avoid errors.
+
+Many outputs are created by \textbf{lm} making it necessary to select just those we are interested in, and there is more than one way to achieve this. One way is shown here, with \textbf{coefficients} selected, but this will return two values. The first value is the linear model's intercept and the second is the slope, so bracket notation is used to select just the slope value.
+
+Before getting away from it, there is another version of \textbf{slope} commented out, this one would use the FPS column which is also commented out. As I mentioned earlier, frame time is the linear measurement and so is the more appropriate to use for many calculations and so while I keep this here, this is not the version of \textbf{slope} to use.
+
+With the \textbf{slope} function created, next is the \textbf{STATS} function that will actually build the list of statistics to be shared later. Like \textbf{slope} its argument is \textbf{IN} and indeed is the same object; the selected section of \textbf{DATA}. The first thing that happens in \textbf{STATS} is the creation of \textbf{UNITdata} for which I use the \textbf{switch} function. The purpose of \textbf{UNITdata} is to hold the data of the desired unit, so either frame time or frame rate based on the value of \textbf{UNIT}. The \textbf{switch} function works by being given an expression as its first argument that it then evaluates to select from the list of following arguments. If the expression returned a number, such as 2, then \textbf{switch} would return the second of the additional arguments (the third overall argument). In this case, the expression to be evaluated is a string, so the appropriate strings are written and set equal to the appropriate columns. For "ms" the column is MsBetweenPresents and for "FPS" \textbf{switch} will return that same column, but after it has divided 1000, converting it to be frame rate instead of frame time.
+
+Something I wish to say that is unfortunate about \textbf{switch} is it does not appear to have the ability to evaluate the names given in the list. What I mean is, if instead of "ms" were used as a name, a variable that held that value, \textbf{switch} would not select it because it will not evaluate that variable to see it is "ms." It would be quite handy if it had that capability, such as back in \textbf{tempCROSS} when checking the value of \textbf{PERIOD}, but it is not possible.
+
+With \textbf{UNITdata} created, the next line is the creation of a vector holding the different statistics I want of the data. These are the mean, the median, the slope, and the 1\% and 99\% quantiles.
+
+With the \textbf{STATS} function created, it is time to get to work actually building the output and the first step is to create \textbf{out} with the proper class and initial shape. Unfortunately it is not quite as simple as just attaching the outputs of \textbf{STATS} together as that will not necessarily have the appropriate shape, which is why I first make \textbf{out} a data frame with no rows but five columns. You cannot directly make a data frame like that though, so instead you create a matrix with the \textbf{matrix} function to convert to a data frame, with set its size first set with the \textbf{ncol} and \textbf{nrow} arguments for the number of columns and row, respectively.
+
+With the empty data frame \textbf{out} created, we can use the \textbf{rbind} function to now attach the outputs of \textbf{STATS} together. They add the contents while \textbf{out} set the format.
+
+The first call to \textbf{STATS} is given \textbf{DATA} so all of the PresentMon data. The second and third are only given a section, but the second in particular is not as simple as that. I feel a tenth of the data is enough for these sections, but I do not want to simply use the first tenth of the data because of the loading of the benchmark. This throws off the frame time values, so I want to start a little later. I decided to make this first section from 1\% to 11\%, so still a tenth, but with a small offset. With the bracket notation I must state I only want rows where TimeInSeconds is greater than the 0.01 quantile (1-percentile) and less than the 0.11 quantile (11-percentile), which is not very compact, but it gets the job done. All of the columns can be included, so I leave that side of the bracket empty. The third and final call to \textbf{STATS} is for the last tenth, so I use \textbf{SECTS} like before to find the appropriate value and make sure TimeInSeconds is greater than or equal to that.
+
+To make \textbf{out} more readable, before having the function return it I use the \textbf{colnames} and \textbf{rownames} functions to apply understandable names. After these names are applied I then add a new column named Unit that will hold the value of \textbf{UNIT}, so you know what the units are for most of the data. The \textbf{slope} statistic should be unitless but is from the frame time and not from the frame rate, so its name always includes "(ms)" to indicate that. Finally, \textbf{return} is called to pass this nicely formatted version of \textbf{out}, out of the function.
+
+\subsection{GPUslopes Function}
+\begin{styleR}
+GPUslopes	=	function(DATA = dataALL, PERIOD = TESTname, WID = 0.1, OFF = 0.01)	{
+	dataTEST	=	dataALL[dataALL$Period == PERIOD, ]
+	PERCS	=	c(OFF,	WID + OFF,	1 - WID - OFF,	1 - OFF)
+	SECTS	=	quantile(dataTEST$Time, PERCS)
+	
+	slope	=	function(DATA = dataTEST)	{
+		c(
+		coef(lm(GPU_Temp ~ Time,	data = DATA))[2],
+		coef(lm(GPU_Clock ~ Time,	data = DATA))[2],
+		coef(lm(GPU_Power ~ Time,	data = DATA))[2]	)
+	}
+	
+	out	=	rbind(
+		slope(),
+		slope(dataTEST[SECTS[1] < dataTEST$Time & dataTEST$Time <= SECTS[2], ]),
+		slope(dataTEST[SECTS[3] < dataTEST$Time & dataTEST$Time <= SECTS[4], ])
+		)
+	colnames(out)	=	c("GPU_Temp",	"GPU_Clock",	"GPU_Power")
+	rownames(out)	=	c("Test Period",	paste0(PERCS[1]*100, "% to ", PERCS[2]*100, "%"),	paste0(PERCS[3] * 100, "% to ", PERCS[4]*100, "%"))
+	return(out)
+}
+\end{styleR}
+
+The PresentMon data is not the only data I would like to see the slope of, but I do not need the other statistics calculated at the same time as that, or with the same process, so I have this separate but similar \textbf{GPUslopes} function. All of the arguments have default values and likely will never need to be changed. It is just \textbf{dataALL} this function should work on, and just the subsection of the test period. With \textbf{WID} and \textbf{OFF} arguments are for controlling the width and offset of the still smaller subsections, like we saw in the prior function; one-tenth wide and one percent offset.
+
+Something very important about \textbf{dataALL} is it contains data across all three periods, as opposed to the PresentMon data that is only captured while the benchmark is running; the test period alone. That is also the only period we are interested in here, so we want to grab just that subset, which can be achieved a couple ways. One would be within the \textbf{lm} function itself, as it does have a \textbf{subset} argument that will do what we need done, but that would require changing the \textbf{SECTS} function to also only look at a subset. This is certainly doable, but it is easier to create the subset and then work with that. Also I personally find it easier to work with a separate subset object at times.
+
+Even though it is only the test period I am interested in, having the \textbf{PERIOD} argument can still be useful as it means one could get the slopes for any of the periods easily, even if there is not a clear purpose to do so.
+
+With \textbf{dataTEST} created we have the \textbf{SECTS} and \textbf{slope} functions created just like earlier, though a little different. The column names are different between the PresentMon and GPU-z recordings, so \textbf{SECTS} needs to be told to work with Time rather than TimeInSeconds. The differences with \textbf{slope} are a little more involved than correcting for the column names, and perhaps I should make the notation consistent, but I like the idea of having multiple methods documented.
+
+Exactly like before, I am only interested in the coefficients produced by \textbf{lm}, but am using a different means to select them. Instead of using the "\$" character to select just the values under that name, and then selecting the second value, which is the slope, I am using the \textbf{coef} function that is explicitly to get the coefficients from models. Both methods work equally well so it does not matter which is used in the long run.
+
+You may notice I am not generating the summary statistics like I did for the PresentMon data, and there is a very simple reason for that; we already have them. Though it has been awhile, the mean, median, maximum, and minimum values are all stored in the \textbf{longSUM} data frame that will also be saved to the TXT file and HTML files. It is true we will not get those specific statistics for the earlier and final ten percent, but the maximum and minimum values of the overall period should not be far off.
+
+As for formatting, the rest of the function is identical to \textbf{FPSsummary}, but I have made one important change by not using the last tenth. I am not sure why exactly, but it seems my marking of periods in the GPU-z data are not completely accurate. I believe the very start of the Cooldown period is being included with the test period data, so to address that I am actually using the section from 89% to 99%. I do not know why this is, but it could be anything from a clock being off or the test running just a little longer than desired or expected. When looking at the whole of the test period, the effect on the summary statistics should be small to negligible, but by working with just a section of it, the impact is magnified, so this adjustment helps significantly. This adjustment is not necessary for the PresentMon data as it stops recording once the benchmark stops and so there cannot be any data but from the test period.
+
+All that remains is the creation of \textbf{out} as an empty data frame but with the appropriate width, and then the results of \textbf{slope} are attached to it. The names for the results are then assigned and \textbf{out} is set to be returned by the function.
+
+This wraps up the slope functions, but there is something very important to note about their results, especially for the GPU-z data but is also a factor with the PresentMon data. All I have reported is the slope, not the intercept, but both do go together, and funny things can happen when separating them, especially if you also look at only a portion of the data. All the slope really does is give the general of the trend of the data, but fast changes can be missed, such as if a GPU very rapidly heats up. This will cause more of the data to be at its temperature threshold, so the slope will be lower than a GPU that takes longer to warm up. In that scenario it might well be the second GPU with the better cooling solution, despite the fact it would show a greater slope. This is something that can happen with larger datasets and is actually the reason I include the results for sections of the data, but the issue can still occur within those sections. 
+
+Including the intercept could help with this, but it would always need to be compared against the other summary statistics or against the graph. Adding this statistic would make the code a bit more complicated than I feel is worth it, especially as this result is only provided in the TXT file which is meant to be interpreted for a write-up and not directly shared. Also looking at the appropriate graph will provide the context and similar if not as specific of information.
+
+The other issue with these results is a bit more severe and providing the intercept would potentially make things worse. Basically, R's linear model function produces its model assuming you are starting $X = 0$ and so for the last tenth results, the intercept would be very far off to account for the slope being multiplied by 3240, assuming the test period is an hour long. I have tried altering the function so that the section of data \textbf{lm} gets starts at 0, but this does not address the problem completely, but at least the intercept value is in the correct order of magnitude. (Because this does not help completely, I am not keeping that tweak to change the placement of 0.)
+
+Putting it another way, these slope values are provided because they can be interesting, but are not perfect values. This is why, as I recently explained, they are only in the TXT file as this is meant for someone familiar with the quirks of the data to read, interpret, and then share. The HTML files can be shared more directly as there should be little need, if any, of special interpretation. There is another quirk to these slope results, but I will get to that in the next section as it is more about presentation than the results themselves.
+
+\subsection{ecdfFREQ Function}
+\begin{styleR}
+ecdfFREQ	=	function(DATA = dataALL, PERIOD = TESTname, FREQ = FREQspec)	{
+	ECDF	=	ecdf(ceiling(DATA[DATA$Period == PERIOD, ]$GPU_Clock))
+	BASE	=	min(FREQ)
+
+	LESS	=	ECDF(FREQ - 0.01)					;	names(LESS)	=	paste0("<",	FREQ,	" MHz")
+	EQUA	=	diff(ECDF(c(BASE - 0.01, BASE)))	;	names(EQUA)	=	paste0("=",	BASE,	" MHz")
+
+	return(c(LESS, EQUA)[order(substring(names(c(LESS, EQUA)), 2))])
+}
+\end{styleR}
+
+This is a relatively new function but I think it provides some pretty neat and useful information. By using R's \textbf{ecdf} function we can get values for how much time the GPU spent at and below any given frequency, such as the stated base and boost clocks. Initially I had this completely contained in the function for creating the text output, but it would be best to have it as its own discrete function.
+
+The arguments for \textbf{ecdfFREQ} are \textbf{DATA}, \textbf{PERIOD}, and \textbf{FREQ}, and their default values are \textbf{dataALL}, \textbf{TESTname}, and \textbf{FREQspec}, so it can be run without any specific value given to it. Entering the function, the first line is where \textbf{ecdf} is called and it is important to understand it is rather different from the other built-in functions we have used. This is because it actually returns another function that must be given arguments, but we can still assign the results to an object, like \textbf{ECDF}.
+
+Entering the call to \textbf{ecdf} we see that \textbf{DATA} is filtered down to just the desired period, and then just the GPU\_Clock column is selected. I could have placed the column name within the bracket notation, but I prefer to select by name with the other notation. Anyway, after subsetting \textbf{DATA} the \textbf{ceiling} function is applied to round all of its values up, and this is important. I am not entirely sure of the cause but the GPU-z data can report values that should be integers a little off, and I want to correct that. (It might be a GPU-z issue or it might be the clock speeds are off a little, like a CPU being based on 99.8 MHz instead of 100 MHz.) With this list of values ready, it is given to \textbf{ecdf} and that creates the empirical cumulative distribution function for the data. By giving this function, assigned to \textbf{ECDF}, a value it will tell you how much data was below that value, and that is exactly what I want, but there is something to do first.
+
+When developing the code that became this function, I realized I did not just want to know how much time was spent below the clock speeds, but also at the base clock. To achieve that I need to isolate the vase clock, which I do by setting \textbf{BASE} to be the minimum of the \textbf{FREQ} values, which might not be the best assumption, but should not be a problem. It would only be if someone gives the argument a value below the base frequency that the assumption would fail, and I doubt that would happen. (If it did though, the fix would not be too difficult if the additional frequencies were assigned to a different argument.) Because of how boosting works I doubt there is much value in knowing how much time was spent at the boost clock, which is why I do not bother doing anything with that.
+
+The next couple lines handle the data processing and naming with the first getting the results of the frequency being less than the provided values, hence the name \textbf{LESS}. To get the values \textbf{FREQ} is passed to \textbf{ECDF} but after a small value is subtracted from it. This is to ensure the results are for the frequencies below those values as \textbf{ecdf} will normally include the data at the provided value as well. I want the less than results, not the less than or equal results, and with the \textbf{ceiling} function used earlier, this small value is enough. After \textbf{LESS} is created, \textbf{names} can be used to identify them with \textbf{paste0} placing the less-than symbol in front and the MHz unit at the end.
+
+The next line is a little more involved because it is to get the value at the base frequency. Fortunately the way distributions work means all we need to do is subtract the \textbf{ECDF} output of just under the base frequency from the output of the base frequency. This is achieved by giving the two values to \textbf{ECDF} and then applying the \textbf{diff} function to get the difference. That difference is the data equal to the base frequency and is assigned to \textbf{EQUA}. Like before \textbf{names} is called to label the value, with an equals sign placed at the front.
+
+The last step for the function is to combine \textbf{LESS} and \textbf{EQUA} to return them, but it is a little more complicated than that. You see the \textbf{EQUA} value should be placed between the values in \textbf{LESS}, which is where it belongs if you place the values on a number line. There are different ways to achieve this, but I decided on the one that should be the most reliable, especially if \textbf{FREQ} were to consist of more than two values.
+
+To get the appropriate order for the values, \textbf{order} applied to the names is a logical approach to consider, but there is one problem; the symbols at the front of each name. To get the desired order, those most be ignored and the way I found to do that was with the \textbf{substring} function. As the name suggests, it will return a section of the provided string, with that string being the first argument. The second argument is the starting position for the substring and the third argument, which is optional and not used here, is the final position. The first argument then are the names of \textbf{LESS} and \textbf{EQUA} and the second is 2, so the substring starts with the character after the symbol at the front of each name.
+
+There are a couple important things to note here, with the first being the order of the two vectors because it is necessary for \textbf{LESS} to be ahead of \textbf{EQUA}. With the symbols removed, the base clock will appear twice in the names and when that happens \textbf{order} keeps the original order. We want the less-than value to be to the left of the equals values, so the vectors must be placed in that order as well.
+
+The second issue is \textbf{order} is being given strings, not numbers for sorting. When sorting numbers, it will know to put 10 after 2, for example, but when sorting strings the reverse will be returned. This is because it is going by the characters and sees only "1" as opposed to "10." As long as the orders of magnitude for the \textbf{FREQ} values are the same though, this will not be a problem. If that is not the case though, then it would be necessary to convert the strings to numbers, which would first require removing the units at the end. Alternatively, the units could be held and applied after \textbf{order}, making just the application of \textbf{as.numeric} necessary after removing the symbols at the start. As I said though, as long as the orders of magnitude are the same, this will not be necessary and I doubt we will see base clocks below 1000 MHz again or above 10,000 MHz for a very long time, if ever.
